@@ -10,9 +10,9 @@ from ctypes import *
 from ctypes.util import find_library
 import sys
 
-# Private version checking declared before SDL.version can be
+# Private version checking declared before ftk.version can be
 # imported.
-class _SDL_version(Structure):
+class _FTK_version(Structure):
     _fields_ = [('major', c_ubyte),
                 ('minor', c_ubyte),
                 ('patch', c_ubyte)]
@@ -23,7 +23,7 @@ class _SDL_version(Structure):
 
 def _version_parts(v):
     '''Return a tuple (major, minor, patch) for `v`, which can be
-    an _SDL_version, string or tuple.'''
+    an _FTK_version, string or tuple.'''
     if hasattr(v, 'major') and hasattr(v, 'minor') and hasattr(v, 'patch'):
         return v.major, v.minor, v.patch
     elif type(v) == tuple:
@@ -45,7 +45,7 @@ def _platform_library_name(library):
         return '%s.dll' % library
     return library
 
-class SDL_DLL:
+class FTK_DLL:
     def __init__(self, library_name, version_function_name):
         self.library_name = library_name
         library = find_library(library_name)
@@ -58,7 +58,7 @@ class SDL_DLL:
         if version_function_name:
             try:
                 version_function = getattr(self._dll, version_function_name)
-                version_function.restype = POINTER(_SDL_version)
+                version_function.restype = POINTER(_FTK_version)
                 self._version = _version_parts(version_function().contents)
             except AttributeError:
                 self._version = (0, 0, 0)
@@ -66,9 +66,9 @@ class SDL_DLL:
             self._version = (0, 0, 0)
 
     def version_compatible(self, v):
-        '''Returns True iff `v` is equal to or later than the loaded library
+        '''Returns True if `v` is equal to or earlier than the loaded library
         version.'''
-        v = _version_parts(v) 
+        v = _version_parts(v)
         for i in range(3):
             if self._version[i] < v[i]:
                 return False
@@ -77,12 +77,10 @@ class SDL_DLL:
     def assert_version_compatible(self, name, since):
         '''Raises an exception if `since` is later than the loaded library.'''
         if not version_compatible(since):
-            import SDL.error
-            raise SDL.error.SDL_NotImplementedError, \
-                '%s requires SDL version %s; currently using version %s' % \
+            import ftk.error
+            raise ftk.error.FTK_NotImplementedError, \
+                '%s requires ftk version %s; currently using version %s' % \
                 (name, _version_string(since), _version_string(self._version))
-
-
 
     def private_function(self, name, **kwargs):
         '''Construct a wrapper function for ctypes with internal documentation
@@ -131,17 +129,17 @@ class SDL_DLL:
                 `success_return`.
             `since`
                 Tuple (major, minor, patch) or string 'x.y.z' of the first
-                version of SDL in which this function appears.  If the
+                version of ftk in which this function appears.  If the
                 loaded version predates it, a placeholder function that
-                raises `SDL_NotImplementedError` will be returned instead.
-                Set to None if the function is in all versions of SDL.
+                raises `FTK_NotImplementedError` will be returned instead.
+                Set to None if the function is in all versions of ftk.
 
         '''
         # Check for version compatibility first
         if since and not self.version_compatible(since):
             def _f(*args, **kwargs):
-                import SDL.error
-                raise SDL.error.SDL_NotImplementedError, \
+                import ftk.error
+                raise ftk.error.FTK_NotImplementedError, \
                       '%s requires %s %s; currently using version %s' % \
                       (name, self.library_name, _version_string(since), 
                        _version_string(self._version))
@@ -166,8 +164,8 @@ class SDL_DLL:
                     result = func(*args, **kwargs)
                     if result:
                         return result.contents
-                    import SDL.error
-                    raise SDL.error.SDL_Exception, SDL.error.SDL_GetError()
+                    import ftk.error
+                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
             else:
                 # Construct a function which dereferences the pointer result,
                 # or returns None if NULL is returned.
@@ -182,8 +180,8 @@ class SDL_DLL:
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
                 if result != success_return:
-                    import SDL.error
-                    raise SDL.error.SDL_Exception, SDL.error.SDL_GetError()
+                    import ftk.error
+                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
                 return result
         elif error_return is not None:
             # Construct a function which returns None, but raises an exception
@@ -191,8 +189,8 @@ class SDL_DLL:
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
                 if result == error_return:
-                    import SDL.error
-                    raise SDL.error.SDL_Exception, SDL.error.SDL_GetError()
+                    import ftk.error
+                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
                 return result
         elif require_return:
             # Construct a function which returns the usual result, or returns
@@ -200,8 +198,8 @@ class SDL_DLL:
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
                 if not result: 
-                    import SDL.error
-                    raise SDL.error.SDL_Exception, SDL.error.SDL_GetError()
+                    import ftk.error
+                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
                 return result
         else:
             # Construct a function which returns the C function's return
@@ -217,8 +215,8 @@ class SDL_DLL:
             pass
         return _f
 
-# Shortcuts to the SDL core library
-_dll = SDL_DLL('SDL', 'SDL_Linked_Version')
+# Shortcuts to the ftk core library
+_dll = FTK_DLL('ftk', '')
 version_compatible = _dll.version_compatible
 assert_version_compatible = _dll.assert_version_compatible
 private_function = _dll.private_function
