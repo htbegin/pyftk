@@ -34,6 +34,46 @@ def get_file_defines(include_file):
             pass
     return defines
 
+_var_pattern = r'[_a-zA-Z][_a-zA-Z0-9]*'
+_enum_start_first_pattern = re.compile(r'enum\s+(%s)\s*({)?\s*$' % _var_pattern)
+_enum_start_sec_pattern = re.compile(r'^\s*{\s*$')
+_enum_def_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^\s]+)\s*)?(,)?' % _var_pattern)
+_enum_end_pattern = re.compile(r'^\s*}\s*(%s)?\s*;' % _var_pattern)
+(ENUM_START_FIRST, ENUM_START_SEC, ENUM_DEF, ENUM_END) = range(4)
+
+def handle_enum_start_first_status(line, enum_info):
+    match = _enum_start_first_pattern.search(line)
+    if match is not None:
+        enum_info["name"] = match.groups()[0]
+        if match.groups()[1] is None:
+            status = ENUM_START_SEC
+        else:
+            status = ENUM_DEF
+    else:
+        status = ENUM_START_FIRST
+
+    return status
+
+def get_file_enums(include_file):
+    '''
+    iterate each line
+    if find the start of enum, advance the status
+    if the start of enum has been found, then find the enum
+        save the found enum (label, string value, integer value)
+    if find the end of enum, generate the enum in python-style
+        if the integer values are sequential, then using the range,
+        else assignment theme individually.
+    '''
+    return []
+    defines = []
+    enum_info = {}
+    status = ENUM_START_FIRST
+    for line in open(include_file).readlines():
+        if status == ENUM_START_FIRST:
+            status = handle_enum_start_first_status(line, enum_info)
+
+    return defines
+
 def make_constants(source_file, include_dir):
     lines = pre_lines = []
     post_lines = []
@@ -58,6 +98,10 @@ def make_constants(source_file, include_dir):
             defines = get_file_defines(os.path.join(include_dir, file))
             if defines:
                 pre_lines.append('\n#Constants from %s:\n' % file)
+                pre_lines += defines
+            defines = get_file_enums(os.path.join(include_dir, file))
+            if defines:
+                pre_lines.append('\n#Enum from %s:\n' % file)
                 pre_lines += defines
 
     file = open(source_file, 'w')
