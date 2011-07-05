@@ -92,7 +92,14 @@ def handle_enum_def_status(idx, line, enum_info):
                     val_type = LABEL_VAL_VAR
                     val = None
                 else:
-                    val_type = LABEL_VAL_MANUAL
+                    if isinstance(val, int) or isinstance(val, long):
+                        val_type = LABEL_VAL_MANUAL
+                    elif isinstance(val, str) and len(val) == 1:
+                        val_type = LABEL_VAL_MANUAL
+                        val = ord(val)
+                    else:
+                        val_type = LABEL_VAL_VAR
+                        val = None
             else:
                 val_type = LABEL_VAL_AUTO
                 val_str = None
