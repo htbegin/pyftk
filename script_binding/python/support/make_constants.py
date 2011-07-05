@@ -94,7 +94,7 @@ def handle_enum_def_status(idx, line, enum_info):
                 val = None
             if "labels" not in enum_info:
                 enum_info["labels"] = []
-            enum_info["labels"].append((key, val_type, val_str, val))
+            enum_info["labels"].append([key, val_type, val_str, val])
             status = ENUM_DEF
             break
 
@@ -111,20 +111,50 @@ def handle_enum_def_status(idx, line, enum_info):
 
     return status
 
+def update_defines(defines, enum_info):
+    is_sequential = True
+    all_label = enum_info["labels"]
+    for idx, label in enumerate(all_label):
+        key, val_type, val_str, val = label
+        if idx == 0:
+            if val_type == LABEL_VAL_AUTO:
+                expect_val = 0
+            else:
+                expect_val = val
+
+        if val_type == LABEL_VAL_AUTO:
+            label[LABEL_VAL_IDX] = expect_val
+            expect_val += 1
+        else:
+            if val != expect_val:
+                is_sequential = False
+            expect_val = val + 1
+
+    line = "# enum %s\n" % enum_info["name"]
+    defines.append(line)
+
+    if is_sequential:
+        part = "%s,\n\t" * (len(all_label) - 1)
+        fmt_str = "".join(("(", part, "%s)", " = range(%d, %d)\n\n"))
+        args = [label[LABEL_KEY_IDX] for label in all_label]
+        args.append(all_label[0][LABEL_VAL_IDX])
+        args.append(all_label[0][LABEL_VAL_IDX] + len(all_label))
+        line = fmt_str % tuple(args)
+    else:
+        fmt_str = "%s = %d\n" * len(all_label)
+        fmt_str = "".join((fmt_str, "\n"))
+        args = []
+        for label in all_label:
+            args.append(label[LABEL_KEY_IDX])
+            args.append(label[LABEL_VAL_IDX])
+        line = fmt_str % tuple(args)
+
+    defines.append(line)
+
 def get_file_enums(include_file):
-    '''
-    iterate each line
-    if find the start of enum, advance the status
-    if the start of enum has been found, then find the enum
-        save the found enum (label, string value, integer value)
-    if find the end of enum, generate the enum in python-style
-        if the integer values are sequential, then using the range,
-        else assignment theme individually.
-    '''
-    return []
     defines = []
     enum_info = {}
-    enum_info["file"] = include_file
+    enum_info["file"] = os.path.basename(include_file)
     status = ENUM_START_FIRST
     for idx, line in enumerate(open(include_file).readlines()):
         if not line.strip():
@@ -135,6 +165,9 @@ def get_file_enums(include_file):
             status = handle_enum_start_sec_status(idx, line, enum_info)
         elif status == ENUM_DEF:
             status = handle_enum_def_status(idx, line, enum_info)
+        else:
+            update_defines(defines, enum_info)
+            status = handle_enum_start_first_status(idx, line, enum_info)
 
     return defines
 
