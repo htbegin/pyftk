@@ -48,7 +48,7 @@ _enum_def_fourth_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^,]+))?$' % _var_patte
 
 _enum_end_pattern = re.compile(r'^\s*}\s*(%s)?\s*;' % _var_pattern)
 (ENUM_START_FIRST, ENUM_START_SEC, ENUM_DEF, ENUM_END) = range(4)
-(LABEL_VAL_AUTO, LABEL_VAL_MANUAL) = range(2)
+(LABEL_VAL_AUTO, LABEL_VAL_MANUAL, LABEL_VAL_VAR) = range(3)
 (LABEL_KEY_IDX, LABEL_VAL_TYPE_IDX, LABEL_VAL_STR_IDX, LABEL_VAL_IDX) = range(4)
 
 def handle_enum_start_first_status(idx, line, enum_info):
@@ -85,9 +85,14 @@ def handle_enum_def_status(idx, line, enum_info):
         if match is not None:
             key = match.groups()[0]
             if match.groups()[1] is not None:
-                val_type = LABEL_VAL_MANUAL
                 val_str = match.groups()[2].strip()
-                val = eval(val_str)
+                try:
+                    val = eval(val_str)
+                except NameError:
+                    val_type = LABEL_VAL_VAR
+                    val = None
+                else:
+                    val_type = LABEL_VAL_MANUAL
             else:
                 val_type = LABEL_VAL_AUTO
                 val_str = None
@@ -111,6 +116,16 @@ def handle_enum_def_status(idx, line, enum_info):
 
     return status
 
+def get_label_val_by_key(labels, key):
+    result = None
+    for label in labels:
+        if label[LABEL_KEY_IDX] == key:
+            assert label[LABEL_VAL_IDX] is not None
+            result = label[LABEL_VAL_IDX]
+            break
+
+    return result
+
 def update_defines(defines, enum_info):
     is_sequential = True
     all_label = enum_info["labels"]
@@ -119,16 +134,31 @@ def update_defines(defines, enum_info):
         if idx == 0:
             if val_type == LABEL_VAL_AUTO:
                 expect_val = 0
-            else:
+            elif val_type == LABEL_VAL_MANUAL:
                 expect_val = val
+            else:
+                sys.stderr.write("invalid first label %s at enum %s at %s:%d" %
+                        (key, enum_info["name"], enum_info["file"], enum_info["line"]))
+                return
 
         if val_type == LABEL_VAL_AUTO:
             label[LABEL_VAL_IDX] = expect_val
             expect_val += 1
-        else:
+        elif val_type == LABEL_VAL_MANUAL:
             if val != expect_val:
                 is_sequential = False
             expect_val = val + 1
+        else:
+            val = get_label_val_by_key(all_label[:idx], val_str)
+            if val is not None:
+                if val != expect_val:
+                    is_sequential = False
+                label[LABEL_VAL_IDX] = val
+                expect_val = val + 1
+            else:
+                sys.stderr.write("invalid label %s at enum %s at %s:%d" %
+                        (key, enum_info["name"], enum_info["file"], enum_info["line"]))
+                return
 
     line = "# enum %s\n" % enum_info["name"]
     defines.append(line)
