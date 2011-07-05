@@ -41,10 +41,11 @@ _enum_def_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^\s]+)\s*)?(,)?' % _var_patte
 _enum_end_pattern = re.compile(r'^\s*}\s*(%s)?\s*;' % _var_pattern)
 (ENUM_START_FIRST, ENUM_START_SEC, ENUM_DEF, ENUM_END) = range(4)
 
-def handle_enum_start_first_status(line, enum_info):
+def handle_enum_start_first_status(idx, line, enum_info):
     match = _enum_start_first_pattern.search(line)
     if match is not None:
         enum_info["name"] = match.groups()[0]
+        enum_info["line"] = idx + 1
         if match.groups()[1] is None:
             status = ENUM_START_SEC
         else:
@@ -54,14 +55,14 @@ def handle_enum_start_first_status(line, enum_info):
 
     return status
 
-def handle_enum_start_sec_status(line, enum_info):
+def handle_enum_start_sec_status(idx, line, enum_info):
     match = _enum_start_sec_pattern.search(line)
     if match is not None:
         status = ENUM_DEF
     else:
         sys.stderr.write("invalid enum %s at %s:%d\n" %
                 (enum_info["name"], enum_info["file"], enum_info["line"]))
-        status = ENUM_START_FIRST
+        status = handle_enum_start_first_status(idx, line, enum_info)
 
     return status
 
@@ -80,12 +81,11 @@ def get_file_enums(include_file):
     enum_info = {}
     enum_info["file"] = include_file
     status = ENUM_START_FIRST
-    for number, line in enumerate(open(include_file).readlines()):
+    for idx, line in enumerate(open(include_file).readlines()):
         if status == ENUM_START_FIRST:
-            status = handle_enum_start_first_status(line, enum_info)
+            status = handle_enum_start_first_status(idx, line, enum_info)
         elif status == ENUM_START_SEC:
-            enum_info["line"] = number
-            status = handle_enum_start_sec_status(line, enum_info)
+            status = handle_enum_start_sec_status(idx, line, enum_info)
 
     return defines
 
