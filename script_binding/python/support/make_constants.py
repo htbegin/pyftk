@@ -167,6 +167,7 @@ def get_file_enums(include_file):
             status = handle_enum_def_status(idx, line, enum_info)
         else:
             update_defines(defines, enum_info)
+            del enum_info["labels"]
             status = handle_enum_start_first_status(idx, line, enum_info)
 
     return defines
