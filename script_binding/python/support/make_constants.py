@@ -29,7 +29,7 @@ def get_file_defines(include_file):
             else:
                 num = int(num)
             name = match.groups()[0]
-            defines.append('%s = 0x%08x\n' % (name, num))
+            defines.append('%s = %d\n' % (name, num))
         except ValueError:
             pass
     return defines
@@ -172,14 +172,13 @@ def update_defines(defines, enum_info):
 
     if is_sequential:
         part = "%s,\n\t" * (len(all_label) - 1)
-        fmt_str = "".join(("(", part, "%s)", " = range(%d, %d)\n\n"))
+        fmt_str = "".join(("(", part, "%s)", " = range(%d, %d)\n"))
         args = [label[LABEL_KEY_IDX] for label in all_label]
         args.append(all_label[0][LABEL_VAL_IDX])
         args.append(all_label[0][LABEL_VAL_IDX] + len(all_label))
         line = fmt_str % tuple(args)
     else:
         fmt_str = "%s = %d\n" * len(all_label)
-        fmt_str = "".join((fmt_str, "\n"))
         args = []
         for label in all_label:
             args.append(label[LABEL_KEY_IDX])
@@ -232,11 +231,11 @@ def make_constants(source_file, include_dir):
                 continue
             defines = get_file_defines(os.path.join(include_dir, file))
             if defines:
-                pre_lines.append('\n#Constants from %s:\n' % file)
+                pre_lines.append('\n# constants from %s\n' % file)
                 pre_lines += defines
             defines = get_file_enums(os.path.join(include_dir, file))
             if defines:
-                pre_lines.append('\n#Enum from %s:\n' % file)
+                pre_lines.append('\n# enum from %s\n' % file)
                 pre_lines += defines
 
     file = open(source_file, 'w')
