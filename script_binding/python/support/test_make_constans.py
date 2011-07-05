@@ -191,5 +191,21 @@ class TestEnumDef(unittest.TestCase):
                 None,
                 make_constants.LABEL_VAL_AUTO)
 
+    def _test_end(self, idx, line):
+        status = make_constants.handle_enum_def_status(idx, line, self.enum_info)
+        self.assertEqual(status, make_constants.ENUM_END)
+
+    def test_3_1(self):
+        self._test_end(self.enum_info["line"] + 1, "};")
+
+    def test_3_2(self):
+        self._test_end(self.enum_info["line"] + 1, "}FtkEnum;")
+
+    def test_3_3(self):
+        self._test_end(self.enum_info["line"] + 1, "} ; ")
+
+    def test_3_4(self):
+        self._test_end(self.enum_info["line"] + 1, "} FtkEnum ;")
+
 if __name__ == '__main__':
     unittest.main()
