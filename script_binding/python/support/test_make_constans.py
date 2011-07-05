@@ -40,5 +40,32 @@ class TestEnumStartFirst(unittest.TestCase):
     def test_3_2(self):
         self._test_def("enum %s  { ", "ABC_0")
 
+class TestEnumStartSec(unittest.TestCase):
+    def setUp(self):
+        self.enum_info = {
+                "name" : "test",
+                "file" : "test.h",
+                "line" : 1
+                }
+    def _test_start_first(self, line):
+        status = make_constants.handle_enum_start_sec_status(line, self.enum_info)
+        self.assertEqual(status, make_constants.ENUM_START_FIRST)
+
+    def test_1_1(self):
+        self._test_start_first("{;")
+
+    def test_1_2(self):
+        self._test_start_first(" { GOD = 1,")
+
+    def _test_start_def(self, line):
+        status = make_constants.handle_enum_start_sec_status(line, self.enum_info)
+        self.assertEqual(status, make_constants.ENUM_DEF)
+
+    def test_2_1(self):
+        self._test_start_def("{");
+
+    def test_2_2(self):
+        self._test_start_def("    {");
+
 if __name__ == '__main__':
     unittest.main()

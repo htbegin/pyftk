@@ -54,6 +54,17 @@ def handle_enum_start_first_status(line, enum_info):
 
     return status
 
+def handle_enum_start_sec_status(line, enum_info):
+    match = _enum_start_sec_pattern.search(line)
+    if match is not None:
+        status = ENUM_DEF
+    else:
+        sys.stderr.write("invalid enum %s at %s:%d\n" %
+                (enum_info["name"], enum_info["file"], enum_info["line"]))
+        status = ENUM_START_FIRST
+
+    return status
+
 def get_file_enums(include_file):
     '''
     iterate each line
@@ -67,10 +78,14 @@ def get_file_enums(include_file):
     return []
     defines = []
     enum_info = {}
+    enum_info["file"] = include_file
     status = ENUM_START_FIRST
-    for line in open(include_file).readlines():
+    for number, line in enumerate(open(include_file).readlines()):
         if status == ENUM_START_FIRST:
             status = handle_enum_start_first_status(line, enum_info)
+        elif status == ENUM_START_SEC:
+            enum_info["line"] = number
+            status = handle_enum_start_sec_status(line, enum_info)
 
     return defines
 
