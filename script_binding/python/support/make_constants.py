@@ -37,9 +37,19 @@ def get_file_defines(include_file):
 _var_pattern = r'[_a-zA-Z][_a-zA-Z0-9]*'
 _enum_start_first_pattern = re.compile(r'enum\s+(%s)\s*({)?\s*$' % _var_pattern)
 _enum_start_sec_pattern = re.compile(r'^\s*{\s*$')
-_enum_def_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^\s]+)\s*)?(,)?' % _var_pattern)
+# endded without comma, but with comment
+_enum_def_first_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^,]+?))?/[*/]' % _var_pattern)
+# ended with comma and comment
+_enum_def_sec_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^,]+?))?,\s*/[*/]' % _var_pattern)
+# ended with comma, but without comment
+_enum_def_third_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^,]+))?,\s*$' % _var_pattern)
+# ended without comma and comment
+_enum_def_fourth_pattern = re.compile(r'^\s*(%s)\s*(=\s*([^,]+))?$' % _var_pattern)
+
 _enum_end_pattern = re.compile(r'^\s*}\s*(%s)?\s*;' % _var_pattern)
 (ENUM_START_FIRST, ENUM_START_SEC, ENUM_DEF, ENUM_END) = range(4)
+(LABEL_VAL_AUTO, LABEL_VAL_MANUAL) = range(2)
+(LABEL_KEY_IDX, LABEL_VAL_TYPE_IDX, LABEL_VAL_STR_IDX, LABEL_VAL_IDX) = range(4)
 
 def handle_enum_start_first_status(idx, line, enum_info):
     match = _enum_start_first_pattern.search(line)
@@ -66,6 +76,41 @@ def handle_enum_start_sec_status(idx, line, enum_info):
 
     return status
 
+def handle_enum_def_status(idx, line, enum_info):
+    status = None
+    ptn_list = (_enum_def_first_pattern, _enum_def_sec_pattern,
+            _enum_def_third_pattern, _enum_def_fourth_pattern)
+    for ptn in ptn_list:
+        match = ptn.search(line)
+        if match is not None:
+            key = match.groups()[0]
+            if match.groups()[1] is not None:
+                val_type = LABEL_VAL_MANUAL
+                val_str = match.groups()[2].strip()
+                val = eval(val_str)
+            else:
+                val_type = LABEL_VAL_AUTO
+                val_str = None
+                val = None
+            if "labels" not in enum_info:
+                enum_info["labels"] = []
+            enum_info["labels"].append((key, val_type, val_str, val))
+            status = ENUM_DEF
+            break
+
+    if status is None:
+        match = _enum_end_pattern.search(line)
+        if match is not None:
+            status = ENUM_END
+        else:
+            sys.stderr.write("invalid label line %d for enum %s at %s:%d\n" %
+                    (idx + 1, enum_info["name"], enum_info["file"], enum_info["line"]))
+            if "labels" in enum_info:
+                del enum_info["labels"]
+            status = handle_enum_start_first_status(idx, line, enum_info)
+
+    return status
+
 def get_file_enums(include_file):
     '''
     iterate each line
@@ -82,10 +127,14 @@ def get_file_enums(include_file):
     enum_info["file"] = include_file
     status = ENUM_START_FIRST
     for idx, line in enumerate(open(include_file).readlines()):
+        if not line.strip():
+            continue
         if status == ENUM_START_FIRST:
             status = handle_enum_start_first_status(idx, line, enum_info)
         elif status == ENUM_START_SEC:
             status = handle_enum_start_sec_status(idx, line, enum_info)
+        elif status == ENUM_DEF:
+            status = handle_enum_def_status(idx, line, enum_info)
 
     return defines
 
