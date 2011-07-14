@@ -1,0 +1,14 @@
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+compile
+config.guess
+config.sub
+config_ftk.h.in~
+configure
+gtk-doc.make
+ltmain.sh
+m4/
+po/zh_CN.gmo
+
