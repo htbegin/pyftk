@@ -15,24 +15,25 @@ import ftk.event
 class FtkWidget(Structure):
     pass
 
+# FtkWidgetInfo is defined at ftk_widget.c
+class FtkWidgetInfo(Structure):
+    pass
+
 FtkWidgetPtr = POINTER(FtkWidget)
-_ftk_widget_p = POINTER(FtkWidget)
-_on_event_fn = CFUNCTYPE(c_int, _ftk_widget_p, POINTER(ftk.event.FtkEvent))
-_on_paint_fn = CFUNCTYPE(c_int, _ftk_widget_p)
-_destroy_fn = CFUNCTYPE(c_int, _ftk_widget_p)
+FtkWidgetOnEvent = CFUNCTYPE(c_int, FtkWidgetPtr, POINTER(ftk.event.FtkEvent))
+FtkWidgetOnPaint = CFUNCTYPE(c_int, FtkWidgetPtr)
+FtkWidgetDestroy = CFUNCTYPE(c_int, FtkWidgetPtr)
 
 FtkWidget._fields_ = [
         ('ref', c_int),
-        ('on_event', _on_event_fn),
-        ('on_paint', _on_paint_fn),
-        ('destroy', _destroy_fn),
-        ('prev', _ftk_widget_p),
-        ('next', _ftk_widget_p),
-        ('parent', _ftk_widget_p),
-        ('children', _ftk_widget_p),
-        # should be POINTER(FtkWidgetInfo),
-        # but FtkWidgetInfo is defined in ftk_widget.c
-        ('priv', c_void_p),
+        ('on_event', FtkWidgetOnEvent),
+        ('on_paint', FtkWidgetOnPaint),
+        ('destroy', FtkWidgetDestroy),
+        ('prev', FtkWidgetPtr),
+        ('next', FtkWidgetPtr),
+        ('parent', FtkWidgetPtr),
+        ('children', FtkWidgetPtr),
+        ('priv', POINTER(FtkWidgetInfo)),
         ('priv_subclass', c_void_p * ftk.constants.FTK_WIDGET_SUBCLASS_NR)
         ]
 
