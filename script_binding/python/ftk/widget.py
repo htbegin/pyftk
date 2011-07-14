@@ -15,6 +15,7 @@ import ftk.event
 class FtkWidget(Structure):
     pass
 
+FtkWidgetPtr = POINTER(FtkWidget)
 _ftk_widget_p = POINTER(FtkWidget)
 _on_event_fn = CFUNCTYPE(c_int, _ftk_widget_p, POINTER(ftk.event.FtkEvent))
 _on_paint_fn = CFUNCTYPE(c_int, _ftk_widget_p)
