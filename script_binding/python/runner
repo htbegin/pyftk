@@ -1,0 +1,12 @@
+#!/bin/sh
+
+export PYTHONPATH=${PWD}:${PYTHONPATH}
+if test -x ${1}
+then
+	cmd="./${1}"
+	if test $# -gt 1
+	then
+		shift 1
+	fi
+	exec ${cmd} $@
+fi
