@@ -13,18 +13,15 @@ import ftk.constants
 
 # ftk_event.h
 
-_idle_fn = CFUNCTYPE(c_int, c_void_p)
-_timer_fn = CFUNCTYPE(c_int, c_void_p)
-
 class _FtkIdleEvent(Structure):
     _fields_ = [
-            ('action', _idle_fn),
+            ('action', ftk.typedef.FtkIdle),
             ('user_data', c_void_p),
             ]
 
 class _FtkTimerEvent(Structure):
     _fields_ = [
-            ('action', _timer_fn),
+            ('action', ftk.typedef.FtkTimer),
             ('interval', c_int),
             ('user_data', c_void_p),
             ]
@@ -44,7 +41,7 @@ class _FtkMouseEvent(Structure):
 
 class _FtkEventUnion(Union):
     _fields_ = [
-            ('idle', _FtkIdleEvent)
+            ('idle', _FtkIdleEvent),
             ('timer', _FtkTimerEvent),
             ('key', _FtkKeyEvent),
             ('mouse', _FtkMouseEvent),
@@ -59,3 +56,5 @@ class FtkEvent(Structure):
             ('time', c_uint),
             ('u', _FtkEventUnion),
             ]
+
+FtkOnEvent = CFUNCTYPE(c_int, c_void_p, POINTER(FtkEvent))

@@ -13,7 +13,12 @@ import ftk.dll
 from ftk.active import *
 from ftk.audio import *
 from ftk.cdrom import *
+"""
 from ftk.constants import *
+from ftk.typedef import *
+from ftk.window import *
+from ftk.widget import *
+"""
 from ftk.endian import *
 from ftk.error import *
 from ftk.events import *

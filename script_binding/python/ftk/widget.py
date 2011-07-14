@@ -37,3 +37,21 @@ FtkWidget._fields_ = [
         ('priv_subclass', c_void_p * ftk.constants.FTK_WIDGET_SUBCLASS_NR)
         ]
 
+ftk_widget_set_text = ftk.dll.function('ftk_widget_set_text',
+        '',
+        args=['thiz', 'text'],
+        arg_types=[FtkWidgetPtr, c_char_p],
+        return_type=None)
+
+ftk_widget_show = ftk.dll.function('ftk_widget_show',
+        '',
+        args=['thiz', 'visible'],
+        arg_types=[FtkWidgetPtr, c_int],
+        return_type=None)
+
+ftk_widget_set_attr = ftk.dll.function('ftk_widget_set_attr',
+        '',
+        args=['thiz', 'attr'],
+        arg_types=[FtkWidgetPtr, c_int],
+        return_type=None)
+
