@@ -15,8 +15,9 @@ static void paint_clip_image(int x, int y, int width, int height)
 	cairo_clip (cr);
 	cairo_new_path (cr); /* path not consumed by clip()*/
 
-	ftk_snprintf(filename, FTK_MAX_PATH, "%s/png1.png", 
+	ftk_snprintf(filename, FTK_MAX_PATH, "%s/png3.png", 
 		ftk_config_get_test_data_dir(ftk_default_config()));
+	ftk_logd("%s:%s\n", __func__, filename);
 	image = cairo_image_surface_create_from_png (filename);
 
 	w = cairo_image_surface_get_width (image);
@@ -103,7 +104,7 @@ static void paint_pic(int x, int y, int width, int height)
 	char filename[FTK_MAX_PATH+1] = {0};
 
 	cairo_translate (cr, x, y);
-	ftk_snprintf(filename, FTK_MAX_PATH, "%s/png1.png", 
+	ftk_snprintf(filename, FTK_MAX_PATH, "%s/png3.png", 
 		ftk_config_get_test_data_dir(ftk_default_config()));
 	image = cairo_image_surface_create_from_png (filename);
 
@@ -199,6 +200,35 @@ static void paint_ball(int x, int y, int width, int height)
 
 	return;
 }
+
+static void paint_sin(int x, int y, int width, int height)
+{
+	int i = 0;
+	int base_y = height/2;
+
+	cairo_translate (cr, x, y);
+	cairo_set_source_rgba (cr, 1.0, 0, 0, 1.0);
+	cairo_set_line_width (cr, 2);
+	cairo_move_to  (cr, 0, base_y);
+	cairo_line_to (cr, width, base_y);
+	cairo_stroke (cr);
+	
+	cairo_set_line_width (cr, 1);
+	cairo_move_to  (cr, 0, base_y);
+	cairo_set_source_rgba (cr, 0, 1.0, 0, 1.0);
+	for(i = 0; i < width; i++)
+	{
+		double r =  2 * 3.14 * i /(width >> 2);
+		int h = height/3 * sin(r);
+		cairo_line_to  (cr, i, base_y + h);
+	}
+
+	ftk_logd("%s:x=%d y=%d base_y=%d width=%d\n", __func__, x, y, base_y, width);
+	cairo_stroke (cr);
+
+	return;
+}
+
 static void paint_helloworld(int x, int y, int width, int height)
 {
 	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
@@ -256,7 +286,8 @@ static size_t g_index = 0;
 static const PaintFunc paints[] = 
 {
 	paint_car,
-	paint_helloworld,
+	paint_sin,
+//	paint_helloworld,
 	paint_ball,
 	paint_segments,
 	paint_arrow,
@@ -286,7 +317,7 @@ static Ret on_paint(void* ctx, void* obj)
 	cairo_rectangle(cr, x, y, width, height);
 	cairo_clip (cr);
 
-	ftk_logd("%s:%d\n", __func__, __LINE__);
+	ftk_logd("%s:%d index=%d\n", __func__, __LINE__, g_index);
 	paints[g_index](x, y, width, height);
 	ftk_logd("%s:%d\n", __func__, __LINE__);
 
@@ -360,7 +391,7 @@ FTK_HIDE int FTK_MAIN(int argc, char* argv[])
 	ftk_widget_set_text(button, "quit");
 	ftk_button_set_clicked_listener(button, button_quit_clicked, win);
 
-	painter = ftk_painter_create(win, 0, 70, width, height);
+	painter = ftk_painter_create(win, 0, 70, width, height-80);
 	ftk_widget_set_id(painter, 100);
 	ftk_painter_set_paint_listener(painter, on_paint, NULL);
 

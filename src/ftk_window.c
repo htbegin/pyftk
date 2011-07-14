@@ -45,6 +45,7 @@ typedef struct _PrivInfo
 	FtkWidget*  grab_widget;
 
 	int mapped;
+	int grab_ref;
 	int fullscreen;
 	int update_disabled;
 	
@@ -95,15 +96,9 @@ Ret ftk_window_grab(FtkWidget* thiz, FtkWidget* grab_widget)
 	DECL_PRIV0(thiz, priv);
 	return_val_if_fail(thiz != NULL, RET_FAIL);
 
+	priv->grab_ref++;
 	priv->grab_widget = grab_widget;
-	if(priv->grab_widget != NULL)
-	{
-		ftk_wnd_manager_grab(ftk_default_wnd_manager(), thiz);
-	}
-	else
-	{
-		ftk_wnd_manager_ungrab(ftk_default_wnd_manager(), thiz);
-	}
+	ftk_wnd_manager_grab(ftk_default_wnd_manager(), thiz);
 
 	return RET_OK;
 }
@@ -112,11 +107,17 @@ Ret ftk_window_ungrab(FtkWidget* thiz, FtkWidget* grab_widget)
 {
 	DECL_PRIV0(thiz, priv);
 	return_val_if_fail(thiz != NULL, RET_FAIL);
+	return_val_if_fail(priv->grab_ref > 0, RET_FAIL);
 
-	if(grab_widget == priv->grab_widget)
+	if(grab_widget == priv->grab_widget || grab_widget == NULL)
 	{
+		priv->grab_ref--;
 		priv->grab_widget = NULL;
-		ftk_wnd_manager_ungrab(ftk_default_wnd_manager(), thiz);
+		if(priv->grab_ref < 1)
+		{
+			priv->grab_ref = 0;
+			ftk_wnd_manager_ungrab(ftk_default_wnd_manager(), thiz);
+		}
 	}
 
 	return RET_OK;
@@ -200,8 +201,8 @@ static FtkWidget* ftk_window_find_next_focus(FtkWidget* focus_widget, int move_n
 	parent = ftk_widget_parent(focus_widget);
 	if(parent != NULL&& parent->next != NULL)
 	{
-		if(ftk_widget_is_insensitive(parent) || !ftk_widget_is_visible(parent)
-			|| ftk_widget_has_attr(parent, FTK_ATTR_NO_FOCUS))
+//		if(ftk_widget_is_insensitive(parent) || !ftk_widget_is_visible(parent)
+//			|| ftk_widget_has_attr(parent, FTK_ATTR_NO_FOCUS))
 		{		
 			temp = ftk_window_find_next_focus(parent->next, 0);
 			if(temp != NULL)
@@ -209,8 +210,6 @@ static FtkWidget* ftk_window_find_next_focus(FtkWidget* focus_widget, int move_n
 				return temp;
 			}
 		}
-		else
-			return parent;
 	}
 
 	return parent;
@@ -490,7 +489,7 @@ Ret ftk_window_set_fullscreen(FtkWidget* thiz, int fullscreen)
 		priv->fullscreen = fullscreen;
 
 		event.type = FTK_EVT_RELAYOUT_WND;
-		ftk_wnd_manager_queue_event(ftk_default_wnd_manager(), &event);
+		ftk_wnd_manager_dispatch_event(ftk_default_wnd_manager(), &event);
 	}
 
 	return RET_OK;
