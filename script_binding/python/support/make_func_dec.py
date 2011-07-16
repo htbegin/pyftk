@@ -11,8 +11,17 @@ class CtypeFuncDecConverter(object):
         self._create_type_dict(typedef_fname)
 
     def _create_parse_grammer(self):
+        atom_var_type = Literal("void") | \
+                Literal("char") | Literal("unsigned char") | \
+                Literal("short") | Literal("unsigned short") | \
+                Literal("int") | Literal("unsigned int") | \
+                Literal("long") | Literal("unsigned long") | \
+                Literal("long long") | Literal("unsigned long long") | \
+                Literal("float") | Literal("double") | \
+                Literal("long double")
         identity = Word(alphas + "_", alphanums + "_")
-        var_type = Optional("const") + identity + Optional("*") + Optional("*")
+        var_type = Optional("const") + (atom_var_type | identity) + \
+                Optional("*") + Optional("*")
         rval_type = var_type
         arg_list = delimitedList(Group(var_type("type") + identity("name")))
         self.func_dec = rval_type("rval") + identity("name") + Suppress("(") + \
@@ -55,7 +64,7 @@ class CtypeFuncDecConverter(object):
                     sys.stderr.write("invalid line %d: incomplete k-v pair\n" % idx + 1)
                     continue
                 if key in self.type_dict:
-                    sys.stderr.write("invalid line %d: invalid key %s\n" % (idx + 1, key))
+                    sys.stderr.write("invalid line %d: invalid key '%s'\n" % (idx + 1, key))
                     continue
                 self.type_dict[key] = val
 
@@ -72,14 +81,19 @@ class CtypeFuncDecConverter(object):
         if type_str in self.type_dict:
             return self.type_dict[type_str]
 
-        if len(tinfo) >= 2 and tinfo[-1] == "*" and \
-                tinfo[0] != "char" and (tinfo[0] != "unsigned" or \
-                tinfo[1] != "char"):
-            deref_type_str = " ".join(tinfo[0:-1])
-            if deref_type_str in self.type_dict:
-                return "".join(("POINTER(", self.type_dict[deref_type_str], ")"))
+        if (tinfo[0] == "char" or (tinfo[0] == "unsigned char")) and tinfo[1] == "*":
+            return None
 
-        sys.stderr.write("unknown type %s\n" % type_str)
+        last_idx = len(tinfo) - 1
+        while tinfo[last_idx] == "*":
+            deref_type_str = " ".join(tinfo[0:last_idx])
+            if deref_type_str in self.type_dict:
+                prefix_str = "POINTER(" * (len(tinfo) - last_idx)
+                suffix_str = ")" * (len(tinfo) - last_idx)
+                return "".join((prefix_str, self.type_dict[deref_type_str], suffix_str))
+            last_idx -= 1
+
+        sys.stderr.write("unknown type '%s'\n" % type_str)
         return None
 
     def _exceptional_func_dec_str(self, func):
