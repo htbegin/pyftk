@@ -16,6 +16,7 @@ from ftk.cdrom import *
 """
 from ftk.constants import *
 from ftk.typedef import *
+from ftk.app_window import *
 from ftk.window import *
 from ftk.widget import *
 """
