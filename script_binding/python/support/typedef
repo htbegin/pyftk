@@ -1,0 +1,20 @@
+Ret = c_int
+size_t = c_uint
+
+# for enum
+FtkWidgetAttr = c_int
+FtkWidgetState = c_int
+FtkWrapMode = c_int
+
+FtkWidget = ftk.widget.FtkWidget
+FtkWidget * = ftk.widget.FtkWidgetPtr
+
+FtkEvent = ftk.event.FtkEvent
+
+FtkCanvas = ftk.canvas.FtkCanvas
+
+FtkDestroy = ftk.typedef.FtkDestroy
+FtkListener = ftk.typedef.FtkListener
+FtkRect = ftk.typedef.FtkRect
+
+FtkGc = ftk.gc.FtkGc
