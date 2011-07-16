@@ -18,6 +18,7 @@ FtkEvent = ftk.event.FtkEvent
 
 # ftk.canvas
 FtkCanvas = ftk.canvas.FtkCanvas
+FtkCanvas * = ftk.canvas.FtkCanvasPtr
 
 # ftk.typedef
 FtkDestroy = ftk.typedef.FtkDestroy
