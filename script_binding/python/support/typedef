@@ -23,6 +23,12 @@ FtkCanvas = ftk.canvas.FtkCanvas
 FtkDestroy = ftk.typedef.FtkDestroy
 FtkListener = ftk.typedef.FtkListener
 FtkRect = ftk.typedef.FtkRect
+FtkColor = ftk.typedef.FtkColor
 
 # ftk.gc
 FtkGc = ftk.gc.FtkGc
+
+# ftk.bitmap
+FtkBitmap = ftk.bitmap.FtkBitmap
+FtkBitmap * = ftk.bitmap.FtkBitmapPtr
+
