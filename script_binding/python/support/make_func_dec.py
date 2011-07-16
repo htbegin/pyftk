@@ -26,7 +26,9 @@ class CtypeFuncDecConverter(object):
         var_type = Optional("const") + (atom_var_type | identity) + \
                 Optional("*") + Optional("*")
         rval_type = var_type
-        arg_list = delimitedList(Group(var_type("type") + identity("name")))
+        void_arg_list = Literal("void")
+        no_void_arg_list = delimitedList(Group(var_type("type") + identity("name")))
+        arg_list = Group(void_arg_list | no_void_arg_list)
         self.func_dec = rval_type("rval") + identity("name") + Suppress("(") + \
                 arg_list("args") + Suppress(")") + Suppress(";")
         self.func_dec.ignore(cppStyleComment)
@@ -116,13 +118,15 @@ class CtypeFuncDecConverter(object):
         assert isinstance(func_name_str, str)
 
         arg_info_list = []
-        for arg in func[FUNC_ARGS_IDX]:
-            arg_name_str = arg.name
-            assert isinstance(arg_name_str, str)
+        args = func[FUNC_ARGS_IDX]
+        if len(args) != 1 or args[0] != "void":
+            for arg in args:
+                arg_name_str = arg.name
+                assert isinstance(arg_name_str, str)
 
-            arg_type_str = " ".join(arg.type)
+                arg_type_str = " ".join(arg.type)
 
-            arg_info_list.append(" ".join((arg_type_str, arg_name_str)))
+                arg_info_list.append(" ".join((arg_type_str, arg_name_str)))
 
         arg_info_str = ", ".join(arg_info_list)
         if not arg_info_str:
@@ -154,16 +158,18 @@ class CtypeFuncDecConverter(object):
 
         arg_name_list = []
         arg_type_list = []
-        for arg in func[FUNC_ARGS_IDX]:
-            arg_name_str = arg.name
-            assert isinstance(arg_name_str, str)
-            arg_name_list.append(arg_name_str)
+        args = func[FUNC_ARGS_IDX]
+        if len(args) != 1 or args[0] != "void":
+            for arg in args:
+                arg_name_str = arg.name
+                assert isinstance(arg_name_str, str)
+                arg_name_list.append(arg_name_str)
 
-            arg_type_str = self._type_str(arg.type)
-            if arg_type_str is None:
-                return self._exceptional_func_dec_str(func)
-            assert isinstance(arg_type_str, str)
-            arg_type_list.append(arg_type_str)
+                arg_type_str = self._type_str(arg.type)
+                if arg_type_str is None:
+                    return self._exceptional_func_dec_str(func)
+                assert isinstance(arg_type_str, str)
+                arg_type_list.append(arg_type_str)
 
         line_one = "%s = ftk.dll.function('%s'," % (func_name_str, func_name_str)
         line_two = "".join((" " * 8, "'',"))
