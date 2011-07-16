@@ -6,15 +6,23 @@ FtkWidgetAttr = c_int
 FtkWidgetState = c_int
 FtkWrapMode = c_int
 
+# ftk.app_window
+FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
+
+# ftk.widget
 FtkWidget = ftk.widget.FtkWidget
 FtkWidget * = ftk.widget.FtkWidgetPtr
 
+# ftk.event
 FtkEvent = ftk.event.FtkEvent
 
+# ftk.canvas
 FtkCanvas = ftk.canvas.FtkCanvas
 
+# ftk.typedef
 FtkDestroy = ftk.typedef.FtkDestroy
 FtkListener = ftk.typedef.FtkListener
 FtkRect = ftk.typedef.FtkRect
 
+# ftk.gc
 FtkGc = ftk.gc.FtkGc

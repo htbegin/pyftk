@@ -215,10 +215,11 @@ if __name__ == "__main__":
     cfg_file = os.path.join(os.path.dirname(sys.argv[0]), "typedef")
     converter = CtypeFuncDecConverter(cfg_file)
 
-    if fnmatch.fnmatch(options.file, "ftk_*.h"):
-        module_name = options.file[4:-2]
+    fname = os.path.basename(options.file)
+    if fnmatch.fnmatch(fname, "ftk_*.h"):
+        module_name = fname[4:-2]
     else:
-        module_name = options.file[0:-2]
+        module_name = fname[0:-2]
     module_path = "".join(("ftk.", module_name, "."))
 
     converter.run(options.file, strip_symbol_path, module_path)
