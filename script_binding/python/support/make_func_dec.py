@@ -77,6 +77,13 @@ class CtypeFuncDecConverter(object):
         return results
 
     def _type_str(self, tinfo):
+        result = self._pre_type_str(tinfo)
+        if result is not None and self.type_str_post_fn is not None:
+            return self.type_str_post_fn(self.ctx, result)
+        else:
+            return result
+
+    def _pre_type_str(self, tinfo):
         type_str = " ".join(tinfo)
         if type_str in self.type_dict:
             return self.type_dict[type_str]
@@ -156,20 +163,22 @@ class CtypeFuncDecConverter(object):
             arg_type_list.append(arg_type_str)
 
         line_one = "%s = ftk.dll.function('%s'," % (func_name_str, func_name_str)
-        line_two = "\t\t'',"
-        line_three_fmt = "".join(("\t\targs=[",
+        line_two = "".join((" " * 8, "'',"))
+        line_three_fmt = "".join((" " * 8, "args=[",
             ", ".join(("'%s'",) * len(arg_name_list)),
             "],"))
         line_three = line_three_fmt % tuple(arg_name_list)
-        line_four_fmt = "".join(("\t\targ_types=[",
+        line_four_fmt = "".join((" " * 8, "arg_types=[",
             ", ".join(("%s",) * len(arg_type_list)),
             "],"))
         line_four = line_four_fmt % tuple(arg_type_list)
-        line_five = "\t\treturn_type=%s)" % rval_type_str
+        line_five = "".join((" " * 8, "return_type=%s)")) % rval_type_str
 
         return "\n".join((line_one, line_two, line_three, line_four, line_five))
 
-    def run(self, finput):
+    def run(self, finput, type_str_post_fn=None, ctx=None):
+        self.type_str_post_fn = type_str_post_fn
+        self.ctx = ctx
         results = []
         with open(finput, "rb") as fd:
             func_decs = self._scan_func_decs(fd.read())
@@ -180,7 +189,11 @@ class CtypeFuncDecConverter(object):
                  results.append(s)
         return "\n".join(results)
 
+def strip_symbol_path(path, symbol):
+    return symbol.replace(path, "")
+
 if __name__ == "__main__":
     converter = CtypeFuncDecConverter("typedef")
-    converter.run("ftk_widget.h")
+    converter.run("ftk_widget.h", strip_symbol_path, "ftk.widget.")
     sys.exit(0)
+
