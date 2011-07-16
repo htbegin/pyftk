@@ -172,6 +172,10 @@ class CtypeFuncDecConverter(object):
                 arg_type_list.append(arg_type_str)
 
         line_one = "%s = ftk.dll.function('%s'," % (func_name_str, func_name_str)
+        if len(line_one) > 80:
+            line_one_fmt = "".join(("%s = ftk.dll.function(\n",
+                " " * 8, "'%s',"))
+            line_one = line_one_fmt % (func_name_str, func_name_str)
         line_two = "".join((" " * 8, "'',"))
         line_three_fmt = "".join((" " * 8, "args=[",
             ", ".join(("'%s'",) * len(arg_name_list)),
