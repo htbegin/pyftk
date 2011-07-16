@@ -2,6 +2,9 @@
 # -*- coding: ascii -*-
 
 import sys
+import os
+from optparse import OptionParser
+import fnmatch
 
 from pyparsing import *
 
@@ -193,7 +196,26 @@ def strip_symbol_path(path, symbol):
     return symbol.replace(path, "")
 
 if __name__ == "__main__":
-    converter = CtypeFuncDecConverter("typedef")
-    converter.run("ftk_widget.h", strip_symbol_path, "ftk.widget.")
+    opt_parser = OptionParser()
+    opt_parser.add_option("-f", "--file", dest="file",
+            help="the path of c header file", metavar="FILE")
+    (options, args) = opt_parser.parse_args()
+
+    if options.file is None or not os.path.isfile(options.file) or \
+            not fnmatch.fnmatch(options.file, "*.h"):
+        opt_parser.print_help()
+        sys.exit(1)
+
+    cfg_file = os.path.join(os.path.dirname(sys.argv[0]), "typedef")
+    converter = CtypeFuncDecConverter(cfg_file)
+
+    if fnmatch.fnmatch(options.file, "ftk_*.h"):
+        module_name = options.file[4:-2]
+    else:
+        module_name = options.file[0:-2]
+    module_path = "".join(("ftk.", module_name, "."))
+
+    converter.run(options.file, strip_symbol_path, module_path)
+
     sys.exit(0)
 
