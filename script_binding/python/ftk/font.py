@@ -7,6 +7,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 from ctypes import *
+
 import ftk.constants
 import ftk.font_desc
 
@@ -46,4 +47,3 @@ FtkFont._fields_ = [
         ('font_desc', ftk.font_desc.FtkFontDescPtr),
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
-

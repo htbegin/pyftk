@@ -27,4 +27,3 @@ ftk_app_window_set_on_prepare_options_menu = ftk.dll.function(
         args=['thiz', 'on_prepare_options_menu', 'ctx'],
         arg_types=[ftk.widget.FtkWidgetPtr, FtkPrepareOptionsMenu, c_void_p],
         return_type=c_int)
-

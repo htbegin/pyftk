@@ -7,6 +7,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 from ctypes import *
+
 import ftk.typedef
 import ftk.constants
 import ftk.bitmap
@@ -48,4 +49,3 @@ FtkCanvas._fields_ = [
         ('destroy', FtkCanvasDestroy),
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
-

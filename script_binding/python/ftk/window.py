@@ -112,4 +112,3 @@ ftk_window_set_animation_hint = ftk.dll.function(
         args=['thiz', 'hint'],
         arg_types=[ftk.widget.FtkWidgetPtr, c_char_p],
         return_type=c_int)
-

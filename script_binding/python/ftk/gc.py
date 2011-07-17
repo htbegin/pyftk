@@ -7,6 +7,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 from ctypes import *
+
 import ftk.typedef
 import ftk.bitmap
 import ftk.font
@@ -25,4 +26,3 @@ class FtkGc(Structure):
             ('unused', c_ubyte * 3),
             ('line_mask', c_uint)
             ]
-

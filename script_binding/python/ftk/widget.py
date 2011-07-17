@@ -8,6 +8,7 @@ __version__ = '$Id: $'
 
 from ctypes import *
 
+import ftk.dll
 import ftk.constants
 import ftk.typedef
 import ftk.event
@@ -440,4 +441,3 @@ ftk_widget_event = ftk.dll.function('ftk_widget_event',
         args=['thiz', 'event'],
         arg_types=[FtkWidgetPtr, POINTER(ftk.event.FtkEvent)],
         return_type=c_int)
-

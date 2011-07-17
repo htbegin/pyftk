@@ -56,4 +56,3 @@ class FtkCommitInfo(Structure):
             ('raw_text', c_byte * (ftk.constants.FTK_IM_RAW_TEXT_LENGTH + 1)),
             ('candidates', c_byte * (ftk.constants.FTK_IM_CANDIDATE_BUFF_LENGTH + 1)),
             ]
-
