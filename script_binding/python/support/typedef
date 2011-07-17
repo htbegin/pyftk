@@ -1,10 +1,11 @@
 Ret = c_int
 size_t = c_uint
 
-# for enum
+# ftk.constants
 FtkWidgetAttr = c_int
 FtkWidgetState = c_int
 FtkWrapMode = c_int
+FtkAlignment = c_int
 
 # ftk.app_window
 FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
