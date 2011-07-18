@@ -38,3 +38,7 @@ FtkBitmap * = ftk.bitmap.FtkBitmapPtr
 # ftk.source
 FtkSource = ftk.source.FtkSource
 FtkSource * = ftk.source.FtkSourcePtr
+
+# ftk.sources_manager
+FtkSourcesManager = ftk.sources_manager.FtkSourcesManager
+FtkSourcesManager * = ftk.sources_manager.FtkSourcesManagerPtr
