@@ -10,6 +10,7 @@ import ctypes
 
 import ftk.dll
 from ftk.constants import *
+from ftk.globals import *
 from ftk.typedef import *
 from ftk.gc import *
 from ftk.bitmap import *
