@@ -63,7 +63,7 @@ FTK_TITLE_LENGTH = 15
 FTK_IM_PREEDITOR_MAX_ROW = 5
 FTK_TAB_WIDTH = 4
 FTK_FONT_SIZE = 16
-ZERO_LEN_ARRAY = 1
+ZERO_LEN_ARRAY = 0
 
 # enum from ftk_typedef.h
 # enum _FtkBool

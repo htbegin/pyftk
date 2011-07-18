@@ -17,6 +17,7 @@ from ftk.event import *
 from ftk.font import *
 from ftk.font_desc import *
 from ftk.canvas import *
+from ftk.source import *
 
 from ftk.widget import *
 from ftk.app_window import *
