@@ -12,6 +12,8 @@ import ftk.dll
 import ftk.constants
 import ftk.typedef
 import ftk.event
+import ftk.gc
+import ftk.canvas
 
 # ftk_widget.h
 class FtkWidget(Structure):

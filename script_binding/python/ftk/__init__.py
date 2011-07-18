@@ -9,29 +9,19 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk.dll
-"""
-from ftk.active import *
-from ftk.audio import *
-from ftk.cdrom import *
-"""
 from ftk.constants import *
 from ftk.typedef import *
+from ftk.gc import *
+from ftk.bitmap import *
+from ftk.event import *
+from ftk.font import *
+from ftk.font_desc import *
+from ftk.canvas import *
+
+from ftk.widget import *
 from ftk.app_window import *
 from ftk.window import *
-from ftk.widget import *
-"""
-from ftk.endian import *
-from ftk.error import *
-from ftk.events import *
-from ftk.joystick import *
-from ftk.keyboard import *
-from ftk.mouse import *
-from ftk.quit import *
-from ftk.rwops import *
-from ftk.timer import *
-from ftk.version import *
-from ftk.video import *
-"""
+from ftk.label import *
 
 # ftk.h
 

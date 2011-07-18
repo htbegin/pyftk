@@ -9,6 +9,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.dll
+import ftk.typedef
 import ftk.widget
 import ftk.bitmap
 
