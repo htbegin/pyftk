@@ -42,3 +42,7 @@ FtkSource * = ftk.source.FtkSourcePtr
 # ftk.sources_manager
 FtkSourcesManager = ftk.sources_manager.FtkSourcesManager
 FtkSourcesManager * = ftk.sources_manager.FtkSourcesManagerPtr
+
+# ftk.main_loop
+FtkMainLoop = ftk.main_loop.FtkMainLoop
+FtkMainLoop * = ftk.main_loop.FtkMainLoopPtr

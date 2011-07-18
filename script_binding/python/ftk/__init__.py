@@ -20,6 +20,7 @@ from ftk.canvas import *
 from ftk.source import *
 from ftk.source_timer import *
 from ftk.sources_manager import *
+from ftk.main_loop import *
 
 from ftk.widget import *
 from ftk.app_window import *
