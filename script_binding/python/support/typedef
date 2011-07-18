@@ -26,6 +26,7 @@ FtkDestroy = ftk.typedef.FtkDestroy
 FtkListener = ftk.typedef.FtkListener
 FtkRect = ftk.typedef.FtkRect
 FtkColor = ftk.typedef.FtkColor
+FtkTimer = ftk.typedef.FtkTimer
 
 # ftk.gc
 FtkGc = ftk.gc.FtkGc
@@ -34,3 +35,6 @@ FtkGc = ftk.gc.FtkGc
 FtkBitmap = ftk.bitmap.FtkBitmap
 FtkBitmap * = ftk.bitmap.FtkBitmapPtr
 
+# ftk.source
+FtkSource = ftk.source.FtkSource
+FtkSource * = ftk.source.FtkSourcePtr
