@@ -6,6 +6,23 @@ import ctypes
 
 from ftk import *
 
+class TimerInfo:
+    def __init__(self, times=0, label=None):
+        self.times = times
+        self.label = label
+
+def timeout_fn(ctx):
+    info = ctx
+    if info.times > 0:
+        text = "quit after %d seconds" % info.times
+        ftk_widget_set_text(info.label, text)
+        info.times -= 1
+        return RET_OK
+    else:
+        ftk_widget_unref(ftk_widget_toplevel(info.label))
+        ftk_quit()
+        return RET_REMOVE
+
 if __name__ == "__main__":
     ftk_init(sys.argv)
 
@@ -42,8 +59,14 @@ if __name__ == "__main__":
     ftk_widget_set_text(label, text)
     assert ftk_widget_get_text(label) == text
 
+    label = ftk_label_create(win, 50, height / 2 - 30, width, 20)
+    info = TimerInfo(times=5, label=label)
+    action = FtkTimer(timeout_fn)
+    timer = ftk_source_timer_create(1000, action, info)
+
     ftk_widget_set_text(win, "label demo")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_widget_set_attr(win, FTK_ATTR_IGNORE_CLOSE)
+    ftk_main_loop_add_source(ftk_default_main_loop(), timer)
 
     sys.exit(ftk_run())
