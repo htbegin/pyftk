@@ -12,3 +12,4 @@ ltmain.sh
 m4/
 po/zh_CN.gmo
 
+config.log
