@@ -11,8 +11,7 @@ class TimerInfo:
         self.times = times
         self.label = label
 
-def timeout_fn(ctx):
-    info = ctx
+def timeout_fn(info):
     if info.times > 0:
         text = "quit after %d seconds" % info.times
         ftk_widget_set_text(info.label, text)
@@ -59,10 +58,9 @@ if __name__ == "__main__":
     ftk_widget_set_text(label, text)
     assert ftk_widget_get_text(label) == text
 
-    label = ftk_label_create(win, 50, height / 2 - 30, width, 20)
+    label = ftk_label_create(win, 50, height / 2 - 30, width, 30)
     info = TimerInfo(times=5, label=label)
-    action = FtkTimer(timeout_fn)
-    timer = ftk_source_timer_create(1000, action, info)
+    timer = ftk_source_timer_create(1000, timeout_fn, info)
 
     ftk_widget_set_text(win, "label demo")
     ftk_widget_show_all(win, 1)
