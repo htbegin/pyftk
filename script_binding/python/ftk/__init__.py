@@ -31,8 +31,8 @@ from ftk.label import *
 # ftk.h
 
 _ftk_init = ftk.dll.private_function('ftk_init',
-    arg_types=[ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)],
-    return_type=ctypes.c_int)
+        arg_types=[ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)],
+        return_type=ctypes.c_int)
 
 def ftk_init(argv):
     argc = len(argv)
@@ -42,22 +42,19 @@ def ftk_init(argv):
     return _ftk_init(argc, arg_array)
 
 ftk_run = ftk.dll.function('ftk_run',
-    '',
-    args=[],
-    arg_types=[],
-    return_type=ctypes.c_int)
+        '',
+        args=[],
+        arg_types=[],
+        return_type=ctypes.c_int)
 
 ftk_quit = ftk.dll.function('ftk_quit',
-    '''Clean up all initialized subsystems.
-
-    You should call this function upon all exit conditions.
-    ''',
-    args=[],
-    arg_types=[],
-    return_type=None)
+        '',
+        args=[],
+        arg_types=[],
+        return_type=None)
 
 ftk_deinit = ftk.dll.function('ftk_deinit',
-    '',
-    args=[],
-    arg_types=[],
-    return_type=None)
+        '',
+        args=[],
+        arg_types=[],
+        return_type=None)
