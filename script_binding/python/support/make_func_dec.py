@@ -94,6 +94,7 @@ class CtypeFuncDecConverter(object):
             return self.type_dict[type_str]
 
         if (tinfo[0] == "char" or (tinfo[0] == "unsigned char")) and tinfo[1] == "*":
+            sys.stderr.write("unhandled type '%s'\n" % type_str)
             return None
 
         last_idx = len(tinfo) - 1
@@ -197,10 +198,8 @@ class CtypeFuncDecConverter(object):
             func_decs = self._scan_func_decs(fd.read())
             for dec in func_decs:
                  s = self._func_dec_str(dec)
-                 print s
-                 print
                  results.append(s)
-        return "\n".join(results)
+        return "\n\n".join(results)
 
 def strip_symbol_path(path, symbol):
     return symbol.replace(path, "")
@@ -226,7 +225,7 @@ if __name__ == "__main__":
         module_name = fname[0:-2]
     module_path = "".join(("ftk.", module_name, "."))
 
-    converter.run(options.file, strip_symbol_path, module_path)
+    print converter.run(options.file, strip_symbol_path, module_path)
 
     sys.exit(0)
 
