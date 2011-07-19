@@ -10,7 +10,7 @@ from ctypes import *
 
 import ftk.dll
 
-class FTK_Exception(Exception):
+class FtkException(Exception):
     '''Exception raised for all ftk errors.
     '''
     def __init__(self, message):
@@ -19,7 +19,7 @@ class FTK_Exception(Exception):
     def __str__(self):
         return self.message
 
-class FTK_NotImplementedError(NotImplementedError):
+class FtkNotImplementedError(NotImplementedError):
     '''Exception raised when the available ftk library predates the
     requested function.'''
     pass

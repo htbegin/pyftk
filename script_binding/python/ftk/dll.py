@@ -78,7 +78,7 @@ class FTK_DLL:
         '''Raises an exception if `since` is later than the loaded library.'''
         if not version_compatible(since):
             import ftk.error
-            raise ftk.error.FTK_NotImplementedError, \
+            raise ftk.error.FtkNotImplementedError, \
                 '%s requires ftk version %s; currently using version %s' % \
                 (name, _version_string(since), _version_string(self._version))
 
@@ -131,7 +131,7 @@ class FTK_DLL:
                 Tuple (major, minor, patch) or string 'x.y.z' of the first
                 version of ftk in which this function appears.  If the
                 loaded version predates it, a placeholder function that
-                raises `FTK_NotImplementedError` will be returned instead.
+                raises `FtkNotImplementedError` will be returned instead.
                 Set to None if the function is in all versions of ftk.
 
         '''
@@ -139,7 +139,7 @@ class FTK_DLL:
         if since and not self.version_compatible(since):
             def _f(*args, **kwargs):
                 import ftk.error
-                raise ftk.error.FTK_NotImplementedError, \
+                raise ftk.error.FtkNotImplementedError, \
                       '%s requires %s %s; currently using version %s' % \
                       (name, self.library_name, _version_string(since), 
                        _version_string(self._version))
@@ -165,7 +165,7 @@ class FTK_DLL:
                     if result:
                         return result.contents
                     import ftk.error
-                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
+                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
             else:
                 # Construct a function which dereferences the pointer result,
                 # or returns None if NULL is returned.
@@ -181,7 +181,7 @@ class FTK_DLL:
                 result = func(*args, **kwargs)
                 if result != success_return:
                     import ftk.error
-                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
+                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
                 return result
         elif error_return is not None:
             # Construct a function which returns None, but raises an exception
@@ -190,7 +190,7 @@ class FTK_DLL:
                 result = func(*args, **kwargs)
                 if result == error_return:
                     import ftk.error
-                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
+                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
                 return result
         elif require_return:
             # Construct a function which returns the usual result, or returns
@@ -199,7 +199,7 @@ class FTK_DLL:
                 result = func(*args, **kwargs)
                 if not result: 
                     import ftk.error
-                    raise ftk.error.FTK_Exception, ftk.error.ftk_get_error()
+                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
                 return result
         else:
             # Construct a function which returns the C function's return
