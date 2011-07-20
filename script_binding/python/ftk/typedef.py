@@ -9,6 +9,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.constants
+import ftk.macros
 
 # ftk_typedef.h
 
@@ -34,15 +35,26 @@ FtkRegion._fields_ = [
         ('next', POINTER(FtkRegion))
         ]
 
-# the definition is influenced by macro FTK_COLOR_RGBA
-# now just assume that this macro doesn't be defined
-class FtkColor(Structure):
+class _FtkColorBGRA(Structure):
     _fields_ = [
             ('b', c_ubyte),
             ('g', c_ubyte),
             ('r', c_ubyte),
             ('a', c_ubyte),
             ]
+
+class _FtkColorRGBA(Structure):
+    _fields_ = [
+            ('r', c_ubyte),
+            ('g', c_ubyte),
+            ('b', c_ubyte),
+            ('a', c_ubyte),
+            ]
+
+if ftk.macros.ftk_macros.FTK_COLOR_RGBA:
+    FtkColor = _FtkColorRGBA
+else:
+    FtkColor = _FtkColorBGRA
 
 FtkDestroy = CFUNCTYPE(None, c_void_p)
 FtkIdle = CFUNCTYPE(c_int, c_void_p)
