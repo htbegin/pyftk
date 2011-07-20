@@ -1,12 +1,27 @@
-#!/bin/sh
+#!/bin/bash
+
+if test $# -lt 1
+then
+	echo "Usage: $0 python_script_file_using_ftk"
+	exit 1
+fi
 
 export PYTHONPATH=${PWD}:${PYTHONPATH}
 if test -x ${1}
 then
-	cmd="./${1}"
-	if test $# -gt 1
+	path=${1}
+	if test "${path:0:5}" = "test/"
 	then
-		shift 1
+		pushd "test" >/dev/null
+		cmd="./${path:5}"
+	elif test "${path:0:7}" = "./test/"
+	then
+		pushd "test"
+		cmd="./${path:7}"
+	else
+		cmd="./${path}"
 	fi
+
+	shift 1
 	exec ${cmd} $@
 fi
