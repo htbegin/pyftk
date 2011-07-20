@@ -190,15 +190,25 @@ class CtypeFuncDecConverter(object):
 
         return "\n".join((line_one, line_two, line_three, line_four, line_five))
 
-    def run(self, finput, type_str_post_fn=None, ctx=None):
+    def _func_dec_name(self, func):
+        FUNC_NAME_IDX = 1
+        func_name_str = func[FUNC_NAME_IDX]
+        assert isinstance(func_name_str, str)
+        return func_name_str
+
+    def run(self, finput, func, type_str_post_fn=None, ctx=None):
         self.type_str_post_fn = type_str_post_fn
         self.ctx = ctx
         results = []
         with open(finput, "rb") as fd:
             func_decs = self._scan_func_decs(fd.read())
             for dec in func_decs:
-                 s = self._func_dec_str(dec)
-                 results.append(s)
+                if func is not None and func != self._func_dec_name(dec):
+                    continue
+                s = self._func_dec_str(dec)
+                results.append(s)
+        if func is not None and len(results) == 0:
+            sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
         return "\n\n".join(results)
 
 def strip_symbol_path(path, symbol):
@@ -208,10 +218,13 @@ if __name__ == "__main__":
     opt_parser = OptionParser()
     opt_parser.add_option("-f", "--file", dest="file",
             help="the path of c header file", metavar="FILE")
+    opt_parser.add_option("-d", "--declaration", dest="func",
+            help="the name of the specific function", metavar="STRING")
     (options, args) = opt_parser.parse_args()
 
     if options.file is None or not os.path.isfile(options.file) or \
-            not fnmatch.fnmatch(options.file, "*.h"):
+            not fnmatch.fnmatch(options.file, "*.h") or \
+            (options.func is not None and not isinstance(options.func, str)):
         opt_parser.print_help()
         sys.exit(1)
 
@@ -225,7 +238,9 @@ if __name__ == "__main__":
         module_name = fname[0:-2]
     module_path = "".join(("ftk.", module_name, "."))
 
-    print converter.run(options.file, strip_symbol_path, module_path)
+    content = converter.run(options.file, options.func,
+            strip_symbol_path, module_path)
+    if content:
+        print content
 
     sys.exit(0)
-
