@@ -46,3 +46,11 @@ FtkSourcesManager * = ftk.sources_manager.FtkSourcesManagerPtr
 # ftk.main_loop
 FtkMainLoop = ftk.main_loop.FtkMainLoop
 FtkMainLoop * = ftk.main_loop.FtkMainLoopPtr
+
+# ftk.params
+FtkParams = ftk.params.FtkParams
+FtkParams * = ftk.params.FtkParamsPtr
+
+# ftk.allocator
+FtkAllocator = ftk.allocator.FtkAllocator
+FtkAllocator * = ftk.allocator.FtkAllocatorPtr

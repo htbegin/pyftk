@@ -13,18 +13,18 @@ ftk_platform.h
 
 ftk_typedef.h
 
-ftk_text_buffer.h
+*ftk_text_buffer.h*
 
-ftk_pairs.h
+*ftk_pairs.h*
 
-ftk_log.h
+*ftk_log.h*
 
-ftk_config.h
+*ftk_config.h*
 
-ftk_util.h
+*ftk_util.h*
 
-ftk_xml_builder.h
-ftk_xml_parser.h
+*ftk_xml_builder.h*
+*ftk_xml_parser.h*
 
 ftk_params.h
 
