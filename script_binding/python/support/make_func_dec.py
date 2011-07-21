@@ -220,22 +220,28 @@ if __name__ == "__main__":
             help="the path of c header file", metavar="FILE")
     opt_parser.add_option("-d", "--declaration", dest="func",
             help="the name of the specific function", metavar="STRING")
+    opt_parser.add_option("-m", "--module", dest="m_name",
+            help="set the module name manually", metavar="STRING")
     (options, args) = opt_parser.parse_args()
 
     if options.file is None or not os.path.isfile(options.file) or \
             not fnmatch.fnmatch(options.file, "*.h") or \
-            (options.func is not None and not isinstance(options.func, str)):
+            (options.func is not None and not isinstance(options.func, str)) or \
+            (options.m_name is not None and not isinstance(options.m_name, str)):
         opt_parser.print_help()
         sys.exit(1)
 
     cfg_file = os.path.join(os.path.dirname(sys.argv[0]), "typedef")
     converter = CtypeFuncDecConverter(cfg_file)
 
-    fname = os.path.basename(options.file)
-    if fnmatch.fnmatch(fname, "ftk_*.h"):
-        module_name = fname[4:-2]
+    if options.m_name is None:
+        fname = os.path.basename(options.file)
+        if fnmatch.fnmatch(fname, "ftk_*.h"):
+            module_name = fname[4:-2]
+        else:
+            module_name = fname[0:-2]
     else:
-        module_name = fname[0:-2]
+        module_name = options.m_name
     module_path = "".join(("ftk.", module_name, "."))
 
     content = converter.run(options.file, options.func,
