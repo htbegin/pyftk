@@ -2,6 +2,11 @@
 
 import unittest
 
+from ftk.macros import ftk_macros
+from ftk.globals import ftk_set_allocator
+from ftk.allocator_default import ftk_allocator_default_create
+from ftk.constants import RET_OK
+from ftk.event import FtkEvent
 from ftk.source import *
 
 class TestFtkSource(unittest.TestCase):
@@ -72,6 +77,18 @@ class TestFtkSourceInlineFuncs(unittest.TestCase):
         ftk_source_unref(src)
         self.assertEqual(src.ref, 0)
 
+def on_event_fn(user_data, event):
+    return RET_OK
+
+class TestFtkPrimarySource(unittest.TestCase):
+    def setUp(self):
+        if not ftk_macros.USE_STD_MALLOC:
+            ftk_set_allocator(ftk_allocator_default_create())
+
+    def test_queue_event(self):
+        source = ftk_source_primary_create(on_event_fn, None)
+        event = FtkEvent()
+        ftk_source_queue_event(source, event)
+
 if __name__ == "__main__":
     unittest.main()
-

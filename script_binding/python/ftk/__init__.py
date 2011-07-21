@@ -19,7 +19,6 @@ from ftk.font import *
 from ftk.font_desc import *
 from ftk.canvas import *
 from ftk.source import *
-from ftk.source_timer import *
 from ftk.sources_manager import *
 from ftk.main_loop import *
 

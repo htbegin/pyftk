@@ -16,6 +16,7 @@ FtkWidget * = ftk.widget.FtkWidgetPtr
 
 # ftk.event
 FtkEvent = ftk.event.FtkEvent
+FtkOnEvent = ftk.event.FtkOnEvent
 
 # ftk.canvas
 FtkCanvas = ftk.canvas.FtkCanvas
@@ -27,6 +28,7 @@ FtkListener = ftk.typedef.FtkListener
 FtkRect = ftk.typedef.FtkRect
 FtkColor = ftk.typedef.FtkColor
 FtkTimer = ftk.typedef.FtkTimer
+FtkIdle = ftk.typedef.FtkIdle
 
 # ftk.gc
 FtkGc = ftk.gc.FtkGc

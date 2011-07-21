@@ -28,24 +28,24 @@ ftk_typedef.h
 
 ftk_params.h
 
-ftk_translator.h
+*ftk_translator.h*
 
-ftk_dlfcn.h
+*ftk_dlfcn.h*
 
 ftk_key.h
 
 ftk_event.h
 
-ftk_mmap.h
-ftk_path.h
-ftk_file_system.h
-ftk_pipe.h
+*ftk_file_system.h*
+*ftk_mmap.h*
+*ftk_path.h*
+*ftk_pipe.h*
 
-ftk_expr.h
+*ftk_expr.h*
 
 ftk_allocator.h
 ftk_allocator_default.h
-ft_allocator_profile.h
+*ft_allocator_profile.h*
 
 ftk_source.h
 ftk_source_idle.h
