@@ -44,11 +44,13 @@ ftk_sources_manager_get_count = ftk.dll.function(
         arg_types=[FtkSourcesManagerPtr],
         return_type=c_int)
 
+# FIXME: ftk_sources_manager_get should return the original object
 ftk_sources_manager_get = ftk.dll.function('ftk_sources_manager_get',
         '',
         args=['thiz', 'i'],
         arg_types=[FtkSourcesManagerPtr, c_int],
-        return_type=ftk.source.FtkSourcePtr)
+        return_type=ftk.source.FtkSourcePtr,
+        dereference_return=True)
 
 ftk_sources_manager_need_refresh = ftk.dll.function(
         'ftk_sources_manager_need_refresh',
