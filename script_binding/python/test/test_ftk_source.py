@@ -77,6 +77,21 @@ class TestFtkSourceInlineFuncs(unittest.TestCase):
         ftk_source_unref(src)
         self.assertEqual(src.ref, 0)
 
+IDLE_ACTION_RVAL = 255
+def idle_action(user_data):
+    return IDLE_ACTION_RVAL
+
+class TestFtkIdleSource(unittest.TestCase):
+    def setUp(self):
+        if not ftk_macros.USE_STD_MALLOC:
+            ftk_set_allocator(ftk_allocator_default_create())
+
+    def test_create(self):
+        user_data = {"cnt" : 1}
+        idle_src = ftk_source_idle_create(idle_action, user_data)
+        self.assertEqual(ftk_source_dispatch(idle_src), IDLE_ACTION_RVAL)
+        ftk_source_destroy(idle_src)
+
 def on_event_fn(user_data, event):
     return RET_OK
 
@@ -89,6 +104,7 @@ class TestFtkPrimarySource(unittest.TestCase):
         source = ftk_source_primary_create(on_event_fn, None)
         event = FtkEvent()
         ftk_source_queue_event(source, event)
+        ftk_source_destroy(source)
 
 if __name__ == "__main__":
     unittest.main()

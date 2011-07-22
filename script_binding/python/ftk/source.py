@@ -91,7 +91,9 @@ def ftk_source_unref(thiz):
 
 _ftk_source_idle_create = ftk.dll.private_function('ftk_source_idle_create',
         arg_types=[ftk.typedef.FtkIdle, c_void_p],
-        return_type=FtkSourcePtr)
+        return_type=FtkSourcePtr,
+        dereference_return=True,
+        require_return=True)
 
 def ftk_source_idle_create(action, user_data):
     def _action(_ignore_param):
@@ -99,16 +101,16 @@ def ftk_source_idle_create(action, user_data):
 
     func = ftk.typedef.FtkIdle(_action)
     result = _ftk_source_idle_create(func, None)
-    if result is None:
-        raise ftk.error.FtkException, ftk.error.ftk_get_error()
-    _source_cb_refs[id(result.contents)] = func
+    _source_cb_refs[id(result)] = func
     return result
 
 # ftk_source_timer.h
 
 _ftk_source_timer_create = ftk.dll.private_function('ftk_source_timer_create',
         arg_types=[c_int, ftk.typedef.FtkTimer, c_void_p],
-        return_type=FtkSourcePtr)
+        return_type=FtkSourcePtr,
+        dereference_return=True,
+        require_return=True)
 
 def ftk_source_timer_create(interval, action, user_data):
     def _action(_ignore_param):
@@ -116,29 +118,31 @@ def ftk_source_timer_create(interval, action, user_data):
 
     func = ftk.typedef.FtkTimer(_action)
     result = _ftk_source_timer_create(interval, func, None)
-    if result is None:
-        raise ftk.error.FtkException, ftk.error.ftk_get_error()
-    _source_cb_refs[id(result.contents)] = func
+    _source_cb_refs[id(result)] = func
     return result
 
-ftk_source_timer_reset = ftk.dll.function('ftk_source_timer_reset',
-        '',
-        args=['thiz'],
+_ftk_source_timer_reset = ftk.dll.private_function('ftk_source_timer_reset',
         arg_types=[FtkSourcePtr],
         return_type=c_int)
 
-ftk_source_timer_modify = ftk.dll.function('ftk_source_timer_modify',
-        '',
-        args=['thiz', 'interval'],
+def ftk_source_timer_reset(thiz):
+    return _ftk_source_timer_reset(byref(thiz))
+
+_ftk_source_timer_modify = ftk.dll.private_function('ftk_source_timer_modify',
         arg_types=[FtkSourcePtr, c_int],
         return_type=c_int)
+
+def ftk_source_timer_modify(thiz, interval):
+    return _ftk_source_timer_modify(byref(thiz), interval)
 
 # ftk_source_primary.h
 
 _ftk_source_primary_create = ftk.dll.private_function(
         'ftk_source_primary_create',
         arg_types=[ftk.event.FtkOnEvent, c_void_p],
-        return_type=FtkSourcePtr)
+        return_type=FtkSourcePtr,
+        dereference_return=True,
+        require_return=True)
 
 def ftk_source_primary_create(on_event, user_data):
     def _on_event(_ignore_param, event_ptr):
@@ -146,9 +150,7 @@ def ftk_source_primary_create(on_event, user_data):
 
     func = ftk.event.FtkOnEvent(_on_event)
     result = _ftk_source_primary_create(func, None)
-    if result is None:
-        raise ftk.error.FtkException, ftk.error.ftk_get_error()
-    _source_cb_refs[id(result.contents)] = func
+    _source_cb_refs[id(result)] = func
     return result
 
 _ftk_source_queue_event = ftk.dll.private_function('ftk_source_queue_event',
@@ -156,4 +158,4 @@ _ftk_source_queue_event = ftk.dll.private_function('ftk_source_queue_event',
         return_type=c_int)
 
 def ftk_source_queue_event(thiz, event):
-    return _ftk_source_queue_event(thiz, byref(event))
+    return _ftk_source_queue_event(byref(thiz), byref(event))
