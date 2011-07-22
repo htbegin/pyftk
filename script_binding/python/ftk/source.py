@@ -68,9 +68,13 @@ def ftk_source_dispatch(thiz):
         return ftk.constants.RET_FAIL
     return thiz.dispatch(thiz)
 
+_source_cb_refs = {}
+
 def ftk_source_destroy(thiz):
     if isinstance(thiz, FtkSource) and \
             isinstance(thiz.destroy, FtkSourceDestroy):
+        if id(thiz) in _source_cb_refs:
+            del _source_cb_refs[id(thiz)]
         thiz.destroy(thiz)
 
 def ftk_source_ref(thiz):
@@ -82,9 +86,6 @@ def ftk_source_unref(thiz):
         thiz.ref -= 1
         if thiz.ref == 0:
             ftk_source_destroy(thiz)
-
-# FIXME: doesn't support delete the reference to the callback function
-_source_cb_refs = {}
 
 # ftk_source_idle.h
 
