@@ -34,9 +34,12 @@ class TestSourcesManager(unittest.TestCase):
         manager = ftk_sources_manager_create(capacity)
         if capacity < FTK_MIN_SOURCE_NR:
             capacity = FTK_MIN_SOURCE_NR
-        src = FtkSource()
-        self.assertEqual(ftk_sources_manager_add(manager, src), RET_OK)
-        self.assertEqual(ftk_sources_manager_remove(manager, src), RET_OK)
+        src_one = FtkSource()
+        self.assertEqual(ftk_sources_manager_add(manager, src_one), RET_OK)
+        src_two = FtkSource()
+        self.assertEqual(ftk_sources_manager_add(manager, src_two), RET_OK)
+        self.assertEqual(ftk_sources_manager_remove(manager, src_one), RET_OK)
+        self.assertEqual(ftk_sources_manager_remove(manager, src_two), RET_OK)
         self.assertEqual(ftk_sources_manager_get_count(manager), 0)
         ftk_sources_manager_destroy(manager)
 
@@ -46,7 +49,7 @@ class TestSourcesManager(unittest.TestCase):
         src = FtkSource()
         self.assertEqual(ftk_sources_manager_add(manager, src), RET_OK)
         new_src = ftk_sources_manager_get(manager, 0)
-        self.assertTrue(new_src is not None)
+        self.assertTrue(new_src is src)
         ftk_sources_manager_destroy(manager)
 
     def test_set_need_refresh(self):

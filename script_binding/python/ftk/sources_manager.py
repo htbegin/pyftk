@@ -9,6 +9,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.dll
+import ftk.constants
 import ftk.source
 
 # ftk_sources_manager.h
@@ -25,17 +26,32 @@ ftk_sources_manager_create = ftk.dll.function('ftk_sources_manager_create',
         arg_types=[c_int],
         return_type=FtkSourcesManagerPtr)
 
-ftk_sources_manager_add = ftk.dll.function('ftk_sources_manager_add',
-        '',
-        args=['thiz', 'source'],
+_original_src_list = []
+
+_ftk_sources_manager_add = ftk.dll.private_function(
+        'ftk_sources_manager_add',
         arg_types=[FtkSourcesManagerPtr, ftk.source.FtkSourcePtr],
         return_type=c_int)
 
-ftk_sources_manager_remove = ftk.dll.function('ftk_sources_manager_remove',
-        '',
-        args=['thiz', 'source'],
+def ftk_sources_manager_add(thiz, source):
+    ret = _ftk_sources_manager_add(thiz, byref(source))
+    if ret == ftk.constants.RET_OK:
+        _original_src_list.append(source)
+    return ret
+
+_ftk_sources_manager_remove = ftk.dll.private_function(
+        'ftk_sources_manager_remove',
         arg_types=[FtkSourcesManagerPtr, ftk.source.FtkSourcePtr],
         return_type=c_int)
+
+# FIXME: support remove the source action callback when destroy the source
+def ftk_sources_manager_remove(thiz, source):
+    ret = _ftk_sources_manager_remove(thiz, byref(source))
+    if ret == ftk.constants.RET_OK:
+        if source in _original_src_list:
+            idx = _original_src_list.index(source)
+            del _original_src_list[idx]
+    return ret
 
 ftk_sources_manager_get_count = ftk.dll.function(
         'ftk_sources_manager_get_count',
@@ -44,13 +60,11 @@ ftk_sources_manager_get_count = ftk.dll.function(
         arg_types=[FtkSourcesManagerPtr],
         return_type=c_int)
 
-# FIXME: ftk_sources_manager_get should return the original object
-ftk_sources_manager_get = ftk.dll.function('ftk_sources_manager_get',
-        '',
-        args=['thiz', 'i'],
-        arg_types=[FtkSourcesManagerPtr, c_int],
-        return_type=ftk.source.FtkSourcePtr,
-        dereference_return=True)
+def ftk_sources_manager_get(thiz, i):
+    if i < len(_original_src_list):
+        return _original_src_list[i]
+    else:
+        return None
 
 ftk_sources_manager_need_refresh = ftk.dll.function(
         'ftk_sources_manager_need_refresh',
@@ -66,8 +80,12 @@ ftk_sources_manager_set_need_refresh = ftk.dll.function(
         arg_types=[FtkSourcesManagerPtr],
         return_type=c_int)
 
-ftk_sources_manager_destroy = ftk.dll.function('ftk_sources_manager_destroy',
-        '',
-        args=['thiz'],
+_ftk_sources_manager_destroy = ftk.dll.private_function(
+        'ftk_sources_manager_destroy',
         arg_types=[FtkSourcesManagerPtr],
         return_type=None)
+
+# FIXME: support remove the source action callback when destroy the source
+def ftk_sources_manager_destroy(thiz):
+    _ftk_sources_manager_destroy(thiz)
+    del _original_src_list[:]
