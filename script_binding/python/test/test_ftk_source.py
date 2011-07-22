@@ -2,6 +2,7 @@
 
 import unittest
 
+from ftk.constants import FTK_EVT_IDLE
 from ftk.macros import ftk_macros
 from ftk.globals import ftk_set_allocator
 from ftk.allocator_default import ftk_allocator_default_create
@@ -77,10 +78,6 @@ class TestFtkSourceInlineFuncs(unittest.TestCase):
         ftk_source_unref(src)
         self.assertEqual(src.ref, 0)
 
-IDLE_ACTION_RVAL = 255
-def idle_action(user_data):
-    return IDLE_ACTION_RVAL
-
 class TestFtkIdleSource(unittest.TestCase):
     def setUp(self):
         if not ftk_macros.USE_STD_MALLOC:
@@ -88,23 +85,75 @@ class TestFtkIdleSource(unittest.TestCase):
 
     def test_create(self):
         user_data = {"cnt" : 1}
+        IDLE_ACTION_RVAL = 255
+        def idle_action(udata):
+            self.assertTrue(udata is user_data)
+            return IDLE_ACTION_RVAL
+
         idle_src = ftk_source_idle_create(idle_action, user_data)
         self.assertEqual(ftk_source_dispatch(idle_src), IDLE_ACTION_RVAL)
         ftk_source_destroy(idle_src)
 
-def on_event_fn(user_data, event):
-    return RET_OK
+class TestFtkTimerSource(unittest.TestCase):
+    def setUp(self):
+        if not ftk_macros.USE_STD_MALLOC:
+            ftk_set_allocator(ftk_allocator_default_create())
+
+    def test_create(self):
+        user_data = (1, 2, 3)
+        TIMER_ACTION_RVAL = 128
+        def timer_action(udata):
+            self.assertTrue(udata is user_data)
+            return TIMER_ACTION_RVAL
+
+        timer_src = ftk_source_timer_create(1000, timer_action, user_data)
+        self.assertTrue(ftk_source_dispatch(timer_src), TIMER_ACTION_RVAL)
+        ftk_source_destroy(timer_src)
+
+    def test_reset(self):
+        def timer_action(user_data):
+            return RET_OK
+
+        user_data = set(["start", "end"])
+        timer_src = ftk_source_timer_create(1000, timer_action, user_data)
+        self.assertEqual(ftk_source_timer_reset(timer_src), RET_OK)
+        ftk_source_destroy(timer_src)
+
+    def test_modify(self):
+        def timer_action(user_data):
+            return RET_OK
+
+        user_data = "ftk"
+        timer_src = ftk_source_timer_create(100, timer_action, user_data)
+        self.assertEqual(ftk_source_timer_modify(timer_src, 200), RET_OK)
+        ftk_source_destroy(timer_src)
 
 class TestFtkPrimarySource(unittest.TestCase):
     def setUp(self):
         if not ftk_macros.USE_STD_MALLOC:
             ftk_set_allocator(ftk_allocator_default_create())
 
+    def test_create(self):
+        def on_event_fn(user_data, event):
+            return RET_OK
+
+        user_data = True
+        primary_src = ftk_source_primary_create(on_event_fn, user_data)
+        ftk_source_destroy(primary_src)
+
     def test_queue_event(self):
-        source = ftk_source_primary_create(on_event_fn, None)
         event = FtkEvent()
-        ftk_source_queue_event(source, event)
-        ftk_source_destroy(source)
+        event.type = FTK_EVT_IDLE
+        user_data = ("ftk", "gtk", "qt")
+        def on_event_fn(udata, event):
+            self.assertTrue(udata is user_data)
+            self.assertEqual(event.type, FTK_EVT_IDLE)
+            return RET_OK
+
+        primary_src = ftk_source_primary_create(on_event_fn, user_data)
+        ftk_source_queue_event(primary_src, event)
+        ftk_source_dispatch(primary_src)
+        ftk_source_destroy(primary_src)
 
 if __name__ == "__main__":
     unittest.main()
