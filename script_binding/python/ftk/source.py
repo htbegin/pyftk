@@ -51,28 +51,24 @@ def ftk_source_enable(thiz):
     return ftk.constants.RET_OK
 
 def ftk_source_get_fd(thiz):
-    if not isinstance(thiz, FtkSource) or \
-            not isinstance(thiz.get_fd, FtkSourceGetFd):
+    if not isinstance(thiz, FtkSource):
         return -1
     return thiz.get_fd(thiz)
 
 def ftk_source_check(thiz):
-    if not isinstance(thiz, FtkSource) or \
-            not isinstance(thiz.check, FtkSourceCheck):
+    if not isinstance(thiz, FtkSource):
         return -1
     return thiz.check(thiz)
 
 def ftk_source_dispatch(thiz):
-    if not isinstance(thiz, FtkSource) or \
-            not isinstance(thiz.dispatch, FtkSourceDispatch):
+    if not isinstance(thiz, FtkSource):
         return ftk.constants.RET_FAIL
     return thiz.dispatch(thiz)
 
 _source_cb_refs = {}
 
 def ftk_source_destroy(thiz):
-    if isinstance(thiz, FtkSource) and \
-            isinstance(thiz.destroy, FtkSourceDestroy):
+    if isinstance(thiz, FtkSource):
         if id(thiz) in _source_cb_refs:
             del _source_cb_refs[id(thiz)]
         thiz.destroy(thiz)
