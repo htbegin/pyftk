@@ -162,7 +162,7 @@ class FTK_DLL:
                 # or raises an exception if NULL is returned.
                 def _f(*args, **kwargs):
                     result = func(*args, **kwargs)
-                    if result is not None:
+                    if result:
                         return result.contents
                     import ftk.error
                     raise ftk.error.FtkException, ftk.error.ftk_get_error()
@@ -171,7 +171,7 @@ class FTK_DLL:
                 # or returns None if NULL is returned.
                 def _f(*args, **kwargs):
                     result = func(*args, **kwargs)
-                    if result is not None:
+                    if result:
                         return result.contents
                     return None
         elif success_return is not None:

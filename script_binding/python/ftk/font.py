@@ -51,7 +51,6 @@ def ftk_font_height(thiz):
         return -1
     return thiz.height(thiz)
 
-# FIXME FtkGlyph::data
 def ftk_font_lookup(thiz, code):
     if not isinstance(thiz, FtkFont):
         return None
@@ -96,11 +95,12 @@ ftk_font_get_desc = ftk.dll.function('ftk_font_get_desc',
         return_type=POINTER(ftk.font_desc.FtkFontDesc),
         dereference_return=True)
 
-ftk_font_get_extent = ftk.dll.function('ftk_font_get_extent',
-        '',
-        args=['thiz', 'str', 'len'],
+_ftk_font_get_extent = ftk.dll.private_function('ftk_font_get_extent',
         arg_types=[_FtkFontPtr, c_char_p, c_int],
         return_type=c_int)
+
+def ftk_font_get_extent(thiz, string):
+    return _ftk_font_get_extent(thiz, string, len(string))
 
 ftk_font_get_char_extent = ftk.dll.function('ftk_font_get_char_extent',
         '',
@@ -108,13 +108,16 @@ ftk_font_get_char_extent = ftk.dll.function('ftk_font_get_char_extent',
         arg_types=[_FtkFontPtr, c_ushort],
         return_type=c_int)
 
-# FIXME
-ftk_font_calc_str_visible_range = ftk.dll.function(
+_ftk_font_calc_str_visible_range = ftk.dll.private_function(
         'ftk_font_calc_str_visible_range',
-        '',
-        args=['thiz', 'start', 'vstart', 'vend', 'width', 'extent'],
         arg_types=[_FtkFontPtr, c_char_p, c_int, c_int, c_int, POINTER(c_int)],
         return_type=c_char_p)
+
+def ftk_font_calc_str_visible_range(thiz, start, vstart, vend, width):
+    extent = c_int()
+    invisible_str = _ftk_font_calc_str_visible_range(thiz, start, vstart, vend,
+            width, byref(extent))
+    return (invisible_str, extent.value)
 
 ftk_font_create = ftk.dll.function('ftk_font_create',
         '',

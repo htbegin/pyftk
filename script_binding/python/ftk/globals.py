@@ -25,3 +25,9 @@ ftk_set_allocator = ftk.dll.function('ftk_set_allocator',
         args=['allocator'],
         arg_types=[POINTER(ftk.allocator.FtkAllocator)],
         return_type=None)
+
+ftk_set_log_level = ftk.dll.function('ftk_set_log_level',
+        '',
+        args=['level'],
+        arg_types=[c_int],
+        return_type=None)
