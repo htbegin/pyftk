@@ -19,7 +19,7 @@ ftk_typedef.h
 
 *ftk_log.h*
 
-*ftk_config.h*
+ftk_config.h
 
 *ftk_util.h*
 

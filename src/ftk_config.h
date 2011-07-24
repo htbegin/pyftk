@@ -39,7 +39,7 @@ FTK_BEGIN_DECLS
 struct _FtkConfig;
 typedef struct _FtkConfig FtkConfig;
 
-FtkConfig* ftk_config_create();
+FtkConfig* ftk_config_create(void);
 Ret  ftk_config_init(FtkConfig* thiz, int argc, char* argv[]);
 Ret ftk_config_load(FtkConfig* thiz, const char* progname);
 Ret  ftk_config_parse(FtkConfig* thiz, const char* xml, int length);

@@ -49,7 +49,7 @@ struct _FtkConfig
 
 static Ret ftk_config_parse_rotate(FtkConfig* thiz, const char* rotate);
 
-FtkConfig* ftk_config_create()
+FtkConfig* ftk_config_create(void)
 {
 	FtkConfig* thiz = FTK_ZALLOC(sizeof(FtkConfig));
 	

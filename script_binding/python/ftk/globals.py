@@ -11,6 +11,7 @@ from ctypes import *
 import ftk.dll
 import ftk.main_loop
 import ftk.allocator
+import ftk.config
 
 # ftk_globals.h
 
@@ -30,4 +31,10 @@ ftk_set_log_level = ftk.dll.function('ftk_set_log_level',
         '',
         args=['level'],
         arg_types=[c_int],
+        return_type=None)
+
+ftk_set_config = ftk.dll.function('ftk_set_config',
+        '',
+        args=['config'],
+        arg_types=[POINTER(ftk.config.FtkConfig)],
         return_type=None)
