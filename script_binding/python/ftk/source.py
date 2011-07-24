@@ -18,12 +18,12 @@ import ftk.event
 class FtkSource(Structure):
     pass
 
-FtkSourcePtr = POINTER(FtkSource)
+_FtkSourcePtr = POINTER(FtkSource)
 
-FtkSourceGetFd = CFUNCTYPE(c_int, FtkSourcePtr)
-FtkSourceCheck = CFUNCTYPE(c_int, FtkSourcePtr)
-FtkSourceDispatch = CFUNCTYPE(c_int, FtkSourcePtr)
-FtkSourceDestroy = CFUNCTYPE(None, FtkSourcePtr)
+FtkSourceGetFd = CFUNCTYPE(c_int, _FtkSourcePtr)
+FtkSourceCheck = CFUNCTYPE(c_int, _FtkSourcePtr)
+FtkSourceDispatch = CFUNCTYPE(c_int, _FtkSourcePtr)
+FtkSourceDestroy = CFUNCTYPE(None, _FtkSourcePtr)
 
 FtkSource._fields_ = [
         ('get_fd', FtkSourceGetFd),
@@ -91,7 +91,7 @@ def ftk_source_unref(thiz):
 
 _ftk_source_idle_create = ftk.dll.private_function('ftk_source_idle_create',
         arg_types=[ftk.typedef.FtkIdle, c_void_p],
-        return_type=FtkSourcePtr,
+        return_type=_FtkSourcePtr,
         dereference_return=True,
         require_return=True)
 
@@ -108,7 +108,7 @@ def ftk_source_idle_create(action, user_data):
 
 _ftk_source_timer_create = ftk.dll.private_function('ftk_source_timer_create',
         arg_types=[c_int, ftk.typedef.FtkTimer, c_void_p],
-        return_type=FtkSourcePtr,
+        return_type=_FtkSourcePtr,
         dereference_return=True,
         require_return=True)
 
@@ -122,14 +122,14 @@ def ftk_source_timer_create(interval, action, user_data):
     return result
 
 _ftk_source_timer_reset = ftk.dll.private_function('ftk_source_timer_reset',
-        arg_types=[FtkSourcePtr],
+        arg_types=[_FtkSourcePtr],
         return_type=c_int)
 
 def ftk_source_timer_reset(thiz):
     return _ftk_source_timer_reset(byref(thiz))
 
 _ftk_source_timer_modify = ftk.dll.private_function('ftk_source_timer_modify',
-        arg_types=[FtkSourcePtr, c_int],
+        arg_types=[_FtkSourcePtr, c_int],
         return_type=c_int)
 
 def ftk_source_timer_modify(thiz, interval):
@@ -140,7 +140,7 @@ def ftk_source_timer_modify(thiz, interval):
 _ftk_source_primary_create = ftk.dll.private_function(
         'ftk_source_primary_create',
         arg_types=[ftk.event.FtkOnEvent, c_void_p],
-        return_type=FtkSourcePtr,
+        return_type=_FtkSourcePtr,
         dereference_return=True,
         require_return=True)
 
@@ -154,7 +154,7 @@ def ftk_source_primary_create(on_event, user_data):
     return result
 
 _ftk_source_queue_event = ftk.dll.private_function('ftk_source_queue_event',
-        arg_types=[FtkSourcePtr, POINTER(ftk.event.FtkEvent)],
+        arg_types=[_FtkSourcePtr, POINTER(ftk.event.FtkEvent)],
         return_type=c_int)
 
 def ftk_source_queue_event(thiz, event):

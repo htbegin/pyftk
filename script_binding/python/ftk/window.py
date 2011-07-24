@@ -15,101 +15,106 @@ import ftk.bitmap
 
 # ftk_window.h
 
+_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+
 ftk_window_create = ftk.dll.function('ftk_window_create',
         '',
         args=['type', 'attr', 'x', 'y', 'width', 'height'],
         arg_types=[c_int, c_uint, c_int, c_int, c_int, c_int],
-        return_type=ftk.widget.FtkWidgetPtr)
+        return_type=_FtkWidgetPtr,
+        dereference_return=True,
+        require_return=True)
 
 ftk_window_set_focus = ftk.dll.function('ftk_window_set_focus',
         '',
         args=['thiz', 'focus_widget'],
-        arg_types=[ftk.widget.FtkWidgetPtr, ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr, _FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_get_focus = ftk.dll.function('ftk_window_get_focus',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
-        return_type=ftk.widget.FtkWidgetPtr)
+        arg_types=[_FtkWidgetPtr],
+        return_type=_FtkWidgetPtr,
+        dereference_return=True)
 
 ftk_window_grab = ftk.dll.function('ftk_window_grab',
         '',
         args=['thiz', 'grab_widget'],
-        arg_types=[ftk.widget.FtkWidgetPtr, ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr, _FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_ungrab = ftk.dll.function('ftk_window_ungrab',
         '',
         args=['thiz', 'grab_widget'],
-        arg_types=[ftk.widget.FtkWidgetPtr, ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr, _FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_paint_forcely = ftk.dll.function('ftk_window_paint_forcely',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_update = ftk.dll.function('ftk_window_update',
         '',
         args=['thiz', 'rect'],
-        arg_types=[ftk.widget.FtkWidgetPtr, POINTER(ftk.typedef.FtkRect)],
+        arg_types=[_FtkWidgetPtr, POINTER(ftk.typedef.FtkRect)],
         return_type=c_int)
 
 ftk_window_is_mapped = ftk.dll.function('ftk_window_is_mapped',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_is_fullscreen = ftk.dll.function('ftk_window_is_fullscreen',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_set_fullscreen = ftk.dll.function('ftk_window_set_fullscreen',
         '',
         args=['thiz', 'fullscreen'],
-        arg_types=[ftk.widget.FtkWidgetPtr, c_int],
+        arg_types=[_FtkWidgetPtr, c_int],
         return_type=c_int)
 
 ftk_window_invalidate = ftk.dll.function('ftk_window_invalidate',
         '',
         args=['thiz', 'rect'],
-        arg_types=[ftk.widget.FtkWidgetPtr, POINTER(ftk.typedef.FtkRect)],
+        arg_types=[_FtkWidgetPtr, POINTER(ftk.typedef.FtkRect)],
         return_type=c_int)
 
 ftk_window_set_background_with_alpha = ftk.dll.function(
         'ftk_window_set_background_with_alpha',
         '',
         args=['thiz', 'bitmap', 'bg'],
-        arg_types=[ftk.widget.FtkWidgetPtr, ftk.bitmap.FtkBitmapPtr, ftk.typedef.FtkColor],
+        arg_types=[_FtkWidgetPtr, POINTER(ftk.bitmap.FtkBitmap), ftk.typedef.FtkColor],
         return_type=c_int)
 
 ftk_window_enable_update = ftk.dll.function('ftk_window_enable_update',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_disable_update = ftk.dll.function('ftk_window_disable_update',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
 ftk_window_get_animation_hint = ftk.dll.function(
         'ftk_window_get_animation_hint',
         '',
         args=['thiz'],
-        arg_types=[ftk.widget.FtkWidgetPtr],
+        arg_types=[_FtkWidgetPtr],
         return_type=c_char_p)
 
 ftk_window_set_animation_hint = ftk.dll.function(
         'ftk_window_set_animation_hint',
         '',
         args=['thiz', 'hint'],
-        arg_types=[ftk.widget.FtkWidgetPtr, c_char_p],
+        arg_types=[_FtkWidgetPtr, c_char_p],
         return_type=c_int)

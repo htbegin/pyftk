@@ -18,10 +18,10 @@ ftk_default_main_loop = ftk.dll.function('ftk_default_main_loop',
         '',
         args=[],
         arg_types=[],
-        return_type=ftk.main_loop.FtkMainLoopPtr)
+        return_type=POINTER(ftk.main_loop.FtkMainLoop))
 
 ftk_set_allocator = ftk.dll.function('ftk_set_allocator',
         '',
         args=['allocator'],
-        arg_types=[ftk.allocator.FtkAllocatorPtr],
+        arg_types=[POINTER(ftk.allocator.FtkAllocator)],
         return_type=None)

@@ -12,7 +12,6 @@ FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
 
 # ftk.widget
 FtkWidget = ftk.widget.FtkWidget
-FtkWidget * = ftk.widget.FtkWidgetPtr
 
 # ftk.event
 FtkEvent = ftk.event.FtkEvent
@@ -20,7 +19,6 @@ FtkOnEvent = ftk.event.FtkOnEvent
 
 # ftk.canvas
 FtkCanvas = ftk.canvas.FtkCanvas
-FtkCanvas * = ftk.canvas.FtkCanvasPtr
 
 # ftk.typedef
 FtkDestroy = ftk.typedef.FtkDestroy
@@ -35,28 +33,21 @@ FtkGc = ftk.gc.FtkGc
 
 # ftk.bitmap
 FtkBitmap = ftk.bitmap.FtkBitmap
-FtkBitmap * = ftk.bitmap.FtkBitmapPtr
 
 # ftk.source
 FtkSource = ftk.source.FtkSource
-FtkSource * = ftk.source.FtkSourcePtr
 
 # ftk.sources_manager
 FtkSourcesManager = ftk.sources_manager.FtkSourcesManager
-FtkSourcesManager * = ftk.sources_manager.FtkSourcesManagerPtr
 
 # ftk.main_loop
 FtkMainLoop = ftk.main_loop.FtkMainLoop
-FtkMainLoop * = ftk.main_loop.FtkMainLoopPtr
 
 # ftk.params
 FtkParams = ftk.params.FtkParams
-FtkParams * = ftk.params.FtkParamsPtr
 
 # ftk.allocator
 FtkAllocator = ftk.allocator.FtkAllocator
-FtkAllocator * = ftk.allocator.FtkAllocatorPtr
 
 # ftk.font_desc
 FtkFontDesc = ftk.font_desc.FtkFontDesc
-FtkFontDesc * = ftk.font_desc.FtkFontDescPtr

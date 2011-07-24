@@ -18,41 +18,43 @@ import ftk.sources_manager
 class FtkMainLoop(Structure):
     pass
 
-FtkMainLoopPtr = POINTER(FtkMainLoop)
+_FtkMainLoopPtr = POINTER(FtkMainLoop)
+_FtkSourcePtr = POINTER(ftk.source.FtkSource)
 
 ftk_main_loop_create = ftk.dll.function('ftk_main_loop_create',
         '',
         args=['sources_manager'],
-        arg_types=[ftk.sources_manager.FtkSourcesManagerPtr],
-        return_type=FtkMainLoopPtr)
+        arg_types=[POINTER(ftk.sources_manager.FtkSourcesManager)],
+        return_type=_FtkMainLoopPtr,
+        dereference_return=True,
+        require_return=True)
 
 ftk_main_loop_run = ftk.dll.function('ftk_main_loop_run',
         '',
         args=['thiz'],
-        arg_types=[FtkMainLoopPtr],
+        arg_types=[_FtkMainLoopPtr],
         return_type=c_int)
 
 ftk_main_loop_quit = ftk.dll.function('ftk_main_loop_quit',
         '',
         args=['thiz'],
-        arg_types=[FtkMainLoopPtr],
+        arg_types=[_FtkMainLoopPtr],
         return_type=c_int)
 
 ftk_main_loop_add_source = ftk.dll.function('ftk_main_loop_add_source',
         '',
         args=['thiz', 'source'],
-        arg_types=[FtkMainLoopPtr, ftk.source.FtkSourcePtr],
+        arg_types=[_FtkMainLoopPtr, _FtkSourcePtr],
         return_type=c_int)
 
 ftk_main_loop_remove_source = ftk.dll.function('ftk_main_loop_remove_source',
         '',
         args=['thiz', 'source'],
-        arg_types=[FtkMainLoopPtr, ftk.source.FtkSourcePtr],
+        arg_types=[_FtkMainLoopPtr, _FtkSourcePtr],
         return_type=c_int)
 
 ftk_main_loop_destroy = ftk.dll.function('ftk_main_loop_destroy',
         '',
         args=['thiz'],
-        arg_types=[FtkMainLoopPtr],
+        arg_types=[_FtkMainLoopPtr],
         return_type=None)
-

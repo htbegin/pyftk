@@ -18,20 +18,21 @@ import ftk.gc
 class FtkCanvas(Structure):
     pass
 
-FtkCanvasPtr = POINTER(FtkCanvas)
+_FtkCanvasPtr = POINTER(FtkCanvas)
+_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
 
-FtkCanvasSyncGc = CFUNCTYPE(c_int, FtkCanvasPtr)
-FtkCanvasSetClip = CFUNCTYPE(c_int, FtkCanvasPtr, POINTER(ftk.typedef.FtkRegion))
-FtkCanvasDrawPixels = CFUNCTYPE(c_int, FtkCanvasPtr, POINTER(ftk.typedef.FtkPoint), c_uint)
-FtkCanvasDrawLine = CFUNCTYPE(c_int, FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint)
-FtkCanvasClearRect = CFUNCTYPE(c_int, FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint)
-FtkCanvasDrawRect = CFUNCTYPE(c_int, FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint, c_int, c_int)
-FtkCanvasDrawBitmap = CFUNCTYPE(c_int, FtkCanvasPtr, ftk.bitmap.FtkBitmapPtr,
+FtkCanvasSyncGc = CFUNCTYPE(c_int, _FtkCanvasPtr)
+FtkCanvasSetClip = CFUNCTYPE(c_int, _FtkCanvasPtr, POINTER(ftk.typedef.FtkRegion))
+FtkCanvasDrawPixels = CFUNCTYPE(c_int, _FtkCanvasPtr, POINTER(ftk.typedef.FtkPoint), c_uint)
+FtkCanvasDrawLine = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint)
+FtkCanvasClearRect = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint)
+FtkCanvasDrawRect = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint, c_int, c_int)
+FtkCanvasDrawBitmap = CFUNCTYPE(c_int, _FtkCanvasPtr, _FtkBitmapPtr,
         POINTER(ftk.typedef.FtkRect), POINTER(ftk.typedef.FtkRect), c_int)
-FtkCanvasDrawString = CFUNCTYPE(c_int, FtkCanvasPtr, c_uint, c_uint, c_char_p, c_int, c_int)
-FtkCanvasLockBuffer = CFUNCTYPE(c_int, FtkCanvasPtr, POINTER(ftk.bitmap.FtkBitmapPtr))
-FtkCanvasUnlockBuffer = CFUNCTYPE(c_int, FtkCanvasPtr)
-FtkCanvasDestroy = CFUNCTYPE(None, FtkCanvasPtr)
+FtkCanvasDrawString = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_char_p, c_int, c_int)
+FtkCanvasLockBuffer = CFUNCTYPE(c_int, _FtkCanvasPtr, POINTER(_FtkBitmapPtr))
+FtkCanvasUnlockBuffer = CFUNCTYPE(c_int, _FtkCanvasPtr)
+FtkCanvasDestroy = CFUNCTYPE(None, _FtkCanvasPtr)
 
 FtkCanvas._fields_ = [
         ('gc', ftk.gc.FtkGc),

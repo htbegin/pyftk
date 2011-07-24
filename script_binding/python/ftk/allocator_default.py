@@ -17,4 +17,6 @@ ftk_allocator_default_create = ftk.dll.function('ftk_allocator_default_create',
         '',
         args=[],
         arg_types=[],
-        return_type=ftk.allocator.FtkAllocatorPtr)
+        return_type=POINTER(ftk.allocator.FtkAllocator),
+        dereference_return=True,
+        require_return=True)

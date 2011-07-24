@@ -13,5 +13,3 @@ from ctypes import *
 # FtkBitmap is defined at ftk_bitmap.c
 class FtkBitmap(Structure):
     pass
-
-FtkBitmapPtr = POINTER(FtkBitmap)

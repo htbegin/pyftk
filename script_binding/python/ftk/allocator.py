@@ -14,5 +14,3 @@ import ftk.dll
 
 class FtkAllocator(Structure):
     pass
-
-FtkAllocatorPtr = POINTER(FtkAllocator)

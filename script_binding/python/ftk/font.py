@@ -29,13 +29,13 @@ class FtkGlyph(Structure):
 class FtkFont(Structure):
     pass
 
-FtkFontPtr = POINTER(FtkFont)
+_FtkFontPtr = POINTER(FtkFont)
 
-FtkFontHeight = CFUNCTYPE(c_int, FtkFontPtr)
-FtkFontLookup = CFUNCTYPE(c_int, FtkFontPtr, c_ushort, POINTER(FtkGlyph))
-FtkFontGetCharExtent = CFUNCTYPE(c_int, FtkFontPtr, c_ushort)
-FtkFontGetExtent = CFUNCTYPE(c_int, FtkFontPtr, c_char_p, c_int)
-FtkFontDestroy = CFUNCTYPE(None, FtkFontPtr)
+FtkFontHeight = CFUNCTYPE(c_int, _FtkFontPtr)
+FtkFontLookup = CFUNCTYPE(c_int, _FtkFontPtr, c_ushort, POINTER(FtkGlyph))
+FtkFontGetCharExtent = CFUNCTYPE(c_int, _FtkFontPtr, c_ushort)
+FtkFontGetExtent = CFUNCTYPE(c_int, _FtkFontPtr, c_char_p, c_int)
+FtkFontDestroy = CFUNCTYPE(None, _FtkFontPtr)
 
 FtkFont._fields_ = [
         ('height', FtkFontHeight),

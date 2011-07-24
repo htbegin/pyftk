@@ -18,19 +18,22 @@ import ftk.source
 class FtkSourcesManager(Structure):
     pass
 
-FtkSourcesManagerPtr = POINTER(FtkSourcesManager)
+_FtkSourcesManagerPtr = POINTER(FtkSourcesManager)
+_FtkSourcePtr = POINTER(ftk.source.FtkSource)
 
 ftk_sources_manager_create = ftk.dll.function('ftk_sources_manager_create',
         '',
         args=['max_source_nr'],
         arg_types=[c_int],
-        return_type=FtkSourcesManagerPtr)
+        return_type=_FtkSourcesManagerPtr,
+        dereference_return=True,
+        require_return=True)
 
 _original_src_list = []
 
 _ftk_sources_manager_add = ftk.dll.private_function(
         'ftk_sources_manager_add',
-        arg_types=[FtkSourcesManagerPtr, ftk.source.FtkSourcePtr],
+        arg_types=[_FtkSourcesManagerPtr, _FtkSourcePtr],
         return_type=c_int)
 
 def ftk_sources_manager_add(thiz, source):
@@ -41,7 +44,7 @@ def ftk_sources_manager_add(thiz, source):
 
 _ftk_sources_manager_remove = ftk.dll.private_function(
         'ftk_sources_manager_remove',
-        arg_types=[FtkSourcesManagerPtr, ftk.source.FtkSourcePtr],
+        arg_types=[_FtkSourcesManagerPtr, _FtkSourcePtr],
         return_type=c_int)
 
 # FIXME: support remove the source action callback when destroy the source
@@ -57,7 +60,7 @@ ftk_sources_manager_get_count = ftk.dll.function(
         'ftk_sources_manager_get_count',
         '',
         args=['thiz'],
-        arg_types=[FtkSourcesManagerPtr],
+        arg_types=[_FtkSourcesManagerPtr],
         return_type=c_int)
 
 def ftk_sources_manager_get(thiz, i):
@@ -70,19 +73,19 @@ ftk_sources_manager_need_refresh = ftk.dll.function(
         'ftk_sources_manager_need_refresh',
         '',
         args=['thiz'],
-        arg_types=[FtkSourcesManagerPtr],
+        arg_types=[_FtkSourcesManagerPtr],
         return_type=c_int)
 
 ftk_sources_manager_set_need_refresh = ftk.dll.function(
         'ftk_sources_manager_set_need_refresh',
         '',
         args=['thiz'],
-        arg_types=[FtkSourcesManagerPtr],
+        arg_types=[_FtkSourcesManagerPtr],
         return_type=c_int)
 
 _ftk_sources_manager_destroy = ftk.dll.private_function(
         'ftk_sources_manager_destroy',
-        arg_types=[FtkSourcesManagerPtr],
+        arg_types=[_FtkSourcesManagerPtr],
         return_type=None)
 
 # FIXME: support remove the source action callback when destroy the source
