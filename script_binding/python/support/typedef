@@ -51,3 +51,6 @@ FtkAllocator = ftk.allocator.FtkAllocator
 
 # ftk.font_desc
 FtkFontDesc = ftk.font_desc.FtkFontDesc
+
+# ftk.font
+FtkFont = ftk.font.FtkFont
