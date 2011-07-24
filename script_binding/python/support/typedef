@@ -56,3 +56,7 @@ FtkParams * = ftk.params.FtkParamsPtr
 # ftk.allocator
 FtkAllocator = ftk.allocator.FtkAllocator
 FtkAllocator * = ftk.allocator.FtkAllocatorPtr
+
+# ftk.font_desc
+FtkFontDesc = ftk.font_desc.FtkFontDesc
+FtkFontDesc * = ftk.font_desc.FtkFontDescPtr
