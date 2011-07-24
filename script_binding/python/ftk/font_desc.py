@@ -15,7 +15,8 @@ import ftk.constants
 
 # FtkFontDesc is defined at ftk_font_desc.c
 class FtkFontDesc(Structure):
-    pass
+    def __str__(self):
+        return ftk_font_desc_get_string(self)
 
 _FtkFontDescPtr = POINTER(FtkFontDesc)
 

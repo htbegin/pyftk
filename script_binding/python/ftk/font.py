@@ -44,6 +44,6 @@ FtkFont._fields_ = [
         ('get_char_extent', FtkFontGetCharExtent),
         ('destroy', FtkFontDestroy),
         ('ref', c_int),
-        ('font_desc', ftk.font_desc.FtkFontDescPtr),
+        ('font_desc', POINTER(ftk.font_desc.FtkFontDesc)),
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
