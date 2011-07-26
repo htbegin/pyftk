@@ -61,3 +61,7 @@ FtkFontManager = ftk.font_manager.FtkFontManager
 
 # ftk.config
 FtkConfig = ftk.config.FtkConfig
+
+# ftk.text_layout
+FtkTextLayout = ftk.text_layout.FtkTextLayout
+FtkTextLine = ftk.text_layout.FtkTextLine

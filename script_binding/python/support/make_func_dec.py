@@ -109,6 +109,9 @@ class CtypeFuncDecConverter(object):
         sys.stderr.write("unknown type '%s'\n" % type_str)
         return None
 
+    def _gather_pointer_statistics(self, type_str):
+        pass
+
     def _exceptional_func_dec_str(self, func):
         (FUNC_RVAL_IDX, FUNC_NAME_IDX, FUNC_ARGS_IDX) = range(3)
 
@@ -153,6 +156,7 @@ class CtypeFuncDecConverter(object):
         if rval_type_str is None:
             return self._exceptional_func_dec_str(func)
         assert isinstance(rval_type_str, str)
+        self._gather_pointer_statistics(rval_type_str)
 
         func_name_str = func[FUNC_NAME_IDX]
         assert isinstance(func_name_str, str)
@@ -170,6 +174,7 @@ class CtypeFuncDecConverter(object):
                 if arg_type_str is None:
                     return self._exceptional_func_dec_str(func)
                 assert isinstance(arg_type_str, str)
+                self._gather_pointer_statistics(arg_type_str)
                 arg_type_list.append(arg_type_str)
 
         line_one = "%s = ftk.dll.function('%s'," % (func_name_str, func_name_str)
@@ -196,6 +201,9 @@ class CtypeFuncDecConverter(object):
         assert isinstance(func_name_str, str)
         return func_name_str
 
+    def _redefine_pointer(self, results):
+        return results
+
     def run(self, finput, func, type_str_post_fn=None, ctx=None):
         self.type_str_post_fn = type_str_post_fn
         self.ctx = ctx
@@ -209,6 +217,7 @@ class CtypeFuncDecConverter(object):
                 results.append(s)
         if func is not None and len(results) == 0:
             sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
+        results = self._redefine_pointer(results)
         return "\n\n".join(results)
 
 def strip_symbol_path(path, symbol):
