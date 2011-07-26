@@ -5,6 +5,7 @@ import sys
 import os
 from optparse import OptionParser
 import fnmatch
+import re
 
 from pyparsing import *
 
@@ -12,6 +13,7 @@ class CtypeFuncDecConverter(object):
     def __init__(self, typedef_fname=None):
         self._create_parse_grammer()
         self._create_type_dict(typedef_fname)
+        self._create_pointer_info()
 
     def _create_parse_grammer(self):
         atom_var_type = Literal("void") | \
@@ -73,6 +75,10 @@ class CtypeFuncDecConverter(object):
                     continue
                 self.type_dict[key] = val
 
+    def _create_pointer_info(self):
+        self.pointer_re = re.compile(r"POINTER[(](?P<type>[a-zA-Z_.]+)[)]")
+        self.pointer_dict = {}
+
     def _scan_func_decs(self, content):
         results = []
 
@@ -110,7 +116,13 @@ class CtypeFuncDecConverter(object):
         return None
 
     def _gather_pointer_statistics(self, type_str):
-        pass
+        result = self.pointer_re.search(type_str)
+        if result is not None:
+            type = result.group('type')
+            if type in self.pointer_dict:
+                self.pointer_dict[type] += 1
+            else:
+                self.pointer_dict[type] = 1
 
     def _exceptional_func_dec_str(self, func):
         (FUNC_RVAL_IDX, FUNC_NAME_IDX, FUNC_ARGS_IDX) = range(3)
@@ -201,8 +213,33 @@ class CtypeFuncDecConverter(object):
         assert isinstance(func_name_str, str)
         return func_name_str
 
+    def _get_pointer_type_alias(self, pointer_type):
+        lists = pointer_type.split(".")
+        return "".join(("_", lists[-1], "Ptr"))
+
     def _redefine_pointer(self, results):
-        return results
+        REDEFINE_THRESHOLD = 2
+        redefine_dict = {}
+        for k, v in self.pointer_dict.iteritems():
+            if v >= REDEFINE_THRESHOLD:
+                alias = self._get_pointer_type_alias(k)
+                redefine_dict["".join(("POINTER(", k, ")"))] = alias
+
+        if len(redefine_dict) == 0:
+            return results
+
+        redefine_results = []
+        for type, alias in redefine_dict.iteritems():
+            line = "%s = %s" % (alias, type)
+            redefine_results.append(line)
+
+        for lines in results:
+            for type, alias in redefine_dict.iteritems():
+                redefine_lines = lines.replace(type, alias)
+                lines = redefine_lines
+            redefine_results.append(redefine_lines)
+
+        return redefine_results
 
     def run(self, finput, func, type_str_post_fn=None, ctx=None):
         self.type_str_post_fn = type_str_post_fn
@@ -218,6 +255,7 @@ class CtypeFuncDecConverter(object):
         if func is not None and len(results) == 0:
             sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
         results = self._redefine_pointer(results)
+        self.pointer_dict = {}
         return "\n\n".join(results)
 
 def strip_symbol_path(path, symbol):
