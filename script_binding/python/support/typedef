@@ -65,3 +65,9 @@ FtkConfig = ftk.config.FtkConfig
 # ftk.text_layout
 FtkTextLayout = ftk.text_layout.FtkTextLayout
 FtkTextLine = ftk.text_layout.FtkTextLine
+
+# ftk.gesture_listener
+FtkGestureListener = ftk.gesture_listener.FtkGestureListener
+
+# ftk.gesture
+FtkGesture = ftk.gesture.FtkGesture
