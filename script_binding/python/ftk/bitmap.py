@@ -74,82 +74,104 @@ ftk_bitmap_copy_from_bitmap = ftk.dll.function('ftk_bitmap_copy_from_bitmap',
         arg_types=[_FtkBitmapPtr, _FtkBitmapPtr],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_from_data_bgr24 = ftk.dll.function(
+def _copy_from_data(func, bitmap, data, dw, dh, rect):
+    data_ptr = cast(c_char_p(data), c_void_p)
+    return func(bitmap, data_ptr, dw, dh, rect)
+
+def _copy_to_data(func, bpp, bitmap, rect, dw, dh):
+    data = "\0" * dw * dh * bpp
+    data_ptr = cast(c_char_p(data), c_void_p)
+    ret = func(bitmap, rect, data_ptr, 0, 0, dw, dh)
+    if ret != ftk.constants.RET_OK:
+        data = None
+    return (ret, data)
+
+_ftk_bitmap_copy_from_data_bgr24 = ftk.dll.private_function(
         'ftk_bitmap_copy_from_data_bgr24',
-        '',
-        args=['bitmap', 'data', 'dw', 'dh', 'rect'],
         arg_types=[_FtkBitmapPtr, c_void_p, c_uint, c_uint, _FtkRectPtr],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_to_data_bgr24 = ftk.dll.function(
+def ftk_bitmap_copy_from_data_bgr24(bitmap, data, dw, dh, rect):
+    return _copy_from_data(_ftk_bitmap_copy_from_data_bgr24,
+            bitmap, data, dw, dh, rect)
+
+_ftk_bitmap_copy_to_data_bgr24 = ftk.dll.private_function(
         'ftk_bitmap_copy_to_data_bgr24',
-        '',
-        args=['bitmap', 'rect', 'data', 'ox', 'oy', 'dw', 'dh'],
         arg_types=[_FtkBitmapPtr, _FtkRectPtr, c_void_p, c_int, c_int, c_uint, c_uint],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_from_data_bgra32 = ftk.dll.function(
+def ftk_bitmap_copy_to_data_bgr24(bitmap, rect, dw, dh):
+    return _copy_to_data(_ftk_bitmap_copy_to_data_bgr24, 3,
+            bitmap, rect, dw, dh)
+
+_ftk_bitmap_copy_from_data_bgra32 = ftk.dll.private_function(
         'ftk_bitmap_copy_from_data_bgra32',
-        '',
-        args=['bitmap', 'data', 'dw', 'dh', 'rect'],
         arg_types=[_FtkBitmapPtr, c_void_p, c_uint, c_uint, _FtkRectPtr],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_to_data_bgra32 = ftk.dll.function(
+def ftk_bitmap_copy_from_data_bgra32(bitmap, data, dw, dh, rect):
+    return _copy_from_data(_ftk_bitmap_copy_from_data_bgra32,
+            bitmap, data, dw, dh, rect)
+
+_ftk_bitmap_copy_to_data_bgra32 = ftk.dll.private_function(
         'ftk_bitmap_copy_to_data_bgra32',
-        '',
-        args=['bitmap', 'rect', 'data', 'ox', 'oy', 'dw', 'dh'],
         arg_types=[_FtkBitmapPtr, _FtkRectPtr, c_void_p, c_int, c_int, c_uint, c_uint],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_from_data_argb32 = ftk.dll.function(
+def ftk_bitmap_copy_to_data_bgra32(bitmap, rect, dw, dh):
+    return _copy_to_data(_ftk_bitmap_copy_to_data_bgra32, 4,
+            bitmap, rect, dw, dh)
+
+_ftk_bitmap_copy_from_data_argb32 = ftk.dll.private_function(
         'ftk_bitmap_copy_from_data_argb32',
-        '',
-        args=['bitmap', 'data', 'dw', 'dh', 'rect'],
         arg_types=[_FtkBitmapPtr, c_void_p, c_uint, c_uint, _FtkRectPtr],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_to_data_argb32 = ftk.dll.function(
+def ftk_bitmap_copy_from_data_argb32(bitmap, data, dw, dh, rect):
+    return _copy_from_data(_ftk_bitmap_copy_from_data_argb32,
+            bitmap, data, dw, dh, rect)
+
+_ftk_bitmap_copy_to_data_argb32 = ftk.dll.private_function(
         'ftk_bitmap_copy_to_data_argb32',
-        '',
-        args=['bitmap', 'rect', 'data', 'ox', 'oy', 'dw', 'dh'],
         arg_types=[_FtkBitmapPtr, _FtkRectPtr, c_void_p, c_int, c_int, c_uint, c_uint],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_from_data_rgb565 = ftk.dll.function(
+def ftk_bitmap_copy_to_data_argb32(bitmap, rect, dw, dh):
+    return _copy_to_data(_ftk_bitmap_copy_to_data_argb32, 4,
+            bitmap, rect, dw, dh)
+
+_ftk_bitmap_copy_from_data_rgb565 = ftk.dll.private_function(
         'ftk_bitmap_copy_from_data_rgb565',
-        '',
-        args=['bitmap', 'data', 'dw', 'dh', 'rect'],
         arg_types=[_FtkBitmapPtr, c_void_p, c_uint, c_uint, _FtkRectPtr],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_to_data_rgb565 = ftk.dll.function(
+def ftk_bitmap_copy_from_data_rgb565(bitmap, data, dw, dh, rect):
+    return _copy_from_data(_ftk_bitmap_copy_from_data_rgb565,
+            bitmap, data, dw, dh, rect)
+
+_ftk_bitmap_copy_to_data_rgb565 = ftk.dll.private_function(
         'ftk_bitmap_copy_to_data_rgb565',
-        '',
-        args=['bitmap', 'rect', 'data', 'ox', 'oy', 'dw', 'dh'],
         arg_types=[_FtkBitmapPtr, _FtkRectPtr, c_void_p, c_int, c_int, c_uint, c_uint],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_from_data_rgba32 = ftk.dll.function(
+def ftk_bitmap_copy_to_data_rgb565(bitmap, rect, dw, dh):
+    return _copy_to_data(_ftk_bitmap_copy_to_data_rgb565, 2,
+            bitmap, rect, dw, dh)
+
+_ftk_bitmap_copy_from_data_rgba32 = ftk.dll.private_function(
         'ftk_bitmap_copy_from_data_rgba32',
-        '',
-        args=['bitmap', 'data', 'dw', 'dh', 'rect'],
         arg_types=[_FtkBitmapPtr, c_void_p, c_uint, c_uint, _FtkRectPtr],
         return_type=c_int)
 
-# FIXME
-ftk_bitmap_copy_to_data_rgba32 = ftk.dll.function(
+def ftk_bitmap_copy_from_data_rgba32(bitmap, data, dw, dh, rect):
+    return _copy_from_data(_ftk_bitmap_copy_from_data_rgba32,
+            bitmap, data, dw, dh, rect)
+
+_ftk_bitmap_copy_to_data_rgba32 = ftk.dll.private_function(
         'ftk_bitmap_copy_to_data_rgba32',
-        '',
-        args=['bitmap', 'rect', 'data', 'ox', 'oy', 'dw', 'dh'],
         arg_types=[_FtkBitmapPtr, _FtkRectPtr, c_void_p, c_int, c_int, c_uint, c_uint],
         return_type=c_int)
+
+def ftk_bitmap_copy_to_data_rgba32(bitmap, rect, dw, dh):
+    return _copy_to_data(_ftk_bitmap_copy_to_data_rgba32, 4,
+            bitmap, rect, dw, dh)
