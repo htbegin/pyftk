@@ -261,7 +261,10 @@ ftk_list_view_repaint_focus_item
 ftk_list_view_set_clicked_listener
 ftk_list_view_set_cursor
 ftk_log
+ftk_logv
 ftk_logd
+ftk_logi
+ftk_logw
 ftk_loge
 ftk_logv
 ftk_main_loop_add_source
@@ -333,8 +336,8 @@ ftk_progress_bar_set_interactive
 ftk_progress_bar_set_percent
 ftk_question
 ftk_quit
-ftk_radio_group_create
-ftk_radio_group_set_checked
+ftk_group_box_create
+ftk_group_box_set_checked
 ftk_run
 ftk_scroll_bar_create
 ftk_scroll_bar_dec

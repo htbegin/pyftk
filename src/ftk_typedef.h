@@ -140,7 +140,7 @@ typedef enum _FtkWidgetType
 	FTK_WAIT_BOX,
 	FTK_STATUS_ITEM,
 	FTK_PROGRESS_BAR,
-	FTK_RADIO_GROUP,
+	FTK_GROUP_BOX,
 	FTK_RADIO_BUTTON,
 	FTK_CHECK_BUTTON,
 	FTK_SCROLL_VBAR,
@@ -158,7 +158,9 @@ typedef enum _FtkLogLevel
 {
 	FTK_LOG_V = 0,
 	FTK_LOG_D = 1,
-	FTK_LOG_E = 2
+	FTK_LOG_I = 2,
+	FTK_LOG_W = 3,
+	FTK_LOG_E = 4
 }FtkLogLevel;
 
 typedef enum _FtkWidgetState
@@ -228,8 +230,8 @@ typedef struct _FtkCommitInfo
 
 #define FTK_CALL_LISTENER(listener, u, o) listener != NULL ? listener(u, o) : RET_OK
 
-#define return_if_fail(p)          if(!(p)) { printf("%s:%d "#p" failed.\n", __func__, __LINE__); return;}
-#define return_val_if_fail(p, val) if(!(p)) { printf("%s:%d "#p" failed.\n", __func__, __LINE__); return (val);}
+#define return_if_fail(p)          if(!(p)) { ftk_logw("%s:%d "#p" failed.\n", __func__, __LINE__); return;}
+#define return_val_if_fail(p, val) if(!(p)) { ftk_logw("%s:%d "#p" failed.\n", __func__, __LINE__); return (val);}
 
 #define DECL_PRIV(thiz, priv)  PrivInfo* priv = thiz != NULL ? (PrivInfo*)thiz->priv : NULL
 #define DECL_PRIV0(thiz, priv) PrivInfo* priv = thiz != NULL ? (PrivInfo*)thiz->priv_subclass[0] : NULL
@@ -249,6 +251,7 @@ typedef struct _FtkCommitInfo
 	     FTK_ALPHA_1(sc->b, dc->b, a);
 
 #define FTK_ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
+#define FTK_STR_SIZE(s) (sizeof(s)-1)
 
 /*for customize*/
 #define FTK_H_MARGIN            3
