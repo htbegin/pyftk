@@ -38,7 +38,7 @@ class TestBitmap(unittest.TestCase):
         self.assertEqual(copy_data, data)
 
     def test_copy_from_to_bgra32(self):
-        point = "1234"
+        point = "123\xff"
         data = point * self.w * self.h
         ret = ftk_bitmap_copy_from_data_bgra32(self.bitmap, data, self.w, self.h, None)
         self.assertEqual(ret, RET_OK)
@@ -51,6 +51,7 @@ class TestBitmap(unittest.TestCase):
 
         ret, copy_data = ftk_bitmap_copy_to_data_bgra32(self.bitmap, None, self.w, self.h)
         self.assertEqual(ret, RET_OK)
+        self.assertEqual(data, copy_data)
 
     def tearDown(self):
         ftk_bitmap_unref(self.bitmap)
