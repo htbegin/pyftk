@@ -74,3 +74,9 @@ FtkGesture = ftk.gesture.FtkGesture
 
 # ftk.icon_cache
 FtkIconCache = ftk.icon_cache.FtkIconCache
+
+# ftk.image_decoder
+FtkImageDecoder = ftk.image_decoder.FtkImageDecoder
+
+# ftk.bitmap_factory
+FtkBitmapFactory = ftk.bitmap_factory.FtkBitmapFactory
