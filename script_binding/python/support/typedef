@@ -71,3 +71,6 @@ FtkGestureListener = ftk.gesture_listener.FtkGestureListener
 
 # ftk.gesture
 FtkGesture = ftk.gesture.FtkGesture
+
+# ftk.icon_cache
+FtkIconCache = ftk.icon_cache.FtkIconCache
