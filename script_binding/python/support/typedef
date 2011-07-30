@@ -80,3 +80,6 @@ FtkImageDecoder = ftk.image_decoder.FtkImageDecoder
 
 # ftk.bitmap_factory
 FtkBitmapFactory = ftk.bitmap_factory.FtkBitmapFactory
+
+# ftk.display
+FtkDisplay = ftk.display.FtkDisplay
