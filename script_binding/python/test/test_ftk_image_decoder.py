@@ -7,6 +7,15 @@ from ftk.constants import RET_OK, RET_FAIL
 from ftk.bitmap import ftk_bitmap_unref
 from ftk.image_decoder import *
 
+class TestImageDecoder(unittest.TestCase):
+    def test_customized_decoder(self):
+        decoder = FtkImageDecoder()
+        ret = ftk_image_decoder_match(decoder, "test.png")
+        self.assertEqual(ret, RET_FAIL)
+
+        ret = ftk_image_decoder_decode(decoder, "test.png")
+        self.assertEqual(ret, None)
+
 class TestPngImageDecoder(unittest.TestCase):
     def setUp(self):
         common.setup_allocator()
