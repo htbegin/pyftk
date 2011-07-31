@@ -66,9 +66,12 @@ ftk_display_mem_get_pixel_format = ftk.dll.function(
         arg_types=[_FtkDisplayPtr],
         return_type=c_int)
 
-ftk_display_mem_update_directly = ftk.dll.function(
+_ftk_display_mem_update_directly = ftk.dll.private_function(
         'ftk_display_mem_update_directly',
-        '',
-        args=['thiz', 'format', 'bits', 'width', 'height', 'xoffset', 'yoffset'],
         arg_types=[_FtkDisplayPtr, c_int, c_void_p, c_uint, c_uint, c_uint, c_uint],
         return_type=c_int)
+
+def ftk_display_mem_update_directly(thiz, fmt, bits, rect):
+    bits_ptr = cast(c_char_p(bits), c_void_p)
+    return _ftk_display_mem_update_directly(thiz, fmt, bits_ptr,
+            rect.width, rect.height, rect.x, rect.y)
