@@ -88,3 +88,9 @@ FtkDisplay = ftk.display.FtkDisplay
 
 # ftk.list_model
 FtkListModel = ftk.list_model.FtkListModel
+
+# ftk.list_render
+FtkListRender = ftk.list_render.FtkListRender
+
+# ftk.wnd_manager
+FtkWndManager = ftk.wnd_manager.FtkWndManager
