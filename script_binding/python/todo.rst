@@ -114,9 +114,6 @@ ftk_xul.h
 
 ftk_text_view.h
 
-ftk_wnd_manager.h
-ftk_wnd_manager_default.h
-
 ftk_animation_trigger.h
 ftk_animation_trigger_default.h
 ftk_animation_trigger_silence.h
