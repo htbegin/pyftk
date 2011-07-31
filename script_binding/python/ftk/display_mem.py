@@ -18,13 +18,24 @@ FtkDisplaySync = CFUNCTYPE(None, c_void_p, POINTER(ftk.typedef.FtkRect))
 
 _FtkDisplayPtr = POINTER(ftk.display.FtkDisplay)
 
-ftk_display_mem_create = ftk.dll.function('ftk_display_mem_create',
-        '',
-        args=['format', 'width', 'height', 'bits', 'on_destroy', 'ctx'],
+_ftk_display_mem_create = ftk.dll.private_function('ftk_display_mem_create',
         arg_types=[c_int, c_int, c_int, c_void_p, ftk.typedef.FtkDestroy, c_void_p],
         return_type=_FtkDisplayPtr,
         dereference_return=True,
         require_return=True)
+
+_mem_display_cb_refs = {}
+def ftk_display_mem_create(fmt, width, height, bits, on_destroy, ctx):
+    if on_destroy is not None:
+        def _on_destroy(ignored):
+            on_destroy(ctx)
+        callback = ftk.typedef.FtkDestroy(_on_destroy)
+    else:
+        callback = None
+    bits_ptr = cast(c_char_p(bits), c_void_p)
+    display = _ftk_display_mem_create(fmt, width, height, bits_ptr, callback, None)
+    _mem_display_cb_refs[id(display)] = callback
+    return display
 
 ftk_display_mem_set_sync_func = ftk.dll.function(\
         'ftk_display_mem_set_sync_func',
