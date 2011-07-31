@@ -9,6 +9,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.dll
+import ftk.constants
 import ftk.typedef
 import ftk.display
 
@@ -37,12 +38,20 @@ def ftk_display_mem_create(fmt, width, height, bits, on_destroy, ctx):
     _mem_display_cb_refs[id(display)] = callback
     return display
 
-ftk_display_mem_set_sync_func = ftk.dll.function(\
+_ftk_display_mem_set_sync_func = ftk.dll.private_function(\
         'ftk_display_mem_set_sync_func',
-        '',
-        args=['thiz', 'sync', 'ctx'],
         arg_types=[_FtkDisplayPtr, FtkDisplaySync, c_void_p],
         return_type=c_int)
+
+def ftk_display_mem_set_sync_func(thiz, sync, ctx):
+    def _sync(ctx, rect):
+        sync(ctx, rect)
+
+    callback = FtkDisplaySync(_sync)
+    ret = _ftk_display_mem_set_sync_func(thiz, callback, None)
+    if ret == ftk.constants.RET_OK:
+        thiz._sync_cb = callback
+    return ret
 
 ftk_display_mem_is_active = ftk.dll.function('ftk_display_mem_is_active',
         '',
