@@ -24,22 +24,29 @@ class FtkWidgetInfo(Structure):
     pass
 
 _FtkWidgetPtr = POINTER(FtkWidget)
-FtkWidgetOnEvent = CFUNCTYPE(c_int, _FtkWidgetPtr, POINTER(ftk.event.FtkEvent))
+_FtkEventPtr = POINTER(ftk.event.FtkEvent)
+FtkWidgetOnEvent = CFUNCTYPE(c_int, _FtkWidgetPtr, _FtkEventPtr)
 FtkWidgetOnPaint = CFUNCTYPE(c_int, _FtkWidgetPtr)
 FtkWidgetDestroy = CFUNCTYPE(c_int, _FtkWidgetPtr)
 
 FtkWidget._fields_ = [
         ('ref', c_int),
+
         ('on_event', FtkWidgetOnEvent),
         ('on_paint', FtkWidgetOnPaint),
         ('destroy', FtkWidgetDestroy),
+
         ('prev', _FtkWidgetPtr),
         ('next', _FtkWidgetPtr),
         ('parent', _FtkWidgetPtr),
         ('children', _FtkWidgetPtr),
+
         ('priv', POINTER(FtkWidgetInfo)),
         ('priv_subclass', c_void_p * ftk.constants.FTK_WIDGET_SUBCLASS_NR)
         ]
+
+_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
+_FtkGcPtr = POINTER(ftk.gc.FtkGc)
 
 ftk_widget_init = ftk.dll.function('ftk_widget_init',
         '',
@@ -147,14 +154,14 @@ ftk_widget_get_gc = ftk.dll.function('ftk_widget_get_gc',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=POINTER(ftk.gc.FtkGc),
+        return_type=_FtkGcPtr,
         dereference_return=True)
 
 ftk_widget_canvas = ftk.dll.function('ftk_widget_canvas',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=POINTER(ftk.canvas.FtkCanvas),
+        return_type=_FtkCanvasPtr,
         dereference_return=True)
 
 ftk_widget_has_attr = ftk.dll.function('ftk_widget_has_attr',
@@ -169,12 +176,11 @@ ftk_widget_state = ftk.dll.function('ftk_widget_state',
         arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
-# FIXME: should return a python object, not void * (int/long)
-ftk_widget_user_data = ftk.dll.function('ftk_widget_user_data',
-        '',
-        args=['thiz'],
-        arg_types=[_FtkWidgetPtr],
-        return_type=c_void_p)
+def ftk_widget_user_data(thiz):
+    if hasattr(thiz, "_user_data"):
+        return thiz._user_data
+    else:
+        return None
 
 ftk_widget_get_text = ftk.dll.function('ftk_widget_get_text',
         '',
@@ -263,7 +269,7 @@ ftk_widget_set_id = ftk.dll.function('ftk_widget_set_id',
 ftk_widget_set_canvas = ftk.dll.function('ftk_widget_set_canvas',
         '',
         args=['thiz', 'canvas'],
-        arg_types=[_FtkWidgetPtr, POINTER(ftk.canvas.FtkCanvas)],
+        arg_types=[_FtkWidgetPtr, _FtkCanvasPtr],
         return_type=None)
 
 ftk_widget_set_parent = ftk.dll.function('ftk_widget_set_parent',
@@ -302,17 +308,13 @@ ftk_widget_unset_attr = ftk.dll.function('ftk_widget_unset_attr',
         arg_types=[_FtkWidgetPtr, c_int],
         return_type=None)
 
-# FIXME: it should be redefined.
-ftk_widget_set_user_data = ftk.dll.function('ftk_widget_set_user_data',
-        '',
-        args=['thiz', 'destroy', 'data'],
-        arg_types=[_FtkWidgetPtr, ftk.typedef.FtkDestroy, c_void_p],
-        return_type=None)
+def ftk_widget_set_user_data(thiz, udata):
+    thiz._user_data = udata
 
 ftk_widget_set_gc = ftk.dll.function('ftk_widget_set_gc',
         '',
         args=['thiz', 'state', 'gc'],
-        arg_types=[_FtkWidgetPtr, c_int, POINTER(ftk.gc.FtkGc)],
+        arg_types=[_FtkWidgetPtr, c_int, _FtkGcPtr],
         return_type=None)
 
 ftk_widget_set_font_size = ftk.dll.function('ftk_widget_set_font_size',
@@ -330,7 +332,7 @@ ftk_widget_set_font = ftk.dll.function('ftk_widget_set_font',
 ftk_widget_reset_gc = ftk.dll.function('ftk_widget_reset_gc',
         '',
         args=['thiz', 'state', 'gc'],
-        arg_types=[_FtkWidgetPtr, c_int, POINTER(ftk.gc.FtkGc)],
+        arg_types=[_FtkWidgetPtr, c_int, _FtkGcPtr],
         return_type=None)
 
 ftk_widget_set_text = ftk.dll.function('ftk_widget_set_text',
@@ -339,12 +341,19 @@ ftk_widget_set_text = ftk.dll.function('ftk_widget_set_text',
         arg_types=[_FtkWidgetPtr, c_char_p],
         return_type=None)
 
-ftk_widget_set_event_listener = ftk.dll.function(
+_ftk_widget_set_event_listener = ftk.dll.private_function(
         'ftk_widget_set_event_listener',
-        '',
-        args=['thiz', 'listener', 'ctx'],
         arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, c_void_p],
         return_type=None)
+
+def ftk_widget_set_event_listener(thiz, listener, ctx):
+    def _listener(ignored, obj):
+        event_ptr = cast(obj, _FtkEventPtr)
+        return listener(ctx, event_ptr.contents)
+
+    callback = ftk.typedef.FtkListener(_listener)
+    _ftk_widget_set_event_listener(thiz, callback, None)
+    thiz._event_listener = callback
 
 ftk_widget_set_wrap_mode = ftk.dll.function('ftk_widget_set_wrap_mode',
         '',
@@ -381,7 +390,6 @@ ftk_widget_next = ftk.dll.function('ftk_widget_next',
         return_type=_FtkWidgetPtr,
         dereference_return=True)
 
-# FIXME: should return a tuple of FtkWidget object
 ftk_widget_child = ftk.dll.function('ftk_widget_child',
         '',
         args=['thiz'],
@@ -455,5 +463,5 @@ ftk_widget_unref_self = ftk.dll.function('ftk_widget_unref_self',
 ftk_widget_event = ftk.dll.function('ftk_widget_event',
         '',
         args=['thiz', 'event'],
-        arg_types=[_FtkWidgetPtr, POINTER(ftk.event.FtkEvent)],
+        arg_types=[_FtkWidgetPtr, _FtkEventPtr],
         return_type=c_int)
