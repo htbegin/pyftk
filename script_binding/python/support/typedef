@@ -7,6 +7,8 @@ FtkWidgetState = c_int
 FtkWrapMode = c_int
 FtkAlignment = c_int
 FtkLogLevel = c_int
+FtkPixelFormat = c_int
+FtkRotate = c_int
 
 # ftk.app_window
 FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
