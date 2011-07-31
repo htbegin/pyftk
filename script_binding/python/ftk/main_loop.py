@@ -20,11 +20,12 @@ class FtkMainLoop(Structure):
 
 _FtkMainLoopPtr = POINTER(FtkMainLoop)
 _FtkSourcePtr = POINTER(ftk.source.FtkSource)
+_FtkSourcesManagerPtr = POINTER(ftk.sources_manager.FtkSourcesManager)
 
 ftk_main_loop_create = ftk.dll.function('ftk_main_loop_create',
         '',
         args=['sources_manager'],
-        arg_types=[POINTER(ftk.sources_manager.FtkSourcesManager)],
+        arg_types=[_FtkSourcesManagerPtr],
         return_type=_FtkMainLoopPtr,
         dereference_return=True,
         require_return=True)

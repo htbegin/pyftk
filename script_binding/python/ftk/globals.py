@@ -38,3 +38,15 @@ ftk_set_config = ftk.dll.function('ftk_set_config',
         args=['config'],
         arg_types=[POINTER(ftk.config.FtkConfig)],
         return_type=None)
+
+ftk_set_primary_source = ftk.dll.function('ftk_set_primary_source',
+        '',
+        args=['source'],
+        arg_types=[POINTER(ftk.source.FtkSource)],
+        return_type=None)
+
+ftk_set_sources_manager = ftk.dll.function('ftk_set_sources_manager',
+        '',
+        args=['sources_manager'],
+        arg_types=[POINTER(ftk.sources_manager.FtkSourcesManager)],
+        return_type=None)
