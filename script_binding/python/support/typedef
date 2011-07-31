@@ -85,3 +85,6 @@ FtkBitmapFactory = ftk.bitmap_factory.FtkBitmapFactory
 
 # ftk.display
 FtkDisplay = ftk.display.FtkDisplay
+
+# ftk.list_model
+FtkListModel = ftk.list_model.FtkListModel
