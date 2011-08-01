@@ -12,6 +12,12 @@ import ftk.dll
 import ftk.main_loop
 import ftk.allocator
 import ftk.config
+import ftk.source
+import ftk.sources_manager
+import ftk.theme
+import ftk.font_manager
+import ftk.bitmap_factory
+import ftk.wnd_manager
 
 # ftk_globals.h
 
@@ -49,4 +55,40 @@ ftk_set_sources_manager = ftk.dll.function('ftk_set_sources_manager',
         '',
         args=['sources_manager'],
         arg_types=[POINTER(ftk.sources_manager.FtkSourcesManager)],
+        return_type=None)
+
+ftk_set_theme = ftk.dll.function('ftk_set_theme',
+        '',
+        args=['theme'],
+        arg_types=[POINTER(ftk.theme.FtkTheme)],
+        return_type=None)
+
+ftk_set_font_manager = ftk.dll.function('ftk_set_font_manager',
+        '',
+        args=['font_manager'],
+        arg_types=[POINTER(ftk.font_manager.FtkFontManager)],
+        return_type=None)
+
+ftk_set_bitmap_factory = ftk.dll.function('ftk_set_bitmap_factory',
+        '',
+        args=['bitmap_factory'],
+        arg_types=[POINTER(ftk.bitmap_factory.FtkBitmapFactory)],
+        return_type=None)
+
+ftk_default_sources_manager = ftk.dll.function('ftk_default_sources_manager',
+        '',
+        args=[],
+        arg_types=[],
+        return_type=POINTER(ftk.sources_manager.FtkSourcesManager))
+
+ftk_set_main_loop = ftk.dll.function('ftk_set_main_loop',
+        '',
+        args=['main_loop'],
+        arg_types=[POINTER(ftk.main_loop.FtkMainLoop)],
+        return_type=None)
+
+ftk_set_wnd_manager = ftk.dll.function('ftk_set_wnd_manager',
+        '',
+        args=['wnd_manager'],
+        arg_types=[POINTER(ftk.wnd_manager.FtkWndManager)],
         return_type=None)

@@ -3,6 +3,7 @@ size_t = c_uint
 
 # ftk.constants
 FtkWidgetAttr = c_int
+FtkWidgetType = c_int
 FtkWidgetState = c_int
 FtkWrapMode = c_int
 FtkAlignment = c_int
@@ -94,3 +95,9 @@ FtkListRender = ftk.list_render.FtkListRender
 
 # ftk.wnd_manager
 FtkWndManager = ftk.wnd_manager.FtkWndManager
+
+# ftk.theme
+FtkTheme = ftk.theme.FtkTheme
+
+# ftk.xul
+FtkXulCallbacks = ftk.xul.FtkXulCallbacks
