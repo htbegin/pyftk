@@ -101,3 +101,7 @@ FtkTheme = ftk.theme.FtkTheme
 
 # ftk.xul
 FtkXulCallbacks = ftk.xul.FtkXulCallbacks
+
+# ftk.animation_trigger
+FtkAnimationTrigger = ftk.animation_trigger.FtkAnimationTrigger
+FtkAnimationEvent = ftk.animation_trigger.FtkAnimationEvent
