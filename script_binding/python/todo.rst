@@ -123,7 +123,6 @@ ftk_input_method_chooser.h
 ftk_input_method_manager.h
 ftk_input_method_preeditor.h
 ftk_input_method_preeditor_default.h
-ftk_input_method_util.h
 
 ftk_globals.h
 

@@ -10,6 +10,7 @@ FtkAlignment = c_int
 FtkLogLevel = c_int
 FtkPixelFormat = c_int
 FtkRotate = c_int
+FtkInputType = c_int
 
 # ftk.app_window
 FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
@@ -105,3 +106,9 @@ FtkXulCallbacks = ftk.xul.FtkXulCallbacks
 # ftk.animation_trigger
 FtkAnimationTrigger = ftk.animation_trigger.FtkAnimationTrigger
 FtkAnimationEvent = ftk.animation_trigger.FtkAnimationEvent
+
+# ftk.input_method
+FtkInputMethod = ftk.input_method.FtkInputMethod
+
+# ftk.input_method_manager
+FtkInputMethodManager = ftk.input_method_manager.FtkInputMethodManager
