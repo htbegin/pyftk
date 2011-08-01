@@ -2,21 +2,20 @@
 
 import unittest
 
+import common
 from ftk.backend import ftk_backend_init
 from ftk.constants import RET_OK
-"""
-from ftk.macros import ftk_macros
-from ftk.globals import ftk_set_allocator
-from ftk.allocator_default import ftk_allocator_default_create
-"""
 
 class TestFtkBackend(unittest.TestCase):
-    def test_ftk_backend_init(self):
-        """
-        if not ftk_macros.USE_STD_MALLOC:
-            ftk_set_allocator(ftk_allocator_default_create())
-        """
+    def setUp(self):
+        common.setup_allocator()
+        common.setup_wnd()
+
+    def test_init_one(self):
         self.assertEqual(ftk_backend_init(["-v", "--level", "1"]), RET_OK)
+
+    def test_init_two(self):
+        self.assertEqual(ftk_backend_init([]), RET_OK)
 
 if __name__ == "__main__":
     unittest.main()
