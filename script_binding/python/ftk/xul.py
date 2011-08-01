@@ -14,17 +14,43 @@ import ftk.widget
 
 # ftk_xul.h
 
-FtkXulTranslateText = CFUNCTYPE(c_char_p, c_void_p, c_char_p)
-FtkXulLoadImage = CFUNCTYPE(POINTER(ftk.bitmap.FtkBitmap), c_void_p, c_char_p)
+_FtkXulTranslateText = CFUNCTYPE(c_char_p, c_void_p, c_char_p)
+# FIXME typedef FtkBitmap* (*FtkXulLoadImage)(void* ctx, const char* filename)
+_FtkXulLoadImage = CFUNCTYPE(c_void_p, c_void_p, c_char_p)
 
-class FtkXulCallbacks(Structure):
+class _FtkXulCallbacks(Structure):
     _fields_ = [
             ('ctx', c_void_p),
-            ('translate_text', FtkXulTranslateText),
-            ('load_image', FtkXulLoadImage)
+            ('translate_text', _FtkXulTranslateText),
+            ('load_image', _FtkXulLoadImage)
             ]
 
-_FtkXulCallbacksPtr = POINTER(FtkXulCallbacks)
+class FtkXulCallbacks(object):
+    def __init__(self, ctx=None, translate_text=None, load_image=None):
+        self.ctx = ctx
+        self.translate_text = translate_text
+        self.load_image = load_image
+
+    def to_ctype_cbs(self):
+        if self.translate_text is not None:
+            def _translate_text(ignored, text):
+                return self.translate_text(self.ctx, text)
+            self._translate_cb = _FtkXulTranslateText(_translate_text)
+        else:
+            self._translate_cb = _FtkXulTranslateText()
+
+        if self.load_image is not None:
+            def _load_image(ignored, filename):
+                bitmap = self.load_image(self.ctx, filename)
+                assert isinstance(bitmap, ftk.bitmap.FtkBitmap)
+                return addressof(bitmap)
+            self._load_cb = _FtkXulLoadImage(_load_image)
+        else:
+            self._load_cb = _FtkXulLoadImage()
+
+        return _FtkXulCallbacks(None, self._translate_cb, self._load_cb)
+
+_FtkXulCallbacksPtr = POINTER(_FtkXulCallbacks)
 
 _FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
 
@@ -35,16 +61,21 @@ ftk_xul_load = ftk.dll.function('ftk_xul_load',
         return_type=_FtkWidgetPtr,
         dereference_return=True)
 
-ftk_xul_load_file = ftk.dll.function('ftk_xul_load_file',
-        '',
-        args=['filename', 'callbacks'],
+_ftk_xul_load_file = ftk.dll.private_function('ftk_xul_load_file',
         arg_types=[c_char_p, _FtkXulCallbacksPtr],
         return_type=_FtkWidgetPtr,
         dereference_return=True)
 
-ftk_xul_load_ex = ftk.dll.function('ftk_xul_load_ex',
-        '',
-        args=['xml', 'length', 'callbacks'],
+def ftk_xul_load_file(filename, callbacks):
+    cbs = callbacks.to_ctype_cbs()
+    return _ftk_xul_load_file(filename, byref(cbs))
+
+_ftk_xul_load_ex = ftk.dll.private_function('ftk_xul_load_ex',
         arg_types=[c_char_p, c_int, _FtkXulCallbacksPtr],
         return_type=_FtkWidgetPtr,
         dereference_return=True)
+
+def ftk_xul_load_ex(xml, callbacks):
+    length = len(xml)
+    cbs = callbacks.to_ctype_cbs()
+    return _ftk_xul_load_ex(xml, length, byref(cbs))

@@ -30,3 +30,9 @@ ftk_config_destroy = ftk.dll.function('ftk_config_destroy',
         args=['thiz'],
         arg_types=[_FtkConfigPtr],
         return_type=None)
+
+ftk_config_get_rotate = ftk.dll.function('ftk_config_get_rotate',
+        '',
+        args=['thiz'],
+        arg_types=[_FtkConfigPtr],
+        return_type=c_int)

@@ -18,6 +18,7 @@ import ftk.theme
 import ftk.font_manager
 import ftk.bitmap_factory
 import ftk.wnd_manager
+import ftk.display
 
 # ftk_globals.h
 
@@ -92,3 +93,21 @@ ftk_set_wnd_manager = ftk.dll.function('ftk_set_wnd_manager',
         args=['wnd_manager'],
         arg_types=[POINTER(ftk.wnd_manager.FtkWndManager)],
         return_type=None)
+
+ftk_default_display = ftk.dll.function('ftk_default_display',
+        '',
+        args=[],
+        arg_types=[],
+        return_type=POINTER(ftk.display.FtkDisplay))
+
+ftk_set_display = ftk.dll.function('ftk_set_display',
+        '',
+        args=['display'],
+        arg_types=[POINTER(ftk.display.FtkDisplay)],
+        return_type=None)
+
+ftk_default_config = ftk.dll.function('ftk_default_config',
+        '',
+        args=[],
+        arg_types=[],
+        return_type=POINTER(ftk.config.FtkConfig))
