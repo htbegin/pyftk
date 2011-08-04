@@ -94,3 +94,12 @@ def ftk_input_method_preeditor_show(thiz, caret):
 def ftk_input_method_preeditor_destroy(thiz):
     if thiz.destroy:
         thiz.destroy(thiz)
+
+ftk_input_method_preeditor_default_create = ftk.dll.function(
+        'ftk_input_method_preeditor_default_create',
+        '',
+        args=[],
+        arg_types=[],
+        return_type=_FtkImPreeditorPtr,
+        dereference_return=True,
+        require_return=True)

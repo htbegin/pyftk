@@ -115,3 +115,6 @@ FtkInputMethod = ftk.input_method.FtkInputMethod
 
 # ftk.input_method_manager
 FtkInputMethodManager = ftk.input_method_manager.FtkInputMethodManager
+
+# ftk.input_method_preeditor
+FtkImPreeditor = ftk.input_method_preeditor.FtkImPreeditor
