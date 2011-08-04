@@ -262,14 +262,36 @@ class C2PythonConverter(object):
         if len(redefine_dict) == 0:
             return results
 
+        new_results = []
+        for alias, line in self.local_struct_type_ptr_dict.iteritems():
+            if alias not in redefine_dict.values():
+                alias_def = self.local_struct_type_ptr_dict[alias]
+                sub_str = "".join(("\n\n", alias_def))
+                for line in results:
+                    new_line = line.replace(sub_str, "")
+                    new_results.append(new_line)
+                results = new_results
+
         redefine_results = []
         for type, alias in redefine_dict.iteritems():
+            if alias in self.local_struct_type_ptr_dict:
+                continue
             line = "%s = %s" % (alias, type)
             redefine_results.append(line)
 
         for lines in results:
             for type, alias in redefine_dict.iteritems():
-                redefine_lines = lines.replace(type, alias)
+                if alias in self.local_struct_type_ptr_dict:
+                    alias_def = self.local_struct_type_ptr_dict[alias]
+                    s_idx = lines.find(alias_def)
+                    if s_idx != -1:
+                        s_idx += len(alias_def)
+                        redefine_lines = "".join((lines[:s_idx],
+                                lines[s_idx:].replace(type, alias)))
+                    else:
+                        redefine_lines = lines.replace(type, alias)
+                else:
+                    redefine_lines = lines.replace(type, alias)
                 lines = redefine_lines
             redefine_results.append(redefine_lines)
 
@@ -373,6 +395,9 @@ class C2PythonConverter(object):
             name = token.alias
         else:
             name = token.name.lstrip("_")
+        struct_ptr = "_%sPtr" % (name,)
+        struct_ptr_line = "%s = POINTER(%s)" % (struct_ptr, name)
+        self.local_struct_type_ptr_dict[struct_ptr] = struct_ptr_line
 
         func_ptr_list = []
         m_list = []
@@ -405,9 +430,11 @@ class C2PythonConverter(object):
             line_end = "            ]"
             struct_line = "\n".join((line_one, line_two, line_mems, line_end))
             def_list.append(struct_line)
+            def_list.append(struct_ptr_line)
         else:
             struct_dec_line = "class %s(Structure):\n    pass" % (name,)
             def_list.append(struct_dec_line)
+            def_list.append(struct_ptr_line)
             for func_ptr in func_ptr_list:
                 def_list.append(self.func_ptr_type_dict[func_ptr])
             first_line = "%s._fields_ = [" % (name,)
@@ -420,6 +447,7 @@ class C2PythonConverter(object):
 
     def _convert_struct_type_def(self, content):
         self.func_ptr_type_dict = {}
+        self.local_struct_type_ptr_dict = {}
         struct_type_def = []
 
         for token, start, end in self.func_ptr_type.scanString(content):
