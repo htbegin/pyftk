@@ -18,7 +18,7 @@ class StructDefConverter(object):
 
         rval_type = var_type
         func_type = identity
-        arg_list = delimitedList(Group(var_type("type") + identity("id")))
+        arg_list = delimitedList(Group(var_type("type") + identity("name")))
         self.func_ptr_type = Suppress("typedef") + rval_type("rval") + \
                 Suppress("(") + Suppress("*") + func_type("name") + \
                 Suppress(")") + Suppress("(") + \
@@ -27,7 +27,7 @@ class StructDefConverter(object):
 
         array_len = Word(nums) | upcase_identity
         array_dec = Suppress("[") + array_len + Suppress("]")
-        member_list = OneOrMore(Group(var_type("type") + identity("id") + \
+        member_list = OneOrMore(Group(var_type("type") + identity("name") + \
                 Optional(array_dec)("len") + Suppress(";")))
         self.struct_type = Optional("typedef")("has_alias") + \
                 Suppress("struct") + identity("name") + \
@@ -137,7 +137,7 @@ class StructDefConverter(object):
         """
         print token.rval, token.name, token.args
         for a in token.args:
-            print a.type, a.id
+            print a.type, a.name
         """
 
         rval_type_str = self._type_str(token.rval)
@@ -175,7 +175,7 @@ class StructDefConverter(object):
         for m in token.members:
             if m.len:
                 m_str = "".join((indent, " ".join(m.type),
-                    "".join((" ", m.id, "[", m.len[0], "];"))))
+                    "".join((" ", m.name, "[", m.len[0], "];"))))
             else:
                 m_str = "".join((indent, " ".join(m), ";"))
             m_str_list.append(m_str)
@@ -200,7 +200,7 @@ class StructDefConverter(object):
         print "------------------------------------------------------"
         print token.has_alias, token.name, token.members, token.alias
         for m in token.members:
-            print m.type, m.id, m.len
+            print m.type, m.name, m.len
         print "------------------------------------------------------"
         """
         if token.has_alias:
@@ -225,7 +225,7 @@ class StructDefConverter(object):
                 except ValueError:
                     alen = "".join(("ftk.constants.", alen))
                 type_str = " * ".join((type_str, alen))
-            m_str = "('%s', %s)" % (m.id, type_str)
+            m_str = "('%s', %s)" % (m.name, type_str)
             m_list.append(m_str)
 
         def_list = []
