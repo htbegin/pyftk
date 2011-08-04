@@ -34,18 +34,37 @@ class StructDefConverter(object):
                 Suppress(";")
         self.struct_type.ignore(cppStyleComment)
 
+    def _to_python_func_ptr_type_def(self, token):
+        print token.rval, token.name, token.args
+        for a in token.args:
+            print a.type, a.id
+        return ""
+
+    def _to_python_struct_type_def(self, token):
+        print token.has_alias, token.name, token.members, token.alias
+        for m in token.members:
+            print m.type, m.id, m.len
+        return ""
+
     def run(self, finput):
+        self.func_ptr_type_def = []
+        self.func_ptr_type_name = []
+        self.struct_type_def = []
         with open(finput, "rb") as fd:
             content = fd.read()
             for token, start, end in self.func_ptr_type.scanString(content):
-                print token.rval, token.name, token.args
-                for a in token.args:
-                    print a.type, a.id
+                self.func_ptr_type_name.append(token.name)
+                self.func_ptr_type_def.append(
+                        self._to_python_func_ptr_type_def(token))
             for token, start, end in self.struct_type.scanString(content):
-                print token.has_alias, token.name, token.members, token.alias
-                for m in token.members:
-                    print m.type, m.id, m.len
-        return ""
+                self.struct_type_def.append(
+                        self._to_python_struct_type_def(token))
+
+        all_def = []
+        all_def.extend(self.func_ptr_type_def)
+        all_def.extend(self.struct_type_def)
+
+        return "\n".join(all_def)
 
 if __name__ == "__main__":
     converter = StructDefConverter()
