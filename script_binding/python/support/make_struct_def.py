@@ -36,6 +36,10 @@ class StructDefConverter(object):
                 Suppress(";")
         self.struct_type.ignore(cppStyleComment)
 
+        self.struct_alias = Suppress("typedef") + Suppress("struct") + \
+                identity("type") + identity("alias") + Suppress(";")
+        self.struct_alias.ignore(cppStyleComment)
+
     def _create_type_dict(self, fname):
         self.type_dict = {
                 "void" : "None",
@@ -76,10 +80,24 @@ class StructDefConverter(object):
                     continue
                 self.type_dict[key] = val
 
-    def _type_str(self, tinfo):
-        type_str = " ".join(tinfo)
+    def _in_type_dict(self, type_str):
+        if type_str in self.type_dict or type_str in self.private_types:
+            return True
+        else:
+            return False
+
+    def _type_dict_val(self, type_str):
         if type_str in self.type_dict:
             return self.type_dict[type_str]
+        elif type_str in self.private_types:
+            return type_str
+        else:
+            return None
+
+    def _type_str(self, tinfo):
+        type_str = " ".join(tinfo)
+        if self._in_type_dict(type_str):
+            return self._type_dict_val(type_str)
 
         if (tinfo[0] == "char" or (tinfo[0] == "unsigned char")) and tinfo[1] == "*":
             sys.stderr.write("unhandled type '%s'\n" % type_str)
@@ -88,10 +106,11 @@ class StructDefConverter(object):
         last_idx = len(tinfo) - 1
         while tinfo[last_idx] == "*":
             deref_type_str = " ".join(tinfo[0:last_idx])
-            if deref_type_str in self.type_dict:
+            if self._in_type_dict(deref_type_str):
                 prefix_str = "POINTER(" * (len(tinfo) - last_idx)
                 suffix_str = ")" * (len(tinfo) - last_idx)
-                return "".join((prefix_str, self.type_dict[deref_type_str], suffix_str))
+                return "".join((prefix_str,
+                    self._type_dict_val(deref_type_str), suffix_str))
             last_idx -= 1
 
         sys.stderr.write("unknown type '%s'\n" % type_str)
@@ -137,9 +156,6 @@ class StructDefConverter(object):
             assert isinstance(arg_type_str, str)
             line_content.append(arg_type_str)
 
-        """
-        FtkXulTranslateText = CFUNCTYPE(c_char_p, c_void_p, c_char_p)
-        """
         line_fmt = "".join(("%s = CFUNCTYPE(%s, ",
             ", ".join(("%s",) * len(token.args)), ")"))
         line = line_fmt % tuple(line_content)
@@ -151,12 +167,22 @@ class StructDefConverter(object):
             print m.type, m.id, m.len
         return ""
 
-    def run(self, finput):
+    def _create_private_types(self, content):
+        self.private_types = []
+        for token, start, end in self.struct_alias.scanString(content):
+            self.private_types.append(token.alias)
+
+        for token, start, end in self.struct_type.scanString(content):
+            if token.has_alias:
+                self.private_types.append(token.alias)
+
+    def run(self, finput, mname=None):
         self.func_ptr_type_def = []
         self.func_ptr_type_name = []
         self.struct_type_def = []
         with open(finput, "rb") as fd:
             content = fd.read()
+            self._create_private_types(content)
             for token, start, end in self.func_ptr_type.scanString(content):
                 self.func_ptr_type_name.append(token.name)
                 self.func_ptr_type_def.append(
@@ -173,7 +199,7 @@ class StructDefConverter(object):
 
 if __name__ == "__main__":
     converter = StructDefConverter()
-    content = converter.run("preeditor.h")
+    content = converter.run("preeditor.h", "input_method_preeditor")
     if content:
         print content
 
