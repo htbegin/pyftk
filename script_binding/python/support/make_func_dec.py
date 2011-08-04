@@ -9,7 +9,7 @@ import re
 
 from pyparsing import *
 
-class CtypeFuncDecConverter(object):
+class C2PythonConverter(object):
     def __init__(self, typedef_fname=None):
         self._create_parse_grammer()
         self._create_type_dict(typedef_fname)
@@ -25,8 +25,10 @@ class CtypeFuncDecConverter(object):
                 Literal("float") | Literal("double") | \
                 Literal("long double")
         identity = Word(alphas + "_", alphanums + "_")
+        upcase_identity = Word(srange("[A-Z_]"), srange("[0-9A-Z_]"))
         var_type = Optional("const") + (atom_var_type | identity) + \
                 Optional("*") + Optional("*")
+
         rval_type = var_type
         void_arg_list = Literal("void")
         no_void_arg_list = delimitedList(Group(var_type("type") + identity("name")))
@@ -34,6 +36,27 @@ class CtypeFuncDecConverter(object):
         self.func_dec = rval_type("rval") + identity("name") + Suppress("(") + \
                 arg_list("args") + Suppress(")") + Suppress(";")
         self.func_dec.ignore(cppStyleComment)
+
+        self.func_ptr_type = Suppress("typedef") + rval_type("rval") + \
+                Suppress("(") + Suppress("*") + identity("name") + \
+                Suppress(")") + Suppress("(") + \
+                no_void_arg_list("args") + Suppress(")") + Suppress(";")
+        self.func_ptr_type.ignore(cppStyleComment)
+
+        array_len = Word(nums) | upcase_identity
+        array_dec = Suppress("[") + array_len + Suppress("]")
+        member_list = OneOrMore(Group(var_type("type") + identity("name") + \
+                Optional(array_dec)("len") + Suppress(";")))
+        self.struct_type = Optional("typedef")("has_alias") + \
+                Suppress("struct") + identity("name") + \
+                Suppress("{") + member_list("members") + Suppress("}") + \
+                Optional(identity)("alias") + \
+                Suppress(";")
+        self.struct_type.ignore(cppStyleComment)
+
+        self.struct_alias = Suppress("typedef") + Suppress("struct") + \
+                identity("type") + identity("alias") + Suppress(";")
+        self.struct_alias.ignore(cppStyleComment)
 
     def _create_type_dict(self, fname):
         self.type_dict = {
@@ -269,6 +292,9 @@ if __name__ == "__main__":
             help="the name of the specific function", metavar="STRING")
     opt_parser.add_option("-m", "--module", dest="m_name",
             help="set the module name manually", metavar="STRING")
+    opt_parser.add_option("-s", "--struct", dest="struct_only",
+            action="store_true", default=False,
+            help="generate the struct definitions only")
     (options, args) = opt_parser.parse_args()
 
     if options.file is None or not os.path.isfile(options.file) or \
@@ -279,7 +305,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     cfg_file = os.path.join(os.path.dirname(sys.argv[0]), "typedef")
-    converter = CtypeFuncDecConverter(cfg_file)
+    converter = C2PythonConverter(cfg_file)
 
     if options.m_name is None:
         fname = os.path.basename(options.file)
