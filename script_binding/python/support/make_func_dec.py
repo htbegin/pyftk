@@ -112,8 +112,8 @@ class C2PythonConverter(object):
 
     def _type_str(self, tinfo):
         result = self._pre_type_str(tinfo)
-        if result is not None and self.type_str_post_fn is not None:
-            return self.type_str_post_fn(self.ctx, result)
+        if result is not None:
+            return result.replace(self.mpath, "")
         else:
             return result
 
@@ -264,21 +264,40 @@ class C2PythonConverter(object):
 
         return redefine_results
 
-    def run(self, finput, func, type_str_post_fn=None, ctx=None):
-        self.type_str_post_fn = type_str_post_fn
-        self.ctx = ctx
+    def _convert_struct_type_def(self, content):
+        return []
+
+    def _convert_func_dec(self, func, content):
+        decs = []
+        func_decs = self._scan_func_decs(content)
+        for dec in func_decs:
+            if func is not None and func != self._func_dec_name(dec):
+                continue
+            s = self._func_dec_str(dec)
+            decs.append(s)
+
+        if func is not None and len(decs) == 0:
+            sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
+
+        return decs
+
+    def run(self, finput, func, mpath, only_struct):
+        self.mpath = mpath
         results = []
         with open(finput, "rb") as fd:
-            func_decs = self._scan_func_decs(fd.read())
-            for dec in func_decs:
-                if func is not None and func != self._func_dec_name(dec):
-                    continue
-                s = self._func_dec_str(dec)
-                results.append(s)
-        if func is not None and len(results) == 0:
-            sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
+            content = fd.read()
+            defs = self._convert_struct_type_def(content)
+            if not only_struct:
+                decs = self._convert_func_dec(func, content)
+            else:
+                decs = []
+
+        results.extend(defs)
+        results.extend(decs)
+
         results = self._redefine_pointer(results)
         self.pointer_dict = {}
+
         return "\n\n".join(results)
 
 def strip_symbol_path(path, symbol):
@@ -315,10 +334,11 @@ if __name__ == "__main__":
             module_name = fname[0:-2]
     else:
         module_name = options.m_name
-    module_path = "".join(("ftk.", module_name, "."))
 
-    content = converter.run(options.file, options.func,
-            strip_symbol_path, module_path)
+    module_path = "".join(("ftk.", module_name, "."))
+    content = converter.run(options.file, options.func, module_path,
+            options.struct_only)
+
     if content:
         print content
 
