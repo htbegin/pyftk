@@ -161,6 +161,13 @@ class StructDefConverter(object):
         line = line_fmt % tuple(line_content)
         return line
 
+    def _struct_member_type_str(self, tinfo):
+        type_str = self._type_str(tinfo)
+        if type_str is None and len(tinfo) == 2 and \
+                tinfo[0] == "char" and tinfo[1] == "*":
+            type_str = "c_char_p"
+        return type_str
+
     def _exceptional_struct_type_def_str(self, token):
         indent = " " * 4
         name = token.name
@@ -189,11 +196,13 @@ class StructDefConverter(object):
     FtkImPreeditor._fields_ = ['id_c' : type_c, 'id_d' : type_d]
     """
     def _to_python_struct_type_def(self, token):
+        """
         print "------------------------------------------------------"
         print token.has_alias, token.name, token.members, token.alias
         for m in token.members:
             print m.type, m.id, m.len
         print "------------------------------------------------------"
+        """
         if token.has_alias:
             name = token.alias
         else:
@@ -202,7 +211,7 @@ class StructDefConverter(object):
         func_ptr_list = []
         m_list = []
         for m in token.members:
-            type_str = self._type_str(m.type)
+            type_str = self._struct_member_type_str(m.type)
             if type_str is None:
                 return self._exceptional_struct_type_def_str(token)
 
