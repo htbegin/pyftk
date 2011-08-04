@@ -76,6 +76,8 @@ class C2PythonConverter(object):
                 "long double" : "c_longdouble",
                 "const char *" : "c_char_p",
                 "const unsigned char *" : "c_char_p",
+                "char *" : "c_char_p",
+                "unsigned char *" : "c_char_p",
                 "void *" : "c_void_p",
                 }
 
@@ -100,7 +102,6 @@ class C2PythonConverter(object):
 
     def _create_pointer_info(self):
         self.pointer_re = re.compile(r"POINTER[(](?P<type>[a-zA-Z_.]+)[)]")
-        self.pointer_dict = {}
 
     def _scan_func_decs(self, content):
         results = []
@@ -110,34 +111,6 @@ class C2PythonConverter(object):
 
         return results
 
-    def _type_str(self, tinfo):
-        result = self._pre_type_str(tinfo)
-        if result is not None:
-            return result.replace(self.mpath, "")
-        else:
-            return result
-
-    def _pre_type_str(self, tinfo):
-        type_str = " ".join(tinfo)
-        if type_str in self.type_dict:
-            return self.type_dict[type_str]
-
-        if (tinfo[0] == "char" or (tinfo[0] == "unsigned char")) and tinfo[1] == "*":
-            sys.stderr.write("unhandled type '%s'\n" % type_str)
-            return None
-
-        last_idx = len(tinfo) - 1
-        while tinfo[last_idx] == "*":
-            deref_type_str = " ".join(tinfo[0:last_idx])
-            if deref_type_str in self.type_dict:
-                prefix_str = "POINTER(" * (len(tinfo) - last_idx)
-                suffix_str = ")" * (len(tinfo) - last_idx)
-                return "".join((prefix_str, self.type_dict[deref_type_str], suffix_str))
-            last_idx -= 1
-
-        sys.stderr.write("unknown type '%s'\n" % type_str)
-        return None
-
     def _gather_pointer_statistics(self, type_str):
         result = self.pointer_re.search(type_str)
         if result is not None:
@@ -146,6 +119,46 @@ class C2PythonConverter(object):
                 self.pointer_dict[type] += 1
             else:
                 self.pointer_dict[type] = 1
+
+    def _in_type_dict(self, type_str):
+        if type_str in self.type_dict or type_str in self.private_types:
+            return True
+        else:
+            return False
+
+    def _type_dict_val(self, type_str):
+        val = None
+        if type_str in self.type_dict:
+            val = self.type_dict[type_str]
+        elif type_str in self.private_types:
+            val = type_str
+
+        if val is not None:
+            val = val.replace(self.mpath, "")
+
+        return val
+
+    def _type_str(self, tinfo):
+        type_str = " ".join(tinfo)
+        if self._in_type_dict(type_str):
+            rval = self._type_dict_val(type_str)
+            self._gather_pointer_statistics(rval)
+            return rval
+
+        last_idx = len(tinfo) - 1
+        while tinfo[last_idx] == "*":
+            deref_type_str = " ".join(tinfo[0:last_idx])
+            if self._in_type_dict(deref_type_str):
+                prefix_str = "POINTER(" * (len(tinfo) - last_idx)
+                suffix_str = ")" * (len(tinfo) - last_idx)
+                rval = "".join((prefix_str,
+                    self._type_dict_val(deref_type_str), suffix_str))
+                self._gather_pointer_statistics(rval)
+                return rval
+            last_idx -= 1
+
+        sys.stderr.write("unknown type '%s'\n" % type_str)
+        return None
 
     def _exceptional_func_dec_str(self, func):
         (FUNC_RVAL_IDX, FUNC_NAME_IDX, FUNC_ARGS_IDX) = range(3)
@@ -191,7 +204,6 @@ class C2PythonConverter(object):
         if rval_type_str is None:
             return self._exceptional_func_dec_str(func)
         assert isinstance(rval_type_str, str)
-        self._gather_pointer_statistics(rval_type_str)
 
         func_name_str = func[FUNC_NAME_IDX]
         assert isinstance(func_name_str, str)
@@ -209,7 +221,6 @@ class C2PythonConverter(object):
                 if arg_type_str is None:
                     return self._exceptional_func_dec_str(func)
                 assert isinstance(arg_type_str, str)
-                self._gather_pointer_statistics(arg_type_str)
                 arg_type_list.append(arg_type_str)
 
         line_one = "%s = ftk.dll.function('%s'," % (func_name_str, func_name_str)
@@ -264,8 +275,161 @@ class C2PythonConverter(object):
 
         return redefine_results
 
+    """
+    typedef const char * (*FtkXulTranslateText)(void * ctx, const char * text);
+    ['const', 'char', '*'] FtkXulTranslateText [['void', '*', 'ctx'], ['const', 'char', '*', 'text']]
+    FtkXulTranslateText = CFUNCTYPE(c_char_p, c_void_p, c_char_p)
+    """
+    def _exceptional_func_ptr_type_def_str(self, token):
+        rval_type_str = " ".join(token.rval)
+        func_name_str = token.name
+        arg_str_list = []
+        for arg in token.args:
+            arg_str = " ".join(arg)
+            arg_str_list.append(arg_str)
+        args_str = ", ".join(arg_str_list)
+        line = "".join(("#typedef ", rval_type_str, " (*", func_name_str, ")",
+            "(", args_str, ");"))
+        return line
+
+    def _to_python_func_ptr_type_def(self, token):
+        """
+        print token.rval, token.name, token.args
+        for a in token.args:
+            print a.type, a.name
+        """
+
+        rval_type_str = self._type_str(token.rval)
+        if rval_type_str is None:
+            return self._exceptional_func_ptr_type_def_str(token)
+        assert isinstance(rval_type_str, str)
+
+        func_ptr_type_name = token.name
+        assert isinstance(rval_type_str, str)
+
+        line_content = [func_ptr_type_name, rval_type_str]
+        for arg in token.args:
+            arg_type_str = self._type_str(arg.type)
+            if arg_type_str is None:
+                return self._exceptional_func_ptr_type_def_str(token)
+            assert isinstance(arg_type_str, str)
+            line_content.append(arg_type_str)
+
+        line_fmt = "".join(("%s = CFUNCTYPE(%s, ",
+            ", ".join(("%s",) * len(token.args)), ")"))
+        line = line_fmt % tuple(line_content)
+        return line
+
+    def _create_private_types(self, content):
+        self.private_types = []
+        for token, start, end in self.struct_alias.scanString(content):
+            if token.alias not in self.type_dict:
+                self.private_types.append(token.alias)
+
+        for token, start, end in self.struct_type.scanString(content):
+            if token.has_alias and token.alias not in self.type_dict:
+                self.private_types.append(token.alias)
+
+        for token, start, end in self.func_ptr_type.scanString(content):
+            if token.name not in self.type_dict:
+                self.private_types.append(token.name)
+
+    """
+    related definitions......
+    class FtkXulCallbacks(Structure):
+        _fields_ = [
+                ('id_a', type_a),
+                ('id_b, type_b)
+                ]
+
+    class FtkImPreeditor(Structure):
+        pass
+    related definitions......
+    FtkImPreeditor._fields_ = ['id_c' : type_c, 'id_d' : type_d]
+    """
+    def _exceptional_struct_type_def_str(self, token):
+        indent = " " * 4
+        name = token.name
+        m_str_list = []
+        for m in token.members:
+            if m.len:
+                m_str = "".join((indent, " ".join(m.type),
+                    "".join((" ", m.name, "[", m.len[0], "];"))))
+            else:
+                m_str = "".join((indent, " ".join(m), ";"))
+            m_str_list.append(m_str)
+        ms_str = "\n".join(m_str_list)
+        return '"""\nstruct %s\n{\n%s\n};\n"""' % (name, ms_str)
+
+    def _to_python_struct_type_def(self, token):
+        """
+        print "------------------------------------------------------"
+        print token.has_alias, token.name, token.members, token.alias
+        for m in token.members:
+            print m.type, m.name, m.len
+        print "------------------------------------------------------"
+        """
+        if token.has_alias:
+            name = token.alias
+        else:
+            name = token.name.lstrip("_")
+
+        func_ptr_list = []
+        m_list = []
+        for m in token.members:
+            type_str = self._type_str(m.type)
+            if type_str is None:
+                return self._exceptional_struct_type_def_str(token)
+
+            if type_str in self.func_ptr_type_dict:
+                func_ptr_list.append(type_str)
+
+            if m.len:
+                alen = m.len[0]
+                try:
+                    int(alen)
+                except ValueError:
+                    alen = "".join(("ftk.constants.", alen))
+                type_str = " * ".join((type_str, alen))
+            m_str = "('%s', %s)" % (m.name, type_str)
+            m_list.append(m_str)
+
+        def_list = []
+        if token.has_alias:
+            for func_ptr in func_ptr_list:
+                def_list.append(self.func_ptr_type_dict[func_ptr])
+            line_one = "class %s(Structure):" % (name,)
+            line_two = "    _fields_ = ["
+            line_mems_fmt = ",\n".join((("            %s",) * len(m_list)))
+            line_mems = line_mems_fmt % tuple(m_list)
+            line_end = "            ]"
+            struct_line = "\n".join((line_one, line_two, line_mems, line_end))
+            def_list.append(struct_line)
+        else:
+            struct_dec_line = "class %s(Structure):\n    pass" % (name,)
+            def_list.append(struct_dec_line)
+            for func_ptr in func_ptr_list:
+                def_list.append(self.func_ptr_type_dict[func_ptr])
+            first_line = "%s._fields_ = [" % (name,)
+            middle_line_fmt = ",\n".join((("        %s",) * len(m_list)))
+            middle_line = middle_line_fmt % tuple(m_list)
+            last_line = "        ]"
+            struct_line = "\n".join((first_line, middle_line, last_line))
+            def_list.append(struct_line)
+        return "\n\n".join(def_list)
+
     def _convert_struct_type_def(self, content):
-        return []
+        self.func_ptr_type_dict = {}
+        struct_type_def = []
+
+        for token, start, end in self.func_ptr_type.scanString(content):
+            self.func_ptr_type_dict[token.name] = \
+                    self._to_python_func_ptr_type_def(token)
+
+        for token, start, end in self.struct_type.scanString(content):
+            struct_type_def.append(self._to_python_struct_type_def(token))
+
+        return struct_type_def
 
     def _convert_func_dec(self, func, content):
         decs = []
@@ -283,9 +447,13 @@ class C2PythonConverter(object):
 
     def run(self, finput, func, mpath, only_struct):
         self.mpath = mpath
+        self.pointer_dict = {}
+
         results = []
         with open(finput, "rb") as fd:
             content = fd.read()
+
+            self._create_private_types(content)
             defs = self._convert_struct_type_def(content)
             if not only_struct:
                 decs = self._convert_func_dec(func, content)
@@ -296,7 +464,6 @@ class C2PythonConverter(object):
         results.extend(decs)
 
         results = self._redefine_pointer(results)
-        self.pointer_dict = {}
 
         return "\n\n".join(results)
 
