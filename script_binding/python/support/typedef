@@ -33,6 +33,8 @@ FtkColor = ftk.typedef.FtkColor
 FtkTimer = ftk.typedef.FtkTimer
 FtkIdle = ftk.typedef.FtkIdle
 
+FtkPoint = ftk.typedef.FtkPoint
+
 # ftk.gc
 FtkGc = ftk.gc.FtkGc
 

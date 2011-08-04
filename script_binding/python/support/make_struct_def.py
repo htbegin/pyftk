@@ -161,11 +161,87 @@ class StructDefConverter(object):
         line = line_fmt % tuple(line_content)
         return line
 
+    def _exceptional_struct_type_def_str(self, token):
+        indent = " " * 4
+        name = token.name
+        m_str_list = []
+        for m in token.members:
+            if m.len:
+                m_str = "".join((indent, " ".join(m.type),
+                    "".join((" ", m.id, "[", m.len[0], "];"))))
+            else:
+                m_str = "".join((indent, " ".join(m), ";"))
+            m_str_list.append(m_str)
+        ms_str = "\n".join(m_str_list)
+        return '"""\nstruct %s\n{\n%s\n};\n"""' % (name, ms_str)
+
+    """
+    related definitions......
+    class FtkXulCallbacks(Structure):
+        _fields_ = [
+                ('id_a', type_a),
+                ('id_b, type_b)
+                ]
+
+    class FtkImPreeditor(Structure):
+        pass
+    related definitions......
+    FtkImPreeditor._fields_ = ['id_c' : type_c, 'id_d' : type_d]
+    """
     def _to_python_struct_type_def(self, token):
+        print "------------------------------------------------------"
         print token.has_alias, token.name, token.members, token.alias
         for m in token.members:
             print m.type, m.id, m.len
-        return ""
+        print "------------------------------------------------------"
+        if token.has_alias:
+            name = token.alias
+        else:
+            name = token.name.lstrip("_")
+
+        func_ptr_list = []
+        m_list = []
+        for m in token.members:
+            type_str = self._type_str(m.type)
+            if type_str is None:
+                return self._exceptional_struct_type_def_str(token)
+
+            if type_str in self.func_ptr_type_dict:
+                func_ptr_list.append(type_str)
+
+            if m.len:
+                alen = m.len[0]
+                try:
+                    int(alen)
+                except ValueError:
+                    alen = "".join(("ftk.constants.", alen))
+                type_str = " * ".join((type_str, alen))
+            m_str = "('%s', %s)" % (m.id, type_str)
+            m_list.append(m_str)
+
+        def_list = []
+        if token.has_alias:
+            for func_ptr in func_ptr_list:
+                def_list.append(self.func_ptr_type_dict[func_ptr])
+            line_one = "class %s(Structure):" % (name,)
+            line_two = "    _fields_ = ["
+            line_mems_fmt = ",\n".join((("            %s",) * len(m_list)))
+            line_mems = line_mems_fmt % tuple(m_list)
+            line_end = "            ]"
+            struct_line = "\n".join((line_one, line_two, line_mems, line_end))
+            def_list.append(struct_line)
+        else:
+            struct_dec_line = "class %s(Structure):\n    pass" % (name,)
+            def_list.append(struct_dec_line)
+            for func_ptr in func_ptr_list:
+                def_list.append(self.func_ptr_type_dict[func_ptr])
+            first_line = "%s._fields_ = [" % (name,)
+            middle_line_fmt = ",\n".join((("        %s",) * len(m_list)))
+            middle_line = middle_line_fmt % tuple(m_list)
+            last_line = "        ]"
+            struct_line = "\n".join((first_line, middle_line, last_line))
+            def_list.append(struct_line)
+        return "\n\n".join(def_list)
 
     def _create_private_types(self, content):
         self.private_types = []
@@ -176,26 +252,23 @@ class StructDefConverter(object):
             if token.has_alias:
                 self.private_types.append(token.alias)
 
+        for token, start, end in self.func_ptr_type.scanString(content):
+            self.private_types.append(token.name)
+
     def run(self, finput, mname=None):
-        self.func_ptr_type_def = []
-        self.func_ptr_type_name = []
+        self.func_ptr_type_dict = {}
         self.struct_type_def = []
         with open(finput, "rb") as fd:
             content = fd.read()
             self._create_private_types(content)
             for token, start, end in self.func_ptr_type.scanString(content):
-                self.func_ptr_type_name.append(token.name)
-                self.func_ptr_type_def.append(
-                        self._to_python_func_ptr_type_def(token))
+                self.func_ptr_type_dict[token.name] = \
+                        self._to_python_func_ptr_type_def(token)
             for token, start, end in self.struct_type.scanString(content):
                 self.struct_type_def.append(
                         self._to_python_struct_type_def(token))
 
-        all_def = []
-        all_def.extend(self.func_ptr_type_def)
-        all_def.extend(self.struct_type_def)
-
-        return "\n".join(all_def)
+        return "\n\n".join(self.struct_type_def)
 
 if __name__ == "__main__":
     converter = StructDefConverter()
