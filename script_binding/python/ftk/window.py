@@ -17,6 +17,8 @@ import ftk.bitmap
 
 _FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
 
+_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
+
 ftk_window_create = ftk.dll.function('ftk_window_create',
         '',
         args=['type', 'attr', 'x', 'y', 'width', 'height'],
@@ -59,7 +61,7 @@ ftk_window_paint_forcely = ftk.dll.function('ftk_window_paint_forcely',
 ftk_window_update = ftk.dll.function('ftk_window_update',
         '',
         args=['thiz', 'rect'],
-        arg_types=[_FtkWidgetPtr, POINTER(ftk.typedef.FtkRect)],
+        arg_types=[_FtkWidgetPtr, _FtkRectPtr],
         return_type=c_int)
 
 ftk_window_is_mapped = ftk.dll.function('ftk_window_is_mapped',
@@ -83,7 +85,7 @@ ftk_window_set_fullscreen = ftk.dll.function('ftk_window_set_fullscreen',
 ftk_window_invalidate = ftk.dll.function('ftk_window_invalidate',
         '',
         args=['thiz', 'rect'],
-        arg_types=[_FtkWidgetPtr, POINTER(ftk.typedef.FtkRect)],
+        arg_types=[_FtkWidgetPtr, _FtkRectPtr],
         return_type=c_int)
 
 ftk_window_set_background_with_alpha = ftk.dll.function(
