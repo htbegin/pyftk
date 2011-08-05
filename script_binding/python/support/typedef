@@ -11,6 +11,7 @@ FtkLogLevel = c_int
 FtkPixelFormat = c_int
 FtkRotate = c_int
 FtkInputType = c_int
+FtkMarqueeAttr = c_int
 
 # ftk.app_window
 FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu

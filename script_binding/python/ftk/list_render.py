@@ -35,3 +35,19 @@ FtkListRender._fields_ = [
 
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY),
         ]
+
+ftk_list_render_default_create = ftk.dll.function(
+        'ftk_list_render_default_create',
+        '',
+        args=[],
+        arg_types=[],
+        return_type=_FtkListRenderPtr,
+        dereference_return=True,
+        require_return=True)
+
+ftk_list_render_default_set_marquee_attr = ftk.dll.function(
+        'ftk_list_render_default_set_marquee_attr',
+        '',
+        args=['thiz', 'marquee_attr'],
+        arg_types=[_FtkListRenderPtr, c_int],
+        return_type=c_int)
