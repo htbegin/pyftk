@@ -6,41 +6,24 @@ from ctypes import pointer
 
 from ftk import *
 
-"""
-#define IDC_TEST_BUTTON 1000
+left_icon = None
+right_icon = None
 
-static int g_index = 0
-static FtkBitmap*  left_icon = NULL
-static FtkBitmap* right_icon = NULL
-
-static Ret button_quit_clicked(void* ctx, void* obj)
-{
-    ftk_widget_unref(ctx)
-
+def button_quit_clicked(win, button):
+    ftk_widget_unref(win)
     return RET_OK
-}
 
-static Ret button_more_clicked(void* ctx, void* obj)
-{
-    int i = 0
-    char text[32] = {0}
-    FtkListItemInfo info = {0}
-    FtkListModel* model = ctx
-
-    for(i = 0 i < 4 i++)
-    {
-        g_index++
-        ftk_snprintf(text, sizeof(text), "item%04d", g_index)
-        info.text = (text)
+def button_more_clicked(model, button):
+    for idx in range(4):
+        info = FtkListItemInfo()
+        info.text = "item%04d" % idx
         info.left_icon = left_icon
         info.right_icon = right_icon
-        info.type = g_index%4
-        ftk_list_model_add(model, &info)
-    }
+        info.type = idx % 4
+
+        ftk_list_model_add(model, info)
 
     return RET_OK
-}
-"""
 
 def on_item_clicked(ctx, vlist):
     model = ftk_list_view_get_model(vlist)
@@ -57,6 +40,9 @@ def on_item_clicked(ctx, vlist):
     return RET_OK
 
 def ftk_main():
+    global left_icon
+    global right_icon
+
     ftk_init(sys.argv)
 
     win = ftk_app_window_create()
@@ -72,14 +58,14 @@ def ftk_main():
     filename = "%s/alarm%s" % (
             ftk_config_get_test_data_dir(ftk_default_config()),
             FTK_STOCK_IMG_SUFFIX)
-    left_icon = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
-    left_icon = pointer(left_icon)
+    left_icon_obj = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
+    left_icon = pointer(left_icon_obj)
 
     filename = "%s/search%s" % (
             ftk_config_get_test_data_dir(ftk_default_config()),
             FTK_STOCK_IMG_SUFFIX)
-    right_icon = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
-    right_icon = pointer(right_icon)
+    right_icon_obj = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
+    right_icon = pointer(right_icon_obj)
 
     for idx in range(4):
         info = FtkListItemInfo()
@@ -106,7 +92,6 @@ def ftk_main():
     ftk_list_view_init(vlist, model, render, 40)
     ftk_list_model_unref(model)
 
-    """
     button = ftk_button_create(win, width/4, 3 * height/4 + 5, width/4, 60)
     ftk_widget_set_text(button, "more")
     ftk_widget_set_font_size(button, 20)
@@ -116,7 +101,6 @@ def ftk_main():
     ftk_widget_set_text(button, "quit")
     ftk_button_set_clicked_listener(button, button_quit_clicked, win)
     ftk_window_set_focus(win, button)
-    """
 
     ftk_widget_set_text(win, "list view demo")
     ftk_widget_show_all(win, 1)
