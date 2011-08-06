@@ -59,9 +59,8 @@ _ftk_list_view_set_clicked_listener = ftk.dll.private_function(
         return_type=c_int)
 
 def ftk_list_view_set_clicked_listener(thiz, listener, ctx):
-    def _listener(ignored, void_ptr):
-        list_view_ptr = cast(void_ptr, _FtkWidgetPtr)
-        return listener(ctx, list_view_ptr.contents)
+    def _listener(ignored, ignored_too):
+        return listener(ctx, thiz)
 
     callback = ftk.typedef.FtkListener(_listener)
     ret = _ftk_list_view_set_clicked_listener(thiz, callback, None)

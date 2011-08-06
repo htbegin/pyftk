@@ -14,7 +14,28 @@ class TestListModel(unittest.TestCase):
     def tearDown(self):
         ftk_list_model_destroy(self.model)
 
-    def test_add_get(self):
+    def test_add_get_one(self):
+        item = FtkListItemInfo()
+
+        self.assertEqual(item.text, "")
+
+        item.text = "one"
+        self.assertEqual(item.text, "one")
+
+        self.assertEqual(item.disable, 0)
+
+        ret = ftk_list_model_add(self.model, item)
+        self.assertEqual(ret, RET_OK)
+        (ret, data) = ftk_list_model_get_data(self.model, 0)
+        self.assertEqual(ret, RET_OK)
+
+        self.assertEqual(data.disable, 0)
+        data.disable = 1
+        (ret, data) = ftk_list_model_get_data(self.model, 0)
+        self.assertEqual(ret, RET_OK)
+        self.assertEqual(data.disable, 1)
+
+    def test_add_get_two(self):
         item = FtkListItemInfo()
         item.text = "add"
         item.disable = 0
@@ -66,6 +87,22 @@ class TestListModel(unittest.TestCase):
 
         total = ftk_list_model_get_total(self.model)
         self.assertEqual(total, 0)
+
+    def test_get_set_user_data(self):
+        user_data = "user_data"
+        extra_user_data = "extra_user_data"
+
+        item = FtkListItemInfo()
+        item.user_data = user_data
+        item.extra_user_data = extra_user_data
+
+        ret = ftk_list_model_add(self.model, item)
+        self.assertEqual(ret, RET_OK)
+
+        (ret, data) = ftk_list_model_get_data(self.model, 0)
+        self.assertEqual(ret, RET_OK)
+        self.assertTrue(data.user_data is user_data)
+        self.assertTrue(data.extra_user_data is extra_user_data)
 
 if __name__ == "__main__":
     unittest.main()

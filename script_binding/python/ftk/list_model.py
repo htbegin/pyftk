@@ -71,14 +71,19 @@ def ftk_list_model_disable_notify(thiz):
     return ftk.constants.RET_OK
 
 def ftk_list_model_set_changed_listener(thiz, listener, ctx):
-    thiz._listener = listener
-    thiz._listener_ctx = ctx
+    def _listener(ignored, ignored_too):
+        return listener(ctx, thiz)
+
+    callback = ftk.typedef.FtkListener(_listener)
+    thiz.listener = callback
+    thiz.listener_ctx = None
+
     return ftk.constants.RET_OK
 
 def ftk_list_model_notify(thiz):
     if thiz.disable_notify <= 0:
-        if hasattr(thiz, "_listener") and thiz._listener is not None:
-            return thiz._listener(thiz._listener_ctx, thiz)
+        if thiz.listener:
+            return thiz.listener(None, None)
         else:
             return ftk.constants.RET_OK
     else:

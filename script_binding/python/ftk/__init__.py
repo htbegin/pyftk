@@ -14,6 +14,7 @@ from ftk.globals import *
 from ftk.typedef import *
 from ftk.gc import *
 from ftk.bitmap import *
+from ftk.bitmap_factory import *
 from ftk.event import *
 from ftk.font import *
 from ftk.font_desc import *
@@ -21,11 +22,15 @@ from ftk.canvas import *
 from ftk.source import *
 from ftk.sources_manager import *
 from ftk.main_loop import *
+from ftk.config import *
 
 from ftk.widget import *
 from ftk.app_window import *
 from ftk.window import *
 from ftk.label import *
+from ftk.list_model import *
+from ftk.list_render import *
+from ftk.list_view import *
 
 # ftk.h
 
