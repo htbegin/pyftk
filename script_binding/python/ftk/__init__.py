@@ -33,6 +33,7 @@ from ftk.list_render import *
 from ftk.list_view import *
 from ftk.button import *
 from ftk.image import *
+from ftk.painter import *
 
 # ftk.h
 

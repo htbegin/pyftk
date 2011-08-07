@@ -12,6 +12,7 @@ FtkPixelFormat = c_int
 FtkRotate = c_int
 FtkInputType = c_int
 FtkMarqueeAttr = c_int
+FtkBgStyle = c_int
 
 # ftk.app_window
 FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
@@ -35,6 +36,7 @@ FtkTimer = ftk.typedef.FtkTimer
 FtkIdle = ftk.typedef.FtkIdle
 
 FtkPoint = ftk.typedef.FtkPoint
+FtkRegion = ftk.typedef.FtkRegion
 FtkCommitInfo = ftk.typedef.FtkCommitInfo
 
 # ftk.gc
