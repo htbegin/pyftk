@@ -23,6 +23,7 @@ from ftk.source import *
 from ftk.sources_manager import *
 from ftk.main_loop import *
 from ftk.config import *
+from ftk.theme import *
 
 from ftk.widget import *
 from ftk.app_window import *
@@ -35,6 +36,7 @@ from ftk.button import *
 from ftk.image import *
 from ftk.painter import *
 from ftk.wait_box import *
+from ftk.icon_view import *
 
 # ftk.h
 
