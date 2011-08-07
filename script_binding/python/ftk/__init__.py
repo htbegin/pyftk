@@ -34,6 +34,7 @@ from ftk.list_view import *
 from ftk.button import *
 from ftk.image import *
 from ftk.painter import *
+from ftk.wait_box import *
 
 # ftk.h
 
