@@ -43,6 +43,7 @@ from ftk.check_button import *
 from ftk.combo_box import *
 from ftk.dialog import *
 from ftk.entry import *
+from ftk.file_browser import *
 
 # ftk.h
 
