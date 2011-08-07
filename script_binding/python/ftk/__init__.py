@@ -44,6 +44,7 @@ from ftk.combo_box import *
 from ftk.dialog import *
 from ftk.entry import *
 from ftk.file_browser import *
+from ftk.menu_item import *
 
 # ftk.h
 

@@ -26,6 +26,8 @@ ftk_app_window_create = ftk.dll.function('ftk_app_window_create',
         dereference_return=True,
         require_return=True)
 
+_widget_options_menu_cb_refs = {}
+
 _ftk_app_window_set_on_prepare_options_menu = ftk.dll.private_function(
         'ftk_app_window_set_on_prepare_options_menu',
         arg_types=[_FtkWidgetPtr, _FtkPrepareOptionsMenu, c_void_p],
@@ -38,5 +40,5 @@ def ftk_app_window_set_on_prepare_options_menu(thiz, on_prepare_options_menu, ct
     callback = _FtkPrepareOptionsMenu(_on_prepare_options_menu)
     ret = _ftk_app_window_set_on_prepare_options_menu(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        thiz._options_menu_callback = callback
+        _widget_options_menu_cb_refs[addressof(thiz)] = callback
     return ret

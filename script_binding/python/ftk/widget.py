@@ -176,9 +176,12 @@ ftk_widget_state = ftk.dll.function('ftk_widget_state',
         arg_types=[_FtkWidgetPtr],
         return_type=c_int)
 
+_widget_udata_refs = {}
+
 def ftk_widget_user_data(thiz):
-    if hasattr(thiz, "_user_data"):
-        return thiz._user_data
+    key = addressof(thiz)
+    if key in _widget_udata_refs:
+        return _widget_udata_refs[key][0]
     else:
         return None
 
@@ -308,8 +311,19 @@ ftk_widget_unset_attr = ftk.dll.function('ftk_widget_unset_attr',
         arg_types=[_FtkWidgetPtr, c_int],
         return_type=None)
 
-def ftk_widget_set_user_data(thiz, udata):
-    thiz._user_data = udata
+_ftk_widget_set_user_data = ftk.dll.private_function(
+        'ftk_widget_set_user_data',
+        arg_types=[_FtkWidgetPtr, ftk.typedef.FtkDestroy, c_void_p],
+        return_type=None)
+
+def ftk_widget_set_user_data(thiz, destroy, data):
+    def _destroy(ignored):
+        destroy(data)
+
+    callback = ftk.typedef.FtkDestroy(_destroy)
+    # data can't be set as None
+    _ftk_widget_set_user_data(thiz, callback, c_void_p(1))
+    _widget_udata_refs[addressof(thiz)] = (data, callback)
 
 ftk_widget_set_gc = ftk.dll.function('ftk_widget_set_gc',
         '',
