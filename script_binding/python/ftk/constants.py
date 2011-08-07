@@ -134,7 +134,9 @@ FTK_MARQUEE_RIGHT2LEFT = 32
 # enum _FtkLogLevel
 (FTK_LOG_V,
 	FTK_LOG_D,
-	FTK_LOG_E) = range(0, 3)
+	FTK_LOG_I,
+	FTK_LOG_W,
+	FTK_LOG_E) = range(0, 5)
 # enum _FtkWidgetState
 (FTK_WIDGET_NORMAL,
 	FTK_WIDGET_FOCUSED,

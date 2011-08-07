@@ -74,12 +74,6 @@ ftk_default_main_loop = ftk.dll.function('ftk_default_main_loop',
         return_type=_FtkMainLoopPtr,
         dereference_return=True)
 
-ftk_default_log_level = ftk.dll.function('ftk_default_log_level',
-        '',
-        args=[],
-        arg_types=[],
-        return_type=c_int)
-
 ftk_default_wnd_manager = ftk.dll.function('ftk_default_wnd_manager',
         '',
         args=[],
@@ -191,12 +185,6 @@ ftk_set_main_loop = ftk.dll.function('ftk_set_main_loop',
         '',
         args=['main_loop'],
         arg_types=[_FtkMainLoopPtr],
-        return_type=None)
-
-ftk_set_log_level = ftk.dll.function('ftk_set_log_level',
-        '',
-        args=['level'],
-        arg_types=[c_int],
         return_type=None)
 
 ftk_set_status_panel = ftk.dll.function('ftk_set_status_panel',
