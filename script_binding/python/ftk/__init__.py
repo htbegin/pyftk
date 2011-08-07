@@ -42,6 +42,7 @@ from ftk.group_box import *
 from ftk.check_button import *
 from ftk.combo_box import *
 from ftk.dialog import *
+from ftk.entry import *
 
 # ftk.h
 

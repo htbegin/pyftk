@@ -346,6 +346,7 @@ _ftk_widget_set_event_listener = ftk.dll.private_function(
         arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, c_void_p],
         return_type=None)
 
+_event_listener_refs = {}
 def ftk_widget_set_event_listener(thiz, listener, ctx):
     def _listener(ignored, obj):
         event_ptr = cast(obj, _FtkEventPtr)
@@ -353,7 +354,7 @@ def ftk_widget_set_event_listener(thiz, listener, ctx):
 
     callback = ftk.typedef.FtkListener(_listener)
     _ftk_widget_set_event_listener(thiz, callback, None)
-    thiz._event_listener = callback
+    _event_listener_refs[addressof(thiz)] = callback
 
 ftk_widget_set_wrap_mode = ftk.dll.function('ftk_widget_set_wrap_mode',
         '',
