@@ -143,6 +143,7 @@ ftk_painter.h
 ftk_wait_box.h
 ftk_icon_view.h
 ftk_button.h
+ftk_group_box.h
 ftk_check_button.h
 ftk_combo_box.h
 ftk_dialog.h
