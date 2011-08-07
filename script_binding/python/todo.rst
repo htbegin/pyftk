@@ -166,3 +166,10 @@ Modules with External Dependency
 --------------------------------
 
 ftk_cairo.h depends on cairo.h
+
+----------
+complexity
+----------
+
+* callback function
+* void * pointer in callback/struct/arguments
