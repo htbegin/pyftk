@@ -39,6 +39,7 @@ from ftk.wait_box import *
 from ftk.icon_view import *
 from ftk.group_box import *
 from ftk.check_button import *
+from ftk.combo_box import *
 
 # ftk.h
 
