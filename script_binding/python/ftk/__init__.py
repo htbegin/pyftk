@@ -54,6 +54,7 @@ from ftk.scroll_bar import *
 from ftk.sprite import *
 from ftk.status_item import *
 from ftk.status_panel import *
+from ftk.tab import *
 
 # ftk.h
 
