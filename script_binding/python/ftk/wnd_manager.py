@@ -116,6 +116,7 @@ def ftk_wnd_manager_dispatch_event(thiz, event):
     else:
         return ftk.constants.RET_FAIL
 
+_global_listener_refs = {}
 def ftk_wnd_manager_add_global_listener(thiz, listener, ctx):
     if thiz.add_global_listener:
         def _listener(ignored, void_ptr):
@@ -125,20 +126,22 @@ def ftk_wnd_manager_add_global_listener(thiz, listener, ctx):
         callback = ftk.typedef.FtkListener(_listener)
         ret = thiz.add_global_listener(thiz, callback, None)
         if ret == ftk.constants.RET_OK:
-            if not hasattr(thiz, "_listener_cb_refs"):
-                thiz._listener_cb_refs = {}
-            thiz._listener_cb_refs[(listener, ctx)] = callback
+            _global_listener_refs.setdefault(addressof(thiz), {})\
+                    [(listener, id(ctx))] = callback
         return ret
     else:
         return ftk.constants.RET_FAIL
 
 def ftk_wnd_manager_remove_global_listener(thiz, listener, ctx):
-    if thiz.remove_global_listener and hasattr(thiz, "_listener_cb_refs") and \
-            (listener, ctx) in thiz._listener_cb_refs:
-        callback = thiz._listener_cb_refs[(listener, ctx)]
-        ret = thiz.remove_global_listener(thiz, callback, None)
-        if ret == ftk.constants.RET_OK:
-            del thiz._listener_cb_refs[(listener, ctx)]
+    if thiz.remove_global_listener:
+        f_key = addressof(thiz)
+        s_key = (listener, id(ctx))
+        if f_key in _global_listener_refs and \
+                s_key in _global_listener_refs[f_key]:
+            callback = _global_listener_refs[f_key][s_key]
+            ret = thiz.remove_global_listener(thiz, callback, None)
+            if ret == ftk.constants.RET_OK:
+                del _global_listener_refs[f_key][s_key]
     else:
         ret = ftk.constants.RET_FAIL
     return ret

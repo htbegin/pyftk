@@ -25,6 +25,7 @@ from ftk.sources_manager import *
 from ftk.main_loop import *
 from ftk.config import *
 from ftk.theme import *
+from ftk.wnd_manager import *
 
 from ftk.widget import *
 from ftk.app_window import *
@@ -50,6 +51,7 @@ from ftk.message_box import *
 from ftk.popup_menu import *
 from ftk.progress_bar import *
 from ftk.scroll_bar import *
+from ftk.sprite import *
 
 # ftk.h
 
