@@ -36,14 +36,10 @@ FtkSource._fields_ = [
         ]
 
 def ftk_source_disable(thiz):
-    if not isinstance(thiz, FtkSource):
-        return ftk.constants.RET_FAIL
     thiz.disable += 1
     return ftk.constants.RET_OK
 
 def ftk_source_enable(thiz):
-    if not isinstance(thiz, FtkSource):
-        return ftk.constants.RET_FAIL
     if thiz.disable > 0:
         thiz.disable -= 1
     else:
@@ -51,37 +47,38 @@ def ftk_source_enable(thiz):
     return ftk.constants.RET_OK
 
 def ftk_source_get_fd(thiz):
-    if not isinstance(thiz, FtkSource):
+    if thiz.get_fd:
+        return thiz.get_fd(thiz)
+    else:
         return -1
-    return thiz.get_fd(thiz)
 
 def ftk_source_check(thiz):
-    if not isinstance(thiz, FtkSource):
+    if thiz.check:
+        return thiz.check(thiz)
+    else:
         return -1
-    return thiz.check(thiz)
 
 def ftk_source_dispatch(thiz):
-    if not isinstance(thiz, FtkSource):
+    if thiz.dispatch:
+        return thiz.dispatch(thiz)
+    else:
         return ftk.constants.RET_FAIL
-    return thiz.dispatch(thiz)
 
 _source_cb_refs = {}
 
 def ftk_source_destroy(thiz):
-    if isinstance(thiz, FtkSource):
-        if id(thiz) in _source_cb_refs:
-            del _source_cb_refs[id(thiz)]
+    if thiz.destroy:
+        if addressof(thiz) in _source_cb_refs:
+            del _source_cb_refs[addressof(thiz)]
         thiz.destroy(thiz)
 
 def ftk_source_ref(thiz):
-    if isinstance(thiz, FtkSource):
-        thiz.ref += 1
+    thiz.ref += 1
 
 def ftk_source_unref(thiz):
-    if isinstance(thiz, FtkSource):
-        thiz.ref -= 1
-        if thiz.ref == 0:
-            ftk_source_destroy(thiz)
+    thiz.ref -= 1
+    if thiz.ref == 0:
+        ftk_source_destroy(thiz)
 
 # ftk_source_idle.h
 
@@ -97,7 +94,7 @@ def ftk_source_idle_create(action, user_data):
 
     func = ftk.typedef.FtkIdle(_action)
     result = _ftk_source_idle_create(func, None)
-    _source_cb_refs[id(result)] = func
+    _source_cb_refs[addressof(result)] = func
     return result
 
 # ftk_source_timer.h
@@ -114,22 +111,20 @@ def ftk_source_timer_create(interval, action, user_data):
 
     func = ftk.typedef.FtkTimer(_action)
     result = _ftk_source_timer_create(interval, func, None)
-    _source_cb_refs[id(result)] = func
+    _source_cb_refs[addressof(result)] = func
     return result
 
-_ftk_source_timer_reset = ftk.dll.private_function('ftk_source_timer_reset',
+ftk_source_timer_reset = ftk.dll.function('ftk_source_timer_reset',
+        '',
+        args=['thiz'],
         arg_types=[_FtkSourcePtr],
         return_type=c_int)
 
-def ftk_source_timer_reset(thiz):
-    return _ftk_source_timer_reset(byref(thiz))
-
-_ftk_source_timer_modify = ftk.dll.private_function('ftk_source_timer_modify',
+ftk_source_timer_modify = ftk.dll.function('ftk_source_timer_modify',
+        '',
+        args=['thiz', 'interval'],
         arg_types=[_FtkSourcePtr, c_int],
         return_type=c_int)
-
-def ftk_source_timer_modify(thiz, interval):
-    return _ftk_source_timer_modify(byref(thiz), interval)
 
 # ftk_source_primary.h
 
@@ -146,12 +141,11 @@ def ftk_source_primary_create(on_event, user_data):
 
     func = ftk.event.FtkOnEvent(_on_event)
     result = _ftk_source_primary_create(func, None)
-    _source_cb_refs[id(result)] = func
+    _source_cb_refs[addressof(result)] = func
     return result
 
-_ftk_source_queue_event = ftk.dll.private_function('ftk_source_queue_event',
+ftk_source_queue_event = ftk.dll.function('ftk_source_queue_event',
+        '',
+        args=['thiz', 'event'],
         arg_types=[_FtkSourcePtr, POINTER(ftk.event.FtkEvent)],
         return_type=c_int)
-
-def ftk_source_queue_event(thiz, event):
-    return _ftk_source_queue_event(byref(thiz), byref(event))
