@@ -155,7 +155,7 @@ ftk_menu_panel.h
 ftk_message_box.h
 ftk_popup_menu.h
 ftk_progress_bar.h
-ftk_radio_group.h
+ftk_group_box.h
 ftk_scroll_bar.h
 ftk_sprite.h
 ftk_status_item.h

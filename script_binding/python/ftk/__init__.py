@@ -49,6 +49,7 @@ from ftk.menu_panel import *
 from ftk.message_box import *
 from ftk.popup_menu import *
 from ftk.progress_bar import *
+from ftk.scroll_bar import *
 
 # ftk.h
 
