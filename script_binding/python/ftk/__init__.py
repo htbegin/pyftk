@@ -24,8 +24,12 @@ from ftk.source import *
 from ftk.sources_manager import *
 from ftk.main_loop import *
 from ftk.config import *
+from ftk.display import *
 from ftk.theme import *
 from ftk.wnd_manager import *
+from ftk.input_method_manager import *
+from ftk.xul import *
+from ftk.icon_cache import *
 
 from ftk.widget import *
 from ftk.app_window import *

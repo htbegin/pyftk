@@ -174,3 +174,16 @@ complexity
 
 * callback function
 * void * pointer in callback/struct/arguments
+
+----
+demo
+----
+demo_fullscreen.py
+demo_image_button.py
+demo_statusbar.py
+demo_transparent.py
+demo_ime.py
+demo_xul.py
+demo_text_view.py
+demo_bidi.py
+demo_multi_win.py
