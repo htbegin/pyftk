@@ -52,6 +52,8 @@ from ftk.popup_menu import *
 from ftk.progress_bar import *
 from ftk.scroll_bar import *
 from ftk.sprite import *
+from ftk.status_item import *
+from ftk.status_panel import *
 
 # ftk.h
 
