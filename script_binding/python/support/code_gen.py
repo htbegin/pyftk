@@ -55,7 +55,7 @@ class C2PythonConverter(object):
         self.struct_type.ignore(cppStyleComment)
 
         self.struct_alias = Suppress("typedef") + Suppress("struct") + \
-                identity("type") + identity("alias") + Suppress(";")
+                identity("name") + identity("alias") + Suppress(";")
         self.struct_alias.ignore(cppStyleComment)
 
     def _create_type_dict(self, fname):
@@ -344,17 +344,34 @@ class C2PythonConverter(object):
 
     def _create_private_types(self, content):
         self.private_types = []
+        self.dec_only_struct_types = {}
         for token, start, end in self.struct_alias.scanString(content):
             if token.alias not in self.type_dict:
                 self.private_types.append(token.alias)
+            self.dec_only_struct_types[token.name] = token.alias
 
         for token, start, end in self.struct_type.scanString(content):
             if token.has_alias and token.alias not in self.type_dict:
                 self.private_types.append(token.alias)
+            if not token.has_alias:
+                if token.name in self.dec_only_struct_types:
+                    del self.dec_only_struct_types[token.name]
 
         for token, start, end in self.func_ptr_type.scanString(content):
             if token.name not in self.type_dict:
                 self.private_types.append(token.name)
+
+    def _to_python_struct_type_dec(self, name):
+        dec_list = []
+        struct_ptr = "_%sPtr" % (name,)
+        struct_ptr_line = "%s = POINTER(%s)" % (struct_ptr, name)
+        self.local_struct_type_ptr_dict[struct_ptr] = struct_ptr_line
+
+        struct_dec_line = "class %s(Structure):\n    pass" % (name,)
+        dec_list.append(struct_dec_line)
+        dec_list.append(struct_ptr_line)
+
+        return "\n\n".join(dec_list)
 
     """
     related definitions......
@@ -456,6 +473,9 @@ class C2PythonConverter(object):
 
         for token, start, end in self.struct_type.scanString(content):
             struct_type_def.append(self._to_python_struct_type_def(token))
+
+        for alias in self.dec_only_struct_types.itervalues():
+            struct_type_def.append(self._to_python_struct_type_dec(alias))
 
         return struct_type_def
 
