@@ -47,6 +47,7 @@ from ftk.file_browser import *
 from ftk.menu_item import *
 from ftk.menu_panel import *
 from ftk.message_box import *
+from ftk.popup_menu import *
 
 # ftk.h
 
