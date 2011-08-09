@@ -13,3 +13,7 @@ m4/
 po/zh_CN.gmo
 
 config.log
+
+script_binding/python/demo/template.py
+script_binding/python/ftk/template.py
+script_binding/python/test/template.py
