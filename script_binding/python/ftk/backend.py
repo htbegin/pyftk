@@ -16,9 +16,14 @@ _ftk_backend_init = ftk.dll.private_function('ftk_backend_init',
         arg_types=[c_int, POINTER(c_char_p)],
         return_type=c_int)
 
-def ftk_backend_init(argv):
-    argc = len(argv)
-    arg_array = (c_char_p * argc)()
-    for idx,arg in enumerate(argv):
-        arg_array[idx] = arg
-    return _ftk_backend_init(argc, arg_array)
+def ftk_backend_init(arg_seq):
+    if arg_seq is not None and arg_seq:
+        argc = len(arg_seq)
+        argv = (c_char_p * argc)()
+        for idx, arg in enumerate(arg_seq):
+            argv[idx] = arg
+    else:
+        argc = 0
+        argv = None
+
+    return _ftk_backend_init(argc, argv)

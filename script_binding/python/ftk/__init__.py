@@ -69,15 +69,17 @@ _ftk_init = ftk.dll.private_function('ftk_init',
         arg_types=[ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)],
         return_type=ctypes.c_int)
 
-def ftk_init(argv):
-    argc = len(argv)
-    if argc != 0:
-        arg_array = (ctypes.c_char_p * argc)()
-        for idx, arg in enumerate(argv):
-            arg_array[idx] = arg
+def ftk_init(arg_seq):
+    if arg_seq is not None and arg_seq:
+        argc = len(arg_seq)
+        argv = (ctypes.c_char_p * argc)()
+        for idx, arg in enumerate(arg_seq):
+            argv[idx] = arg
     else:
-        arg_array = None
-    return _ftk_init(argc, arg_array)
+        argc = 0
+        argv = None
+
+    return _ftk_init(argc, argv)
 
 ftk_run = ftk.dll.function('ftk_run',
         '',
