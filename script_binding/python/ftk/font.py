@@ -47,29 +47,28 @@ FtkFont._fields_ = [
         ]
 
 def ftk_font_height(thiz):
-    if not isinstance(thiz, FtkFont):
-        return -1
-    return thiz.height(thiz)
+    if thiz.height:
+        return thiz.height(thiz)
+    else:
+        return 16
 
 def ftk_font_lookup(thiz, code):
-    if not isinstance(thiz, FtkFont):
-        return None
-    glyph = FtkGlyph()
-    ret = thiz.lookup(thiz, code, byref(glyph))
-    if ret == ftk.constants.RET_OK:
-        return glyph
+    if thiz.lookup:
+        glyph = FtkGlyph()
+        ret = thiz.lookup(thiz, code, byref(glyph))
+        if ret != ftk.constants.RET_OK:
+            glyph = None
     else:
-        return None
+        ret = ftk.constants.RET_FAIL
+        glyph = None
+
+    return (ret, glyph)
 
 def ftk_font_ref(thiz):
-    if not isinstance(thiz, FtkFont):
-        return 0
     thiz.ref += 1
     return thiz.ref
 
 def ftk_font_unref(thiz):
-    if not isinstance(thiz, FtkFont):
-        return 0
     thiz.ref -= 1
     ret = thiz.ref
     if ret == 0:
@@ -77,7 +76,7 @@ def ftk_font_unref(thiz):
     return ret
 
 def ftk_font_destroy(thiz):
-    if isinstance(thiz, FtkFont):
+    if thiz.destroy:
         thiz.destroy(thiz)
 
 ftk_font_cache_create = ftk.dll.function('ftk_font_cache_create',
