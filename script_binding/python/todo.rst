@@ -82,18 +82,18 @@ ftk_display.h
 ftk_display_mem.h
 ftk_display_rotate.h
 
-*ftk_interpolator.h*
-*ftk_interpolator_acc_decelerate.h*
-*ftk_interpolator_accelerate.h*
-*ftk_interpolator_bounce.h*
-*ftk_interpolator_decelerate.h*
-*ftk_interpolator_linear.h*
+ftk_interpolator.h
+ftk_interpolator_acc_decelerate.h
+ftk_interpolator_accelerate.h
+ftk_interpolator_bounce.h
+ftk_interpolator_decelerate.h
+ftk_interpolator_linear.h
 
-*ftk_animation.h*
-*ftk_animation_alpha.h*
-*ftk_animation_expand.h*
-*ftk_animation_scale.h*
-*ftk_animation_translate.h*
+ftk_animation.h
+ftk_animation_alpha.h
+ftk_animation_expand.h
+ftk_animation_scale.h
+ftk_animation_translate.h
 
 ftk_main_loop.h
 

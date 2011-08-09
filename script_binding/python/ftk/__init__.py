@@ -32,6 +32,7 @@ from ftk.xul import *
 from ftk.icon_cache import *
 from ftk.text_view import *
 from ftk.interpolator import *
+from ftk.animation import *
 
 from ftk.widget import *
 from ftk.app_window import *

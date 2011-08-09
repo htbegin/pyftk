@@ -126,3 +126,6 @@ FtkImPreeditor = ftk.input_method_preeditor.FtkImPreeditor
 
 # ftk.interpolator
 FtkInterpolator = ftk.interpolator.FtkInterpolator
+
+# ftk.animation
+FtkAnimation = ftk.animation.FtkAnimation
