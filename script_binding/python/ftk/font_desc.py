@@ -16,7 +16,7 @@ import ftk.constants
 # FtkFontDesc is defined at ftk_font_desc.c
 class FtkFontDesc(Structure):
     def __str__(self):
-        return ftk_font_desc_get_string(self)
+        return ftk_font_desc_get_string(self)[1]
 
 _FtkFontDescPtr = POINTER(FtkFontDesc)
 
@@ -80,9 +80,9 @@ def ftk_font_desc_get_string(thiz):
     desc = create_string_buffer(FONT_DESC_LEN)
     ret = _ftk_font_desc_get_string(thiz, desc, sizeof(desc))
     if ret == ftk.constants.RET_OK:
-        return desc.value
+        return (ret, desc.value)
     else:
-        return ""
+        return (ret, None)
 
 ftk_font_desc_ref = ftk.dll.function('ftk_font_desc_ref',
         '',

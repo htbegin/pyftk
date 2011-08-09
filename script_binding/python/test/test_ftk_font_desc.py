@@ -38,7 +38,7 @@ class TestFontDesc(unittest.TestCase):
         desc_str_got = str(desc_obj)
         self.assertEqual(desc_str, desc_str_got)
 
-        desc_str_got = ftk_font_desc_get_string(desc_obj)
+        desc_str_got = ftk_font_desc_get_string(desc_obj)[1]
         self.assertEqual(desc_str, desc_str_got)
 
         ftk_font_desc_unref(desc_obj)

@@ -11,6 +11,7 @@ from ftk.main_loop import ftk_main_loop_create
 from ftk.wnd_manager import ftk_wnd_manager_default_create
 from ftk.backend import ftk_backend_init
 from ftk.display_rotate import ftk_display_rotate_create
+from ftk.log import ftk_set_log_level
 from ftk.globals import *
 from ftk.allocator import ftk_allocator_default_create
 
