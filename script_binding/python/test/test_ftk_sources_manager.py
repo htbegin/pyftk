@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
+import ctypes
 
 import common
 from ftk.constants import RET_OK, RET_FAIL, FTK_MIN_SOURCE_NR
@@ -49,7 +50,7 @@ class TestSourcesManager(unittest.TestCase):
         src = FtkSource()
         self.assertEqual(ftk_sources_manager_add(manager, src), RET_OK)
         new_src = ftk_sources_manager_get(manager, 0)
-        self.assertTrue(new_src is src)
+        self.assertEqual(ctypes.addressof(new_src), ctypes.addressof(src))
         ftk_sources_manager_destroy(manager)
 
     def test_set_need_refresh(self):
