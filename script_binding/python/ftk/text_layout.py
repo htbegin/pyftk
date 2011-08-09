@@ -9,9 +9,12 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.dll
+import ftk.constants
 import ftk.font
 
 # ftk_layout.h
+
+_FtkFontPtr = POINTER(ftk.font.FtkFont)
 
 class FtkTextLayout(Structure):
     pass
@@ -27,8 +30,6 @@ class FtkTextLine(Structure):
             ]
 
 _FtkTextLayoutPtr = POINTER(FtkTextLayout)
-
-_FtkFontPtr = POINTER(ftk.font.FtkFont)
 
 ftk_text_layout_create = ftk.dll.function('ftk_text_layout_create',
         '',
@@ -75,12 +76,17 @@ ftk_text_layout_skip_to = ftk.dll.function('ftk_text_layout_skip_to',
         arg_types=[_FtkTextLayoutPtr, c_int],
         return_type=c_int)
 
-ftk_text_layout_get_visual_line = ftk.dll.function(
+_ftk_text_layout_get_visual_line = ftk.dll.private_function(
         'ftk_text_layout_get_visual_line',
-        '',
-        args=['thiz', 'line'],
         arg_types=[_FtkTextLayoutPtr, POINTER(FtkTextLine)],
         return_type=c_int)
+
+def ftk_text_layout_get_visual_line(thiz):
+    line = FtkTextLine()
+    ret = _ftk_text_layout_get_visual_line(thiz, byref(line))
+    if ret != ftk.constants.RET_OK:
+        line = None
+    return (ret, line)
 
 ftk_text_layout_destroy = ftk.dll.function('ftk_text_layout_destroy',
         '',
