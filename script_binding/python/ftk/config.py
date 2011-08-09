@@ -25,6 +25,22 @@ ftk_config_create = ftk.dll.function('ftk_config_create',
         dereference_return=True,
         require_return=True)
 
+_ftk_config_init = ftk.dll.private_function('ftk_config_init',
+        arg_types=[POINTER(FtkConfig), c_int, POINTER(c_char_p)],
+        return_type=c_int)
+
+def ftk_config_init(thiz, arg_seq):
+    if arg_seq is not None and arg_seq:
+        argc = len(arg_seq)
+        argv = (c_char_p * argc)()
+        for idx in range(argc):
+            argv[idx] = arg_seq[idx]
+    else:
+        argc = 0
+        argv = None
+
+    return _ftk_config_init(thiz, argc, argv)
+
 ftk_config_load = ftk.dll.function('ftk_config_load',
         '',
         args=['thiz', 'progname'],
