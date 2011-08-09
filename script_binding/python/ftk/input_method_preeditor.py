@@ -49,12 +49,6 @@ FtkImPreeditor._fields_ = [
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
-ftk_im_show_preeditor = ftk.dll.function('ftk_im_show_preeditor',
-        '',
-        args=['editor', 'caret_pos', 'info'],
-        arg_types=[_FtkWidgetPtr, _FtkPointPtr, POINTER(ftk.typedef.FtkCommitInfo)],
-        return_type=c_int)
-
 def ftk_input_method_preeditor_reset(thiz):
     if thiz.reset:
         return thiz.reset(thiz)
@@ -94,6 +88,12 @@ def ftk_input_method_preeditor_show(thiz, caret):
 def ftk_input_method_preeditor_destroy(thiz):
     if thiz.destroy:
         thiz.destroy(thiz)
+
+ftk_im_show_preeditor = ftk.dll.function('ftk_im_show_preeditor',
+        '',
+        args=['editor', 'caret_pos', 'info'],
+        arg_types=[_FtkWidgetPtr, _FtkPointPtr, POINTER(ftk.typedef.FtkCommitInfo)],
+        return_type=c_int)
 
 ftk_input_method_preeditor_default_create = ftk.dll.function(
         'ftk_input_method_preeditor_default_create',

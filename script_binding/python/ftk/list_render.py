@@ -8,6 +8,7 @@ __version__ = '$Id: $'
 
 from ctypes import *
 
+import ftk.dll
 import ftk.constants
 import ftk.canvas
 import ftk.list_model
@@ -15,13 +16,14 @@ import ftk.widget
 
 # ftk_list_render.h
 
+_FtkListModelPtr = POINTER(ftk.list_model.FtkListModel)
+_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
+_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+
 class FtkListRender(Structure):
     pass
 
 _FtkListRenderPtr = POINTER(FtkListRender)
-_FtkListModelPtr = POINTER(ftk.list_model.FtkListModel)
-_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
 
 FtkListRenderInit = CFUNCTYPE(c_int, _FtkListRenderPtr, _FtkListModelPtr, _FtkWidgetPtr)
 FtkListRenderPaint = CFUNCTYPE(c_int, _FtkListRenderPtr, _FtkCanvasPtr, c_int,
@@ -35,6 +37,22 @@ FtkListRender._fields_ = [
 
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY),
         ]
+
+def ftk_list_render_init(thiz, model, list_view):
+    if thiz.init:
+        return thiz.init(thiz, model, list_view)
+    else:
+        return ftk.constants.RET_FAIL
+
+def ftk_list_render_paint(thiz, canvas, pos, x, y, w, h):
+    if thiz.paint:
+        return thiz.paint(thiz, canvas, pos, x, y, w, h)
+    else:
+        return ftk.constants.RET_FAIL
+
+def ftk_list_render_destroy(thiz):
+    if thiz.destroy:
+        thiz.destroy(thiz)
 
 ftk_list_render_default_create = ftk.dll.function(
         'ftk_list_render_default_create',

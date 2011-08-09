@@ -113,8 +113,6 @@ ftk_wnd_manager_default.h
 
 ftk_xul.h
 
-ftk_text_view.h
-
 ftk_animation_trigger.h
 ftk_animation_trigger_default.h
 ftk_animation_trigger_silence.h
@@ -138,6 +136,8 @@ Widget Modules
 --------------
 ftk_list_view.h
 ftk_list_render_default.h
+
+ftk_text_view.h
 
 ftk_image.h
 ftk_painter.h
@@ -188,3 +188,71 @@ demo_text_view.py
 apps
 ----
 desktop
+
+---------------
+redefine struct
+---------------
+
+FtkIconViewItem
+
+FtkListItemInfo
+
+----------------
+release callback
+----------------
+
+widget
+======
+ftk_status_item_set_clicked_listener
+
+ftk_scroll_bar_set_listener
+
+ftk_popup_menu_set_clicked_listener
+
+ftk_menu_item_set_clicked_listener
+
+ftk_file_browser_set_choosed_handler
+
+ftk_check_button_set_clicked_listener
+
+ftk_button_set_clicked_listener
+
+ftk_icon_view_set_clicked_listener
+
+ftk_painter_set_paint_listener
+
+ftk_list_view_set_clicked_listener
+
+ftk_app_window_set_on_prepare_options_menu
+
+ftk_widget_set_event_listener
+
+--------------
+void * related
+--------------
+
+function argument
+=================
+# the application knows the type of item when cast to void pointer type
+Ret ftk_list_model_add(FtkListModel* thiz, void* item);
+
+# the application knows the type of item when cast from void pointer type
+Ret ftk_list_model_get_data(FtkListModel* thiz, size_t index, void** ret);
+
+-------------------------------
+c_char_p versus POINTER(c_char)
+-------------------------------
+The constructor of c_char_p  accepts an integer address, or a string.
+
+The constructor of c_char accepts an optional string initializer,
+the length of the string must be exactly one character.
+
+Represents the C char * datatype when it points to a zero-terminated string.
+
+For a general character pointer that may also point to binary data, POINTER(c_char) must be used.
+
+--------------------
+c_char versus c_byte
+--------------------
+c_char in python is 1-character string, in c is char
+c_byte in python is int/long, in c is char

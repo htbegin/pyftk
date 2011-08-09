@@ -42,7 +42,8 @@ class FtkXulCallbacks(object):
         if self.load_image is not None:
             def _load_image(ignored, filename):
                 bitmap = self.load_image(self.ctx, filename)
-                assert isinstance(bitmap, ftk.bitmap.FtkBitmap)
+                if not isinstance(bitmap, ftk.bitmap.FtkBitmap):
+                    raise TypeError("load_image should return a instance of FtkBitmap")
                 return addressof(bitmap)
             self._load_cb = _FtkXulLoadImage(_load_image)
         else:
@@ -57,23 +58,26 @@ _FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
 ftk_xul_load = ftk.dll.function('ftk_xul_load',
         '',
         args=['xml', 'length'],
-        arg_types=[c_char_p, c_int],
+        arg_types=[POINTER(c_char), c_int],
         return_type=_FtkWidgetPtr,
-        dereference_return=True)
+        dereference_return=True,
+        require_return=True)
 
 _ftk_xul_load_file = ftk.dll.private_function('ftk_xul_load_file',
         arg_types=[c_char_p, _FtkXulCallbacksPtr],
         return_type=_FtkWidgetPtr,
-        dereference_return=True)
+        dereference_return=True,
+        require_return=True)
 
 def ftk_xul_load_file(filename, callbacks):
     cbs = callbacks.to_ctype_cbs()
     return _ftk_xul_load_file(filename, byref(cbs))
 
 _ftk_xul_load_ex = ftk.dll.private_function('ftk_xul_load_ex',
-        arg_types=[c_char_p, c_int, _FtkXulCallbacksPtr],
+        arg_types=[POINTER(c_char), c_int, _FtkXulCallbacksPtr],
         return_type=_FtkWidgetPtr,
-        dereference_return=True)
+        dereference_return=True,
+        require_return=True)
 
 def ftk_xul_load_ex(xml, callbacks):
     length = len(xml)

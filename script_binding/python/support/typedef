@@ -1,5 +1,5 @@
 Ret = c_int
-size_t = c_uint
+size_t = c_size_t
 
 # ftk.constants
 FtkWidgetAttr = c_int

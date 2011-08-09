@@ -16,15 +16,20 @@ import ftk.gc
 import ftk.canvas
 
 # ftk_widget.h
+
+_FtkEventPtr = POINTER(ftk.event.FtkEvent)
+_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
+_FtkGcPtr = POINTER(ftk.gc.FtkGc)
+
 class FtkWidget(Structure):
     pass
+
+_FtkWidgetPtr = POINTER(FtkWidget)
 
 # FtkWidgetInfo is defined at ftk_widget.c
 class FtkWidgetInfo(Structure):
     pass
 
-_FtkWidgetPtr = POINTER(FtkWidget)
-_FtkEventPtr = POINTER(ftk.event.FtkEvent)
 FtkWidgetOnEvent = CFUNCTYPE(c_int, _FtkWidgetPtr, _FtkEventPtr)
 FtkWidgetOnPaint = CFUNCTYPE(c_int, _FtkWidgetPtr)
 FtkWidgetDestroy = CFUNCTYPE(c_int, _FtkWidgetPtr)
@@ -44,9 +49,6 @@ FtkWidget._fields_ = [
         ('priv', POINTER(FtkWidgetInfo)),
         ('priv_subclass', c_void_p * ftk.constants.FTK_WIDGET_SUBCLASS_NR)
         ]
-
-_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
-_FtkGcPtr = POINTER(ftk.gc.FtkGc)
 
 ftk_widget_init = ftk.dll.function('ftk_widget_init',
         '',
@@ -177,7 +179,6 @@ ftk_widget_state = ftk.dll.function('ftk_widget_state',
         return_type=c_int)
 
 _widget_udata_refs = {}
-
 def ftk_widget_user_data(thiz):
     key = addressof(thiz)
     if key in _widget_udata_refs:

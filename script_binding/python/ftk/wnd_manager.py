@@ -17,13 +17,14 @@ import ftk.main_loop
 
 # ftk_wnd_manager.h
 
+_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
+_FtkEventPtr = POINTER(ftk.event.FtkEvent)
+
 class FtkWndManager(Structure):
     pass
 
 _FtkWndManagerPtr = POINTER(FtkWndManager)
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
-_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
-_FtkEventPtr = POINTER(ftk.event.FtkEvent)
 
 FtkWndManagerRestack = CFUNCTYPE(c_int, _FtkWndManagerPtr, _FtkWidgetPtr, c_int)
 FtkWndManagerGrab = CFUNCTYPE(c_int, _FtkWndManagerPtr, _FtkWidgetPtr)

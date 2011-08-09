@@ -10,6 +10,7 @@ from ctypes import *
 
 import ftk.dll
 import ftk.constants
+import ftk.bitmap
 import ftk.widget
 
 # ftk_icon_view.h
@@ -44,8 +45,7 @@ _ftk_icon_view_set_clicked_listener = ftk.dll.private_function(
         arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, c_void_p],
         return_type=c_int)
 
-_icon_view_listener_refs = {}
-
+_listener_refs = {}
 def ftk_icon_view_set_clicked_listener(thiz, listener, ctx):
     def _listener(ignored, void_ptr):
         item_ptr = cast(void_ptr, _FtkIconViewItemPtr)
@@ -54,7 +54,7 @@ def ftk_icon_view_set_clicked_listener(thiz, listener, ctx):
     callback = ftk.typedef.FtkListener(_listener)
     ret = _ftk_icon_view_set_clicked_listener(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        _icon_view_listener_refs[addressof(thiz)] = callback
+        _listener_refs[addressof(thiz)] = callback
     return ret
 
 ftk_icon_view_get_count = ftk.dll.function('ftk_icon_view_get_count',

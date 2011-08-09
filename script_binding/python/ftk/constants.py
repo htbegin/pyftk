@@ -8,9 +8,6 @@ __version__ = '$Id: $'
 
 #BEGIN GENERATED CONSTANTS; see support/make_constants.py
 
-# constants from ftk_list_model_default.h
-FTK_LIST_TEXT_LENGTH = 31
-
 # enum from ftk_list_model_default.h
 # enum _FtkListItemType
 (FTK_LIST_ITEM_NORMAL,

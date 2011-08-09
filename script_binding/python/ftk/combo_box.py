@@ -9,6 +9,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.dll
+import ftk.bitmap
 import ftk.widget
 
 # ftk_combo_box.h

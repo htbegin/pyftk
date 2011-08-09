@@ -40,7 +40,7 @@ ftk_theme_parse_file = ftk.dll.function('ftk_theme_parse_file',
 ftk_theme_parse_data = ftk.dll.function('ftk_theme_parse_data',
         '',
         args=['thiz', 'data', 'length'],
-        arg_types=[_FtkThemePtr, c_char_p, c_uint],
+        arg_types=[_FtkThemePtr, POINTER(c_char), c_uint],
         return_type=c_int)
 
 ftk_theme_load_image = ftk.dll.function('ftk_theme_load_image',

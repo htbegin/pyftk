@@ -14,10 +14,10 @@ import ftk.widget
 
 # ftk_animation_trigger.h
 
+_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+
 class FtkAnimationTrigger(Structure):
     pass
-
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
 
 class FtkAnimationEvent(Structure):
     _fields_ = [

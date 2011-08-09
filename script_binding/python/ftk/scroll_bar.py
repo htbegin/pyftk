@@ -78,6 +78,7 @@ _ftk_scroll_bar_set_listener = ftk.dll.private_function(
         arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, c_void_p],
         return_type=c_int)
 
+_listener_refs = {}
 def ftk_scroll_bar_set_listener(thiz, listener, ctx):
     def _listener(ignored, ignored_too):
         return listener(ctx, thiz)
@@ -85,5 +86,5 @@ def ftk_scroll_bar_set_listener(thiz, listener, ctx):
     callback = ftk.typedef.FtkListener(_listener)
     ret = _ftk_scroll_bar_set_listener(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        thiz._listener = callback
+        _listener_refs[addressof(thiz)] = callback
     return ret

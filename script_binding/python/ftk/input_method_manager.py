@@ -38,7 +38,7 @@ ftk_input_method_manager_count = ftk.dll.function(
         '',
         args=['thiz'],
         arg_types=[_FtkInputMethodManagerPtr],
-        return_type=c_uint)
+        return_type=c_size_t)
 
 _ftk_input_method_manager_get = ftk.dll.private_function(
         'ftk_input_method_manager_get',

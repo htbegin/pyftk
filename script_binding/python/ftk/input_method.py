@@ -60,6 +60,12 @@ def ftk_input_method_set_type(thiz, input_type):
     else:
         return ftk.constants.RET_FAIL
 
+def ftk_input_method_handle_event(thiz, event):
+    if thiz.handle_event:
+        return thiz.handle_event(thiz, event);
+    else:
+        return ftk.constants.RET_FAIL
+
 def ftk_input_method_destroy(thiz):
     if thiz.destroy:
         return thiz.destroy(thiz)

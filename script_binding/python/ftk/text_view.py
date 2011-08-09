@@ -38,7 +38,7 @@ ftk_text_view_set_text = ftk.dll.function('ftk_text_view_set_text',
 ftk_text_view_insert_text = ftk.dll.function('ftk_text_view_insert_text',
         '',
         args=['thiz', 'pos', 'text', 'len'],
-        arg_types=[_FtkWidgetPtr, c_uint, c_char_p, c_int],
+        arg_types=[_FtkWidgetPtr, c_size_t, c_char_p, c_int],
         return_type=c_int)
 
 ftk_text_view_set_readonly = ftk.dll.function('ftk_text_view_set_readonly',

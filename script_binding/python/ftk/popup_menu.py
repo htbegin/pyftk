@@ -11,6 +11,8 @@ from ctypes import *
 import ftk.dll
 import ftk.constants
 import ftk.typedef
+import ftk.list_model
+import ftk.bitmap
 import ftk.widget
 
 # ftk_popup_menu.h
