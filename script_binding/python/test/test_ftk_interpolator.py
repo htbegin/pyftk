@@ -6,31 +6,29 @@ import common
 
 from ftk.interpolator import *
 
-class HalfIncInterpolator(FtkInterpolator):
-    def __init__(self):
-        pass
-
-    def get(self, percent):
-        return percent + percent * 0.5
-
 class TestInterpolator(unittest.TestCase):
     def _run_till_full(self, interpolator):
         percent = 0
         while True:
             if percent >= 100: break
-            f_percent = interpolator.get(percent)
+            f_percent = ftk_interpolator_get(interpolator, percent)
             percent = int(f_percent)
             percent += 10
 
     def test_linear(self):
         linear = ftk_interpolator_linear_create()
         self._run_till_full(linear)
-        linear.destroy()
+        ftk_interpolator_destroy(linear)
 
     def test_extension(self):
-        increase = HalfIncInterpolator()
+        def half_increase(thiz, percent):
+            return percent + percent * 0.5
+
+        c_half_increase = FtkInterpolatorGet(half_increase)
+        c_destroy = FtkInterpolatorDestroy()
+        increase = FtkInterpolator(c_half_increase, c_destroy)
+
         self._run_till_full(increase)
-        increase.destroy()
 
 if __name__ == "__main__":
     unittest.main()
