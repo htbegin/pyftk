@@ -15,12 +15,13 @@ import ftk.bitmap
 
 # ftk_display.h
 
+_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
+_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
+
 class FtkDisplay(Structure):
     pass
 
 _FtkDisplayPtr = POINTER(FtkDisplay)
-_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
-_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
 
 FtkDisplayUpdate = CFUNCTYPE(c_int, _FtkDisplayPtr, _FtkBitmapPtr,
         _FtkRectPtr, c_int, c_int)
@@ -53,15 +54,18 @@ _ftk_display_reg_update_listener = ftk.dll.private_function(
         arg_types=[_FtkDisplayPtr, FtkDisplayOnUpdate, c_void_p],
         return_type=c_int)
 
+_update_listener_refs = {}
 def ftk_display_reg_update_listener(thiz, on_update, ctx):
-    def _on_update(_ignored, display, before, bitmap, rect, xoffset, yoffset):
-        return on_update(ctx, display, before, bitmap, rect, xoffset, yoffset)
+    def _on_update(ignored, display_ptr, before,
+            bitmap_ptr, rect_ptr, xoffset, yoffset):
+        return on_update(ctx, display_ptr.contents, before,
+                bitmap_ptr.contents, rect_ptr.contents, xoffset, yoffset)
+
     callback = FtkDisplayOnUpdate(_on_update)
     ret = _ftk_display_reg_update_listener(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        if not hasattr(thiz, "_update_cb_refs"):
-            thiz._update_cb_refs = {}
-        thiz._update_cb_refs[(on_update, ctx)] = callback
+        _update_listener_refs.setdefault(addressof(thiz),
+                {})[(on_update, id(ctx))] = callback
     return ret
 
 _ftk_display_unreg_update_listener = ftk.dll.private_function(
@@ -70,11 +74,14 @@ _ftk_display_unreg_update_listener = ftk.dll.private_function(
         return_type=c_int)
 
 def ftk_display_unreg_update_listener(thiz, on_update, ctx):
-    if hasattr(thiz, "_update_cb_refs") and (on_update, ctx) in thiz._update_cb_refs:
-        callback = thiz._update_cb_refs[(on_update, ctx)]
+    f_key = addressof(thiz)
+    s_key = (on_update, id(ctx))
+    if f_key in _update_listener_refs and \
+            s_key in _update_listener_refs[f_key]:
+        callback = _update_listener_refs[f_key][s_key]
         ret = _ftk_display_unreg_update_listener(thiz, callback, None)
         if ret == ftk.constants.RET_OK:
-            del thiz._update_cb_refs[(on_update, ctx)]
+            del _update_listener_refs[f_key][s_key]
     else:
         ret = ftk.constants.RET_FAIL
     return ret
