@@ -118,13 +118,13 @@ def ftk_display_width(thiz):
     if thiz.width:
         return thiz.width(thiz)
     else:
-        return ftk.constants.RET_FAIL
+        return -1
 
 def ftk_display_height(thiz):
     if thiz.height:
         return thiz.height(thiz)
     else:
-        return ftk.constants.RET_FAIL
+        return -1
 
 def ftk_display_snap(thiz, rect, bitmap):
     if thiz.snap:
