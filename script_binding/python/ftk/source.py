@@ -89,7 +89,7 @@ _ftk_source_idle_create = ftk.dll.private_function('ftk_source_idle_create',
         require_return=True)
 
 def ftk_source_idle_create(action, user_data):
-    def _action(_ignore_param):
+    def _action(ignored):
         return action(user_data)
 
     func = ftk.typedef.FtkIdle(_action)
@@ -106,7 +106,7 @@ _ftk_source_timer_create = ftk.dll.private_function('ftk_source_timer_create',
         require_return=True)
 
 def ftk_source_timer_create(interval, action, user_data):
-    def _action(_ignore_param):
+    def _action(ignored):
         return action(user_data)
 
     func = ftk.typedef.FtkTimer(_action)
@@ -136,7 +136,7 @@ _ftk_source_primary_create = ftk.dll.private_function(
         require_return=True)
 
 def ftk_source_primary_create(on_event, user_data):
-    def _on_event(_ignore_param, event_ptr):
+    def _on_event(ignored, event_ptr):
         return on_event(user_data, event_ptr.contents)
 
     func = ftk.event.FtkOnEvent(_on_event)
