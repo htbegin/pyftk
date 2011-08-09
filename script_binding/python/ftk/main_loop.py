@@ -14,13 +14,13 @@ import ftk.sources_manager
 
 # ftk_main_loop.h
 
-# FtkMainLoop is defined at ftk_main_loop_select.c or ftk_main_loop_ucos.c
+_FtkSourcePtr = POINTER(ftk.source.FtkSource)
+_FtkSourcesManagerPtr = POINTER(ftk.sources_manager.FtkSourcesManager)
+
 class FtkMainLoop(Structure):
     pass
 
 _FtkMainLoopPtr = POINTER(FtkMainLoop)
-_FtkSourcePtr = POINTER(ftk.source.FtkSource)
-_FtkSourcesManagerPtr = POINTER(ftk.sources_manager.FtkSourcesManager)
 
 ftk_main_loop_create = ftk.dll.function('ftk_main_loop_create',
         '',

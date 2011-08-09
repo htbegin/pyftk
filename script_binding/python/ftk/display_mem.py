@@ -25,17 +25,17 @@ _ftk_display_mem_create = ftk.dll.private_function('ftk_display_mem_create',
         dereference_return=True,
         require_return=True)
 
-_mem_display_cb_refs = {}
+_destroy_cb_refs = {}
 def ftk_display_mem_create(fmt, width, height, bits, on_destroy, ctx):
     if on_destroy is not None:
         def _on_destroy(ignored):
             on_destroy(ctx)
         callback = ftk.typedef.FtkDestroy(_on_destroy)
     else:
-        callback = None
+        callback = ftk.typedef.FtkDestroy()
     bits_ptr = cast(c_char_p(bits), c_void_p)
     display = _ftk_display_mem_create(fmt, width, height, bits_ptr, callback, None)
-    _mem_display_cb_refs[id(display)] = callback
+    _destroy_cb_refs[addressof(display)] = callback
     return display
 
 _ftk_display_mem_set_sync_func = ftk.dll.private_function(\
@@ -43,14 +43,16 @@ _ftk_display_mem_set_sync_func = ftk.dll.private_function(\
         arg_types=[_FtkDisplayPtr, FtkDisplaySync, c_void_p],
         return_type=c_int)
 
+_sync_cb_refs = {}
 def ftk_display_mem_set_sync_func(thiz, sync, ctx):
-    def _sync(ctx, rect):
-        sync(ctx, rect)
+    def _sync(ignored, rect_ptr):
+        sync(ctx, rect_ptr.contents)
 
     callback = FtkDisplaySync(_sync)
     ret = _ftk_display_mem_set_sync_func(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        thiz._sync_cb = callback
+        _sync_cb_refs[addressof(thiz)] = callback
+
     return ret
 
 ftk_display_mem_is_active = ftk.dll.function('ftk_display_mem_is_active',

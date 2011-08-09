@@ -40,4 +40,5 @@ ftk_display_get_real_display = ftk.dll.function('ftk_display_get_real_display',
         args=['thiz'],
         arg_types=[_FtkDisplayPtr],
         return_type=_FtkDisplayPtr,
-        dereference_return=True)
+        dereference_return=True,
+        require_return=True)

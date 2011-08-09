@@ -13,6 +13,7 @@ import ftk.constants
 import ftk.typedef
 import ftk.bitmap
 import ftk.gc
+import ftk.display
 
 # ftk_canvas.h
 

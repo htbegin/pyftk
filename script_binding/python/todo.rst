@@ -201,6 +201,12 @@ FtkListItemInfo
 release callback
 ----------------
 
+display
+=======
+# destroy and sync
+
+ftk_display_mem_create
+
 widget
 ======
 ftk_status_item_set_clicked_listener
