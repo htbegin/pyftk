@@ -17,9 +17,11 @@ ftk_typedef.h
 
 *ftk_pairs.h*
 
-*ftk_log.h*
+ftk_log.h
 
 ftk_config.h
+
+*fontdata.h*
 
 *ftk_util.h*
 
@@ -32,7 +34,7 @@ ftk_params.h
 
 *ftk_dlfcn.h*
 
-ftk_key.h
+*ftk_key.h*
 
 ftk_event.h
 
@@ -45,7 +47,7 @@ ftk_event.h
 
 ftk_allocator.h
 ftk_allocator_default.h
-*ft_allocator_profile.h*
+*ftk_allocator_profile.h*
 
 ftk_source.h
 ftk_source_idle.h
@@ -91,8 +93,7 @@ ftk_display_rotate.h
 *ftk_animation_alpha.h*
 *ftk_animation_expand.h*
 *ftk_animation_scale.h*
-
-*fhw_primitive_recognizer.h*
+*ftk_animation_translate.h*
 
 ftk_main_loop.h
 
@@ -155,7 +156,6 @@ ftk_menu_panel.h
 ftk_message_box.h
 ftk_popup_menu.h
 ftk_progress_bar.h
-ftk_group_box.h
 ftk_scroll_bar.h
 ftk_sprite.h
 ftk_status_item.h
@@ -165,8 +165,7 @@ ftk_tab.h
 --------------------------------
 Modules with External Dependency
 --------------------------------
-
-ftk_cairo.h depends on cairo.h
+ftk_cairo.h
 
 ----------
 complexity
@@ -180,10 +179,12 @@ demo
 ----
 demo_fullscreen.py
 demo_image_button.py
-demo_statusbar.py
 demo_transparent.py
 demo_ime.py
 demo_xul.py
 demo_text_view.py
-demo_bidi.py
-demo_multi_win.py
+
+----
+apps
+----
+desktop
