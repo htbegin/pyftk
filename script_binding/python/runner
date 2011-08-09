@@ -16,7 +16,7 @@ then
 		cmd="./${path:5}"
 	elif test "${path:0:7}" = "./test/"
 	then
-		pushd "test"
+		pushd "test" >/dev/null
 		cmd="./${path:7}"
 	else
 		cmd="./${path}"

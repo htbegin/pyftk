@@ -31,6 +31,7 @@ from ftk.input_method_manager import *
 from ftk.xul import *
 from ftk.icon_cache import *
 from ftk.text_view import *
+from ftk.interpolator import *
 
 from ftk.widget import *
 from ftk.app_window import *
