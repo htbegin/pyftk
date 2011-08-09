@@ -464,7 +464,6 @@ class C2PythonConverter(object):
 
     def _convert_struct_type_def(self, content):
         self.func_ptr_type_dict = {}
-        self.local_struct_type_ptr_dict = {}
         struct_type_def = []
 
         for token, start, end in self.func_ptr_type.scanString(content):
@@ -493,16 +492,20 @@ class C2PythonConverter(object):
 
         return decs
 
-    def run(self, finput, func, mpath, only_struct):
+    def run(self, finput, func, mpath, only_struct, only_func):
         self.mpath = mpath
         self.pointer_dict = {}
+        self.local_struct_type_ptr_dict = {}
 
         results = []
         with open(finput, "rb") as fd:
             content = fd.read()
 
             self._create_private_types(content)
-            defs = self._convert_struct_type_def(content)
+            if not only_func:
+                defs = self._convert_struct_type_def(content)
+            else:
+                defs = []
             if not only_struct:
                 decs = self._convert_func_dec(func, content)
             else:
@@ -529,6 +532,9 @@ if __name__ == "__main__":
     opt_parser.add_option("-s", "--struct", dest="struct_only",
             action="store_true", default=False,
             help="generate the struct definitions only")
+    opt_parser.add_option("-p", "--func", dest="func_only",
+            action="store_true", default=False,
+            help="generate the function declarations only")
     (options, args) = opt_parser.parse_args()
 
     if options.file is None or not os.path.isfile(options.file) or \
@@ -552,7 +558,7 @@ if __name__ == "__main__":
 
     module_path = "".join(("ftk.", module_name, "."))
     content = converter.run(options.file, options.func, module_path,
-            options.struct_only)
+            options.struct_only, options.func_only)
 
     if content:
         print content
