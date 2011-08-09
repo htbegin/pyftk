@@ -25,7 +25,7 @@ _ftk_icon_cache_create = ftk.dll.private_function('ftk_icon_cache_create',
         require_return=True)
 
 def ftk_icon_cache_create(root_path_seq, rel_path):
-    if len(root_path_seq) != 0:
+    if root_path_seq is not None and len(root_path_seq) != 0:
         array_len = ftk.constants.FTK_ICON_PATH_NR
         root_path_array = (c_char_p * array_len)()
         for idx in range(min(array_len, len(root_path_seq))):

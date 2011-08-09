@@ -14,11 +14,12 @@ import ftk.bitmap
 
 # ftk_image_decoder.h
 
+_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
+
 class FtkImageDecoder(Structure):
     pass
 
 _FtkImageDecoderPtr = POINTER(FtkImageDecoder)
-_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
 
 FtkImageDecoderMatch = CFUNCTYPE(c_int, _FtkImageDecoderPtr, c_char_p)
 FtkImageDecoderDecode = CFUNCTYPE(_FtkBitmapPtr, _FtkImageDecoderPtr, c_char_p)
@@ -63,10 +64,12 @@ def ftk_image_decoder_match(thiz, filename):
         return ftk.constants.RET_FAIL
 
 def ftk_image_decoder_decode(thiz, filename):
+    bmp = None
     if thiz.decode:
-        return thiz.decode(thiz, filename)
-    else:
-        return None
+        bmp_ptr = thiz.decode(thiz, filename)
+        if bmp_ptr:
+            bmp = bmp_ptr.contents
+    return bmp
 
 def ftk_image_decoder_destroy(thiz):
     if thiz.destroy:

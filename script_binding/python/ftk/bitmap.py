@@ -13,11 +13,10 @@ import ftk.typedef
 
 # ftk_bitmap.h
 
-# FtkBitmap is defined at ftk_bitmap.c
+_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
+
 class FtkBitmap(Structure):
     pass
-
-_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
 
 _FtkBitmapPtr = POINTER(FtkBitmap)
 

@@ -9,6 +9,7 @@ __version__ = '$Id: $'
 from ctypes import *
 
 import ftk.dll
+import ftk.bitmap
 import ftk.image_decoder
 
 # ftk_bitmap_factory.h
