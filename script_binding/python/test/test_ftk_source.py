@@ -2,10 +2,8 @@
 
 import unittest
 
+import common
 from ftk.constants import FTK_EVT_IDLE
-from ftk.macros import ftk_macros
-from ftk.globals import ftk_set_allocator
-from ftk.allocator_default import ftk_allocator_default_create
 from ftk.constants import RET_OK
 from ftk.event import FtkEvent
 from ftk.source import *
@@ -80,8 +78,7 @@ class TestFtkSourceInlineFuncs(unittest.TestCase):
 
 class TestFtkIdleSource(unittest.TestCase):
     def setUp(self):
-        if not ftk_macros.USE_STD_MALLOC:
-            ftk_set_allocator(ftk_allocator_default_create())
+        common.setup_allocator()
 
     def test_create(self):
         user_data = {"cnt" : 1}
@@ -96,8 +93,7 @@ class TestFtkIdleSource(unittest.TestCase):
 
 class TestFtkTimerSource(unittest.TestCase):
     def setUp(self):
-        if not ftk_macros.USE_STD_MALLOC:
-            ftk_set_allocator(ftk_allocator_default_create())
+        common.setup_allocator()
 
     def test_create(self):
         user_data = (1, 2, 3)
@@ -130,8 +126,7 @@ class TestFtkTimerSource(unittest.TestCase):
 
 class TestFtkPrimarySource(unittest.TestCase):
     def setUp(self):
-        if not ftk_macros.USE_STD_MALLOC:
-            ftk_set_allocator(ftk_allocator_default_create())
+        common.setup_allocator()
 
     def test_create(self):
         def on_event_fn(user_data, event):

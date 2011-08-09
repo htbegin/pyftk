@@ -2,16 +2,13 @@
 
 import unittest
 
-import ftk.macros
-from ftk.globals import ftk_set_allocator
-from ftk.allocator_default import ftk_allocator_default_create
+import common
 from ftk.constants import RET_OK, RET_FAIL
 from ftk.params import *
 
 class TestFtkParams(unittest.TestCase):
     def setUp(self):
-        if not ftk.macros.ftk_macros.USE_STD_MALLOC:
-            ftk_set_allocator(ftk_allocator_default_create())
+        common.setup_allocator()
 
     def test_create_destroy(self):
         params = ftk_params_create(5, 5)
