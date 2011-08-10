@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
+import sys
 import unittest
-import ctypes
 
 from ftk import ftk_init, ftk_run
 from ftk.icon_cache import *
@@ -16,8 +16,8 @@ class TestXUL(unittest.TestCase):
         def load_image(ctx, filename):
             return ftk_icon_cache_load(ctx, filename)
 
-        ftk_init([])
-        icon_cache = ftk_icon_cache_create([], "testdata")
+        ftk_init(sys.argv)
+        icon_cache = ftk_icon_cache_create(None, "testdata")
         callbacks = FtkXulCallbacks(icon_cache, translate_text, load_image)
         win = ftk_xul_load_file("two.xul", callbacks)
         ftk_icon_cache_destroy(icon_cache)

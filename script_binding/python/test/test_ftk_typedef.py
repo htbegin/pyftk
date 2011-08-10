@@ -7,7 +7,6 @@ from ftk.typedef import *
 
 class TestFtkTypedef(unittest.TestCase):
     def test_FtkRegion(self):
-        #first = FtkRegion(rect=FtkRect(0, 0, 320, 240), next=ctypes.POINTER(FtkRegion)())
         first = FtkRegion(rect=FtkRect(0, 0, 320, 240), next=None)
         sec = FtkRegion(FtkRect(640, 480, 320, 240), ctypes.pointer(first))
         for attr in ["x", "y", "width", "height"]:
@@ -22,4 +21,3 @@ class TestFtkTypedef(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

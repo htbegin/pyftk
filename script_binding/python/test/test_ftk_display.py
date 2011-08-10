@@ -3,12 +3,17 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK
+from ftk.constants import RET_OK, FTK_PIXEL_BGR24
+from ftk.display_mem import ftk_display_mem_create
 from ftk.display import *
 
 class TestDisplay(unittest.TestCase):
     def setUp(self):
-        self.display = FtkDisplay()
+        common.setup_allocator()
+
+        bits = "\xff" * 12
+        self.display = ftk_display_mem_create(FTK_PIXEL_BGR24,
+                2 , 2, bits, None, None)
 
     def tearDown(self):
         ftk_display_destroy(self.display)

@@ -58,8 +58,16 @@ _update_listener_refs = {}
 def ftk_display_reg_update_listener(thiz, on_update, ctx):
     def _on_update(ignored, display_ptr, before,
             bitmap_ptr, rect_ptr, xoffset, yoffset):
+        if bitmap_ptr:
+            bitmap = bitmap_ptr.contents
+        else:
+            bitmap = None
+        if rect_ptr:
+            rect = rect_ptr.contents
+        else:
+            rect = None
         return on_update(ctx, display_ptr.contents, before,
-                bitmap_ptr.contents, rect_ptr.contents, xoffset, yoffset)
+                bitmap, rect, xoffset, yoffset)
 
     callback = FtkDisplayOnUpdate(_on_update)
     ret = _ftk_display_reg_update_listener(thiz, callback, None)

@@ -17,7 +17,7 @@ class TestListModel(unittest.TestCase):
     def test_add_get_one(self):
         item = FtkListItemInfo()
 
-        self.assertEqual(item.text, "")
+        self.assertEqual(item.text, None)
 
         item.text = "one"
         self.assertEqual(item.text, "one")

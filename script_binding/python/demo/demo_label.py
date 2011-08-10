@@ -2,7 +2,6 @@
 # -*- coding: utf8 -*-
 
 import sys
-import ctypes
 
 from ftk import *
 

@@ -8,6 +8,7 @@ from ftk.constants import RET_OK
 
 class TestFtkBackend(unittest.TestCase):
     def setUp(self):
+        common.disable_debug_log()
         common.setup_allocator()
         common.setup_wnd()
 

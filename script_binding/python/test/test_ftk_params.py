@@ -51,6 +51,7 @@ class TestFtkParams(unittest.TestCase):
         ftk_params_destroy(params)
 
     def test_dump(self):
+        common.disable_debug_log()
         params = ftk_params_create(2, 2)
         ftk_params_dump(params)
         ftk_params_destroy(params)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
+import sys
 import unittest
-import ctypes
 
 from ftk import ftk_init, ftk_run
 from ftk.widget import ftk_widget_show_all
@@ -9,7 +9,7 @@ from ftk.xul import *
 
 class TestXUL(unittest.TestCase):
     def test_load(self):
-        ftk_init([])
+        ftk_init(sys.argv)
         callbacks = FtkXulCallbacks()
         win = ftk_xul_load_file("one.xul", callbacks)
         ftk_widget_show_all(win, 1)

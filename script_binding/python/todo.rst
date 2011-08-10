@@ -197,6 +197,10 @@ FtkIconViewItem
 
 FtkListItemInfo
 
+FtkRegion
+
+FtkGC
+
 ----------------
 release callback
 ----------------
