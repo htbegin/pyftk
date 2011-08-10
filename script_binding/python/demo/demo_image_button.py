@@ -2,7 +2,6 @@
 # -*- coding: utf8 -*-
 
 import sys
-import ctypes
 
 from ftk import *
 
@@ -55,8 +54,7 @@ def button_clicked(win, button):
 def button_set_bitmap_gc(button, state, gc, fname):
     full_path = "".join(
             (ftk_config_get_test_data_dir(ftk_default_config()), fname))
-    gc.bitmap = ctypes.pointer(
-            ftk_bitmap_factory_load(ftk_default_bitmap_factory(), full_path))
+    gc.bitmap = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), full_path)
 
     ftk_widget_set_gc(button, state, gc)
     ftk_bitmap_unref(gc.bitmap)

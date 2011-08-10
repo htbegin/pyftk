@@ -2,10 +2,55 @@
 
 import unittest
 
-from ftk.constants import RET_OK
+import common
+from ftk.constants import RET_OK, FTK_GC_BG, FTK_GC_FONT, FTK_GC_BITMAP
+from ftk.typedef import FtkColor
+from ftk.font_desc import ftk_font_desc_create
+from ftk.font import ftk_font_create, ftk_font_unref
+from ftk.bitmap import ftk_bitmap_create, ftk_bitmap_unref
 from ftk.gc import *
 
-class TestGC(unittest.TestCase):
+class TestGcInit(unittest.TestCase):
+    def setUp(self):
+        common.setup_allocator()
+        common.disable_debug_log()
+
+    def test_init_one(self):
+        gc = FtkGc()
+        self.assertEqual(gc.ref, 0)
+        self.assertEqual(gc.mask, 0)
+
+        self.assertEqual(gc.bg.r, 0)
+        self.assertEqual(gc.bg.g, 0)
+        self.assertEqual(gc.bg.b, 0)
+        self.assertEqual(gc.bg.a, 0)
+
+        self.assertEqual(gc.fg.r, 0)
+        self.assertEqual(gc.fg.g, 0)
+        self.assertEqual(gc.fg.b, 0)
+        self.assertEqual(gc.fg.a, 0)
+
+        self.assertEqual(gc.font, None)
+        self.assertEqual(gc.bitmap, None)
+
+        self.assertEqual(gc.alpha, 0)
+        self.assertEqual(gc.line_mask, 0)
+
+    def test_init_two(self):
+        desc = ftk_font_desc_create("size:24 bold:0 italic:0")
+        font = ftk_font_create("font.ttf", desc)
+        bitmap = ftk_bitmap_create(2, 2, FtkColor())
+
+        gc = FtkGc(ref=1, mask=FTK_GC_BG, bg=FtkColor())
+        gc.mask = gc.mask | FTK_GC_FONT
+        gc.font = font
+        gc.mask = gc.mask | FTK_GC_BITMAP
+        gc.bitmap = bitmap
+
+        ftk_bitmap_unref(bitmap)
+        ftk_font_unref(font)
+
+class TestGcOperation(unittest.TestCase):
     def setUp(self):
         self.gc = FtkGc()
 

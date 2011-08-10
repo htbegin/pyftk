@@ -21,12 +21,53 @@ class FtkGc(Structure):
             ('mask', c_uint),
             ('bg', ftk.typedef.FtkColor),
             ('fg', ftk.typedef.FtkColor),
-            ('font', POINTER(ftk.font.FtkFont)),
-            ('bitmap', POINTER(ftk.bitmap.FtkBitmap)),
+            ('_font_ptr', POINTER(ftk.font.FtkFont)),
+            ('_bitmap_ptr', POINTER(ftk.bitmap.FtkBitmap)),
             ('alpha', c_ubyte),
             ('unused', c_ubyte * 3),
             ('line_mask', c_uint)
             ]
+
+    def __init__(self, ref=0, mask=0, bg=None, fg=None, font=None,
+            bitmap=None, alpha=0, line_mask=0):
+        self.ref = ref
+        self.mask = mask
+        if bg is not None:
+            self.bg = bg
+        if fg is not None:
+            self.fg = fg
+        self.font = font
+        self.bitmap = bitmap
+        self.alpha = alpha
+        self.line_mask = line_mask
+
+    @property
+    def font(self):
+        if self._font_ptr:
+            return self._font_ptr.contents
+        else:
+            return None
+
+    @font.setter
+    def font(self, value):
+        if value is not None:
+            self._font_ptr = pointer(value)
+        else:
+            self._font_ptr = POINTER(ftk.font.FtkFont)()
+
+    @property
+    def bitmap(self):
+        if self._bitmap_ptr:
+            return self._bitmap_ptr.contents
+        else:
+            return None
+
+    @bitmap.setter
+    def bitmap(self, value):
+        if value is not None:
+            self._bitmap_ptr = pointer(value)
+        else:
+            self._bitmap_ptr = POINTER(ftk.bitmap.FtkBitmap)()
 
 def ftk_gc_copy(dst, src):
     dst.mask |= src.mask
@@ -60,10 +101,10 @@ def ftk_gc_copy(dst, src):
 
 def ftk_gc_reset(gc):
     if gc.mask & ftk.constants.FTK_GC_BITMAP:
-        ftk_bitmap_unref(gc.bitmap)
+        ftk.bitmap.ftk_bitmap_unref(gc.bitmap)
 
     if gc.mask & ftk.constants.FTK_GC_FONT:
-        ftk_font_unref(gc.font)
+        ftk.font.ftk_font_unref(gc.font)
 
     memset(byref(gc), 0, sizeof(gc))
 
