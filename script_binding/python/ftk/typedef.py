@@ -28,11 +28,28 @@ class FtkRect(Structure):
             ]
 
 class FtkRegion(Structure):
-    pass
+    def __init__(self, rect=None, next=None):
+        if rect is not None:
+            self.rect = rect
+        self.next = next
+
+    @property
+    def next(self):
+        if self._next_ptr:
+            return self._next_ptr.contents
+        else:
+            return None
+
+    @next.setter
+    def next(self, value):
+        if value is not None:
+            self._next_ptr = pointer(value)
+        else:
+            self._next_ptr = POINTER(FtkRegion)()
 
 FtkRegion._fields_ = [
         ('rect', FtkRect),
-        ('next', POINTER(FtkRegion))
+        ('_next_ptr', POINTER(FtkRegion))
         ]
 
 class _FtkColorBGRA(Structure):

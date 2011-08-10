@@ -199,7 +199,7 @@ FtkListItemInfo
 
 FtkRegion
 
-FtkGC
+FtkGc
 
 ----------------
 release callback
