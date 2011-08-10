@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from ftk.constants import FTK_LOG_D, FTK_LOG_E
+from ftk.constants import FTK_LOG_D, FTK_LOG_I
 from ftk.macros import ftk_macros
 from ftk.config import ftk_config_create, ftk_config_get_rotate
 from ftk.theme import ftk_theme_create
@@ -19,7 +19,7 @@ def disable_verbose_log():
     ftk_set_log_level(FTK_LOG_D)
 
 def disable_debug_log():
-    ftk_set_log_level(FTK_LOG_E)
+    ftk_set_log_level(FTK_LOG_I)
 
 def setup_allocator():
     if not ftk_macros.USE_STD_MALLOC:

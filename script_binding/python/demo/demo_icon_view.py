@@ -2,7 +2,6 @@
 # -*- coding: utf8 -*-
 
 import sys
-from ctypes import pointer
 
 from ftk import *
 
@@ -12,29 +11,29 @@ def button_quit_clicked(win, button):
     ftk_widget_unref(win)
     return RET_OK
 
-i = 0
+i = 1
 def button_more_clicked(win, button):
     global i
 
-    icon = pointer(ftk_theme_load_image(ftk_default_theme(), "flag-32.png"))
+    icon = ftk_theme_load_image(ftk_default_theme(), "flag-32.png")
     icon_view = ftk_widget_lookup(win, IDC_ICON_VIEW)
 
     for j in range(4):
         item = FtkIconViewItem()
         item.text = "%d" % i
         item.icon = icon
-        item.user_data = i
+        item.user_data = [i]
 
         ftk_icon_view_add(icon_view, item)
 
-        i += 1000
+        i += 1
 
     ftk_bitmap_unref(icon)
 
     return RET_OK
 
 def item_clicked(win, item):
-    print "%s: user_data=%d" % (item.text, item.user_data)
+    print "%s: user_data=%d" % (item.text, item.user_data[0])
     return RET_OK
 
 def ftk_main():
@@ -61,13 +60,14 @@ def ftk_main():
     ftk_widget_set_id(icon_view, IDC_ICON_VIEW)
     ftk_icon_view_set_clicked_listener(icon_view, item_clicked, win)
 
-    icon = pointer(ftk_theme_load_image(ftk_default_theme(), "flag-32.png"))
-    for i in range(4):
+    icon = ftk_theme_load_image(ftk_default_theme(), "flag-32.png")
+    for j in range(4):
         item = FtkIconViewItem()
         item.text = "%d" % i
         item.icon = icon
-        item.user_data = i
+        item.user_data = [i]
         ftk_icon_view_add(icon_view, item)
+        i += 1
 
     ftk_bitmap_unref(icon)
 

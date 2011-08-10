@@ -17,13 +17,52 @@ import ftk.widget
 # ftk_icon_view.h
 
 _FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
 
+_user_data_refs = [None]
 class FtkIconViewItem(Structure):
     _fields_ = [
             ('text', c_char_p),
-            ('icon', POINTER(ftk.bitmap.FtkBitmap)),
-            ('user_data', c_void_p)
+            ('_icon_ptr', _FtkBitmapPtr),
+            ('_user_data', c_void_p)
             ]
+
+    def __init__(self, text=None, icon=None, user_data=None):
+        if text is not None:
+            self.text = text
+        if icon is not None:
+            self.icon = icon
+        if user_data is not None:
+            self.user_data = user_data
+
+    @property
+    def icon(self):
+        if self._icon_ptr:
+            return self._icon_ptr.contents
+        else:
+            return None
+
+    @icon.setter
+    def icon(self, value):
+        if value is not None:
+            self._icon_ptr = pointer(value)
+        else:
+            self._icon_ptr = _FtkBitmapPtr()
+
+    @property
+    def user_data(self):
+        if self._user_data:
+            return _user_data_refs[self._user_data]
+        else:
+            return None
+
+    @user_data.setter
+    def user_data(self, value):
+        if self._user_data:
+            _user_data_refs[self._user_data] = value
+        else:
+            _user_data_refs.append(value)
+            self._user_data = c_void_p(len(_user_data_refs) - 1)
 
 _FtkIconViewItemPtr = POINTER(FtkIconViewItem)
 
