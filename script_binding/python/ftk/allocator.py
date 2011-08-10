@@ -6,16 +6,16 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 
 # ftk_allocator.h
 
-class FtkAllocator(Structure):
+class FtkAllocator(ctypes.Structure):
     pass
 
-_FtkAllocatorPtr = POINTER(FtkAllocator)
+_FtkAllocatorPtr = ctypes.POINTER(FtkAllocator)
 
 # ftk_allocator_default.h
 

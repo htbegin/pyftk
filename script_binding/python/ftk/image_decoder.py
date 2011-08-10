@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -14,22 +14,22 @@ import ftk.bitmap
 
 # ftk_image_decoder.h
 
-_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
+_FtkBitmapPtr = ctypes.POINTER(ftk.bitmap.FtkBitmap)
 
-class FtkImageDecoder(Structure):
+class FtkImageDecoder(ctypes.Structure):
     pass
 
-_FtkImageDecoderPtr = POINTER(FtkImageDecoder)
+_FtkImageDecoderPtr = ctypes.POINTER(FtkImageDecoder)
 
-FtkImageDecoderMatch = CFUNCTYPE(c_int, _FtkImageDecoderPtr, c_char_p)
-FtkImageDecoderDecode = CFUNCTYPE(_FtkBitmapPtr, _FtkImageDecoderPtr, c_char_p)
-FtkImageDecoderDestroy = CFUNCTYPE(None, _FtkImageDecoderPtr)
+FtkImageDecoderMatch = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImageDecoderPtr, ctypes.c_char_p)
+FtkImageDecoderDecode = ctypes.CFUNCTYPE(_FtkBitmapPtr, _FtkImageDecoderPtr, ctypes.c_char_p)
+FtkImageDecoderDestroy = ctypes.CFUNCTYPE(None, _FtkImageDecoderPtr)
 
 FtkImageDecoder._fields_ = [
         ('match', FtkImageDecoderMatch),
         ('decode', FtkImageDecoderDecode),
         ('destroy', FtkImageDecoderDestroy),
-        ('priv', c_char_p * ftk.constants.ZERO_LEN_ARRAY),
+        ('priv', ctypes.c_char_p * ftk.constants.ZERO_LEN_ARRAY),
         ]
 
 ftk_image_bmp_decoder_create = ftk.dll.function('ftk_image_bmp_decoder_create',

@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -15,23 +15,23 @@ import ftk.widget
 
 # ftk_input_method.h
 
-class FtkInputMethod(Structure):
+class FtkInputMethod(ctypes.Structure):
     pass
 
-_FtkInputMethodPtr = POINTER(FtkInputMethod)
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
-_FtkEventPtr = POINTER(ftk.event.FtkEvent)
+_FtkInputMethodPtr = ctypes.POINTER(FtkInputMethod)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
+_FtkEventPtr = ctypes.POINTER(ftk.event.FtkEvent)
 
-FtkInputMethodFocusIn = CFUNCTYPE(c_int, _FtkInputMethodPtr, _FtkWidgetPtr)
-FtkInputMethodFocusOut = CFUNCTYPE(c_int, _FtkInputMethodPtr)
-FtkInputMethodSetType = CFUNCTYPE(c_int, _FtkInputMethodPtr, c_int)
-FtkInputMethodHandleEvent = CFUNCTYPE(c_int, _FtkInputMethodPtr, _FtkEventPtr)
-FtkInputMethodDestroy = CFUNCTYPE(None, _FtkInputMethodPtr)
+FtkInputMethodFocusIn = ctypes.CFUNCTYPE(ctypes.c_int, _FtkInputMethodPtr, _FtkWidgetPtr)
+FtkInputMethodFocusOut = ctypes.CFUNCTYPE(ctypes.c_int, _FtkInputMethodPtr)
+FtkInputMethodSetType = ctypes.CFUNCTYPE(ctypes.c_int, _FtkInputMethodPtr, ctypes.c_int)
+FtkInputMethodHandleEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkInputMethodPtr, _FtkEventPtr)
+FtkInputMethodDestroy = ctypes.CFUNCTYPE(None, _FtkInputMethodPtr)
 
 FtkInputMethod._fields_ = [
-        ('name', c_char_p),
+        ('name', ctypes.c_char_p),
 
-        ('ref', c_int),
+        ('ref', ctypes.c_int),
 
         ('focus_in', FtkInputMethodFocusIn),
         ('focus_out', FtkInputMethodFocusOut),
@@ -39,7 +39,7 @@ FtkInputMethod._fields_ = [
         ('handle_event', FtkInputMethodHandleEvent),
         ('destroy', FtkInputMethodDestroy),
 
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY),
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY),
         ]
 
 def ftk_input_method_focus_in(thiz, editor):

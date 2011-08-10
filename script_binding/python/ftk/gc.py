@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.constants
 import ftk.typedef
@@ -15,17 +15,17 @@ import ftk.font
 
 # ftk_gc.h
 
-class FtkGc(Structure):
+class FtkGc(ctypes.Structure):
     _fields_ = [
-            ('ref', c_int),
-            ('mask', c_uint),
+            ('ref', ctypes.c_int),
+            ('mask', ctypes.c_uint),
             ('bg', ftk.typedef.FtkColor),
             ('fg', ftk.typedef.FtkColor),
-            ('_font_ptr', POINTER(ftk.font.FtkFont)),
-            ('_bitmap_ptr', POINTER(ftk.bitmap.FtkBitmap)),
-            ('alpha', c_ubyte),
-            ('unused', c_ubyte * 3),
-            ('line_mask', c_uint)
+            ('_font_ptr', ctypes.POINTER(ftk.font.FtkFont)),
+            ('_bitmap_ptr', ctypes.POINTER(ftk.bitmap.FtkBitmap)),
+            ('alpha', ctypes.c_ubyte),
+            ('unused', ctypes.c_ubyte * 3),
+            ('line_mask', ctypes.c_uint)
             ]
 
     def __init__(self, ref=0, mask=0, bg=None, fg=None, font=None,
@@ -51,9 +51,9 @@ class FtkGc(Structure):
     @font.setter
     def font(self, value):
         if value is not None:
-            self._font_ptr = pointer(value)
+            self._font_ptr = ctypes.pointer(value)
         else:
-            self._font_ptr = POINTER(ftk.font.FtkFont)()
+            self._font_ptr = ctypes.POINTER(ftk.font.FtkFont)()
 
     @property
     def bitmap(self):
@@ -65,9 +65,9 @@ class FtkGc(Structure):
     @bitmap.setter
     def bitmap(self, value):
         if value is not None:
-            self._bitmap_ptr = pointer(value)
+            self._bitmap_ptr = ctypes.pointer(value)
         else:
-            self._bitmap_ptr = POINTER(ftk.bitmap.FtkBitmap)()
+            self._bitmap_ptr = ctypes.POINTER(ftk.bitmap.FtkBitmap)()
 
 def ftk_gc_copy(dst, src):
     dst.mask |= src.mask
@@ -106,6 +106,6 @@ def ftk_gc_reset(gc):
     if gc.mask & ftk.constants.FTK_GC_FONT:
         ftk.font.ftk_font_unref(gc.font)
 
-    memset(byref(gc), 0, sizeof(gc))
+    ctypes.memset(ctypes.byref(gc), 0, ctypes.sizeof(gc))
 
     return ftk.constants.RET_OK

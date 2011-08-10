@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -17,93 +17,93 @@ import ftk.interpolator
 
 # ftk_ainmation.h
 
-_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
+_FtkRectPtr = ctypes.POINTER(ftk.typedef.FtkRect)
 
-_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
+_FtkBitmapPtr = ctypes.POINTER(ftk.bitmap.FtkBitmap)
 
-class FtkAnimation(Structure):
+class FtkAnimation(ctypes.Structure):
     pass
 
-_FtkAnimationPtr = POINTER(FtkAnimation)
+_FtkAnimationPtr = ctypes.POINTER(FtkAnimation)
 
-FtkAnimationStep = CFUNCTYPE(c_int, _FtkAnimationPtr)
+FtkAnimationStep = ctypes.CFUNCTYPE(ctypes.c_int, _FtkAnimationPtr)
 
-FtkAnimationReset = CFUNCTYPE(c_int, _FtkAnimationPtr, _FtkBitmapPtr, _FtkBitmapPtr,
+FtkAnimationReset = ctypes.CFUNCTYPE(ctypes.c_int, _FtkAnimationPtr, _FtkBitmapPtr, _FtkBitmapPtr,
         _FtkRectPtr, _FtkRectPtr)
 
-FtkAnimationDestroy = CFUNCTYPE(None, _FtkAnimationPtr)
+FtkAnimationDestroy = ctypes.CFUNCTYPE(None, _FtkAnimationPtr)
 
 FtkAnimation._fields_ = [
         ('step', FtkAnimationStep),
         ('reset', FtkAnimationReset),
         ('destroy', FtkAnimationDestroy),
-        ('name', c_byte * 32),
-        ('start_time', c_long),
-        ('params', POINTER(ftk.params.FtkParams)),
-        ('interpolator', POINTER(ftk.interpolator.FtkInterpolator)),
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('name', ctypes.c_byte * 32),
+        ('start_time', ctypes.c_long),
+        ('params', ctypes.POINTER(ftk.params.FtkParams)),
+        ('interpolator', ctypes.POINTER(ftk.interpolator.FtkInterpolator)),
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 ftk_animation_step = ftk.dll.function('ftk_animation_step',
         '',
         args=['thiz'],
         arg_types=[_FtkAnimationPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_animation_get_percent = ftk.dll.function('ftk_animation_get_percent',
         '',
         args=['thiz'],
         arg_types=[_FtkAnimationPtr],
-        return_type=c_float)
+        return_type=ctypes.c_float)
 
 ftk_animation_set_name = ftk.dll.function('ftk_animation_set_name',
         '',
         args=['thiz', 'name'],
-        arg_types=[_FtkAnimationPtr, c_char_p],
-        return_type=c_int)
+        arg_types=[_FtkAnimationPtr, ctypes.c_char_p],
+        return_type=ctypes.c_int)
 
 ftk_animation_set_var = ftk.dll.function('ftk_animation_set_var',
         '',
         args=['thiz', 'name', 'value'],
-        arg_types=[_FtkAnimationPtr, c_char_p, c_char_p],
-        return_type=c_int)
+        arg_types=[_FtkAnimationPtr, ctypes.c_char_p, ctypes.c_char_p],
+        return_type=ctypes.c_int)
 
 ftk_animation_set_param = ftk.dll.function('ftk_animation_set_param',
         '',
         args=['thiz', 'name', 'value'],
-        arg_types=[_FtkAnimationPtr, c_char_p, c_char_p],
-        return_type=c_int)
+        arg_types=[_FtkAnimationPtr, ctypes.c_char_p, ctypes.c_char_p],
+        return_type=ctypes.c_int)
 
 ftk_animation_get_param = ftk.dll.function('ftk_animation_get_param',
         '',
         args=['thiz', 'name'],
-        arg_types=[_FtkAnimationPtr, c_char_p],
-        return_type=c_char_p)
+        arg_types=[_FtkAnimationPtr, ctypes.c_char_p],
+        return_type=ctypes.c_char_p)
 
 ftk_animation_get_param_int = ftk.dll.function('ftk_animation_get_param_int',
         '',
         args=['thiz', 'name', 'defval'],
-        arg_types=[_FtkAnimationPtr, c_char_p, c_int],
-        return_type=c_int)
+        arg_types=[_FtkAnimationPtr, ctypes.c_char_p, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_animation_get_param_float = ftk.dll.function(
         'ftk_animation_get_param_float',
         '',
         args=['thiz', 'name', 'defval'],
-        arg_types=[_FtkAnimationPtr, c_char_p, c_float],
-        return_type=c_float)
+        arg_types=[_FtkAnimationPtr, ctypes.c_char_p, ctypes.c_float],
+        return_type=ctypes.c_float)
 
 ftk_animation_run = ftk.dll.function('ftk_animation_run',
         '',
         args=['thiz', 'old_win', 'new_win', 'old_win_rect', 'new_win_rect'],
         arg_types=[_FtkAnimationPtr, _FtkBitmapPtr, _FtkBitmapPtr, _FtkRectPtr, _FtkRectPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_animation_reset = ftk.dll.function('ftk_animation_reset',
         '',
         args=['thiz', 'old_win', 'new_win', 'old_win_rect', 'new_win_rect'],
         arg_types=[_FtkAnimationPtr, _FtkBitmapPtr, _FtkBitmapPtr, _FtkRectPtr, _FtkRectPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_animation_dump = ftk.dll.function('ftk_animation_dump',
         '',

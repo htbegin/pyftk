@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -15,28 +15,28 @@ import ftk.widget
 
 # ftk_input_method_preeditor.h
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
-_FtkPointPtr = POINTER(ftk.typedef.FtkPoint)
+_FtkPointPtr = ctypes.POINTER(ftk.typedef.FtkPoint)
 
-class FtkImPreeditor(Structure):
+class FtkImPreeditor(ctypes.Structure):
     pass
 
-_FtkImPreeditorPtr = POINTER(FtkImPreeditor)
+_FtkImPreeditorPtr = ctypes.POINTER(FtkImPreeditor)
 
-FtkInputMethodPreeditorHide = CFUNCTYPE(c_int, _FtkImPreeditorPtr)
+FtkInputMethodPreeditorHide = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr)
 
-FtkInputMethodPreeditorShow = CFUNCTYPE(c_int, _FtkImPreeditorPtr, _FtkPointPtr)
+FtkInputMethodPreeditorShow = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, _FtkPointPtr)
 
-FtkInputMethodPreeditorReset = CFUNCTYPE(c_int, _FtkImPreeditorPtr)
+FtkInputMethodPreeditorReset = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr)
 
-FtkInputMethodPreeditorSetEditor = CFUNCTYPE(c_int, _FtkImPreeditorPtr, _FtkWidgetPtr)
+FtkInputMethodPreeditorSetEditor = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, _FtkWidgetPtr)
 
-FtkInputMethodPreeditorSetRawText = CFUNCTYPE(c_int, _FtkImPreeditorPtr, c_char_p)
+FtkInputMethodPreeditorSetRawText = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, ctypes.c_char_p)
 
-FtkInputMethodPreeditorAddCandidate = CFUNCTYPE(c_int, _FtkImPreeditorPtr, c_char_p)
+FtkInputMethodPreeditorAddCandidate = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, ctypes.c_char_p)
 
-FtkInputMethodPreeditorDestroy = CFUNCTYPE(None, _FtkImPreeditorPtr)
+FtkInputMethodPreeditorDestroy = ctypes.CFUNCTYPE(None, _FtkImPreeditorPtr)
 
 FtkImPreeditor._fields_ = [
         ('hide', FtkInputMethodPreeditorHide),
@@ -46,7 +46,7 @@ FtkImPreeditor._fields_ = [
         ('set_raw_text', FtkInputMethodPreeditorSetRawText),
         ('add_candidate', FtkInputMethodPreeditorAddCandidate),
         ('destroy', FtkInputMethodPreeditorDestroy),
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_input_method_preeditor_reset(thiz):
@@ -92,8 +92,8 @@ def ftk_input_method_preeditor_destroy(thiz):
 ftk_im_show_preeditor = ftk.dll.function('ftk_im_show_preeditor',
         '',
         args=['editor', 'caret_pos', 'info'],
-        arg_types=[_FtkWidgetPtr, _FtkPointPtr, POINTER(ftk.typedef.FtkCommitInfo)],
-        return_type=c_int)
+        arg_types=[_FtkWidgetPtr, _FtkPointPtr, ctypes.POINTER(ftk.typedef.FtkCommitInfo)],
+        return_type=ctypes.c_int)
 
 ftk_input_method_preeditor_default_create = ftk.dll.function(
         'ftk_input_method_preeditor_default_create',

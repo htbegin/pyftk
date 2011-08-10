@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.bitmap
@@ -14,13 +14,13 @@ import ftk.widget
 
 # ftk_xul.h
 
-_FtkXulTranslateText = CFUNCTYPE(c_char_p, c_void_p, c_char_p)
+_FtkXulTranslateText = ctypes.CFUNCTYPE(ctypes.c_char_p, ctypes.c_void_p, ctypes.c_char_p)
 # FIXME typedef FtkBitmap* (*FtkXulLoadImage)(void* ctx, const char* filename)
-_FtkXulLoadImage = CFUNCTYPE(c_void_p, c_void_p, c_char_p)
+_FtkXulLoadImage = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_char_p)
 
-class _FtkXulCallbacks(Structure):
+class _FtkXulCallbacks(ctypes.Structure):
     _fields_ = [
-            ('ctx', c_void_p),
+            ('ctx', ctypes.c_void_p),
             ('translate_text', _FtkXulTranslateText),
             ('load_image', _FtkXulLoadImage)
             ]
@@ -44,37 +44,37 @@ class FtkXulCallbacks(object):
                 bitmap = self.load_image(self.ctx, filename)
                 if not isinstance(bitmap, ftk.bitmap.FtkBitmap):
                     raise TypeError("load_image should return a instance of FtkBitmap")
-                return addressof(bitmap)
+                return ctypes.addressof(bitmap)
             self._load_cb = _FtkXulLoadImage(_load_image)
         else:
             self._load_cb = _FtkXulLoadImage()
 
         return _FtkXulCallbacks(None, self._translate_cb, self._load_cb)
 
-_FtkXulCallbacksPtr = POINTER(_FtkXulCallbacks)
+_FtkXulCallbacksPtr = ctypes.POINTER(_FtkXulCallbacks)
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
 ftk_xul_load = ftk.dll.function('ftk_xul_load',
         '',
         args=['xml', 'length'],
-        arg_types=[POINTER(c_char), c_int],
+        arg_types=[ctypes.POINTER(ctypes.c_char), ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
 
 _ftk_xul_load_file = ftk.dll.private_function('ftk_xul_load_file',
-        arg_types=[c_char_p, _FtkXulCallbacksPtr],
+        arg_types=[ctypes.c_char_p, _FtkXulCallbacksPtr],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
 
 def ftk_xul_load_file(filename, callbacks):
     cbs = callbacks.to_ctype_cbs()
-    return _ftk_xul_load_file(filename, byref(cbs))
+    return _ftk_xul_load_file(filename, ctypes.byref(cbs))
 
 _ftk_xul_load_ex = ftk.dll.private_function('ftk_xul_load_ex',
-        arg_types=[POINTER(c_char), c_int, _FtkXulCallbacksPtr],
+        arg_types=[ctypes.POINTER(ctypes.c_char), ctypes.c_int, _FtkXulCallbacksPtr],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
@@ -82,4 +82,4 @@ _ftk_xul_load_ex = ftk.dll.private_function('ftk_xul_load_ex',
 def ftk_xul_load_ex(xml, callbacks):
     length = len(xml)
     cbs = callbacks.to_ctype_cbs()
-    return _ftk_xul_load_ex(xml, length, byref(cbs))
+    return _ftk_xul_load_ex(xml, length, ctypes.byref(cbs))

@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -16,19 +16,19 @@ import ftk.event
 
 _FtkEventPtr = ftk.event.FtkEvent
 
-class FtkGestureListener(Structure):
+class FtkGestureListener(ctypes.Structure):
     pass
 
-_FtkGestureListenerPtr = POINTER(FtkGestureListener)
+_FtkGestureListenerPtr = ctypes.POINTER(FtkGestureListener)
 
-FtkGestureListenerOnClicked = CFUNCTYPE(c_int, _FtkGestureListenerPtr, _FtkEventPtr)
-FtkGestureListenerOnDblClicked = CFUNCTYPE(c_int, _FtkGestureListenerPtr, _FtkEventPtr)
-FtkGestureListenerOnLongPressed = CFUNCTYPE(c_int, _FtkGestureListenerPtr, _FtkEventPtr)
-FtkGestureListenerOnFling = CFUNCTYPE(c_int, _FtkGestureListenerPtr,
-        _FtkEventPtr, _FtkEventPtr, c_int, c_int)
-FtkGestureListenerOnScroll = CFUNCTYPE(c_int, _FtkGestureListenerPtr,
-        _FtkEventPtr, _FtkEventPtr, c_int, c_int)
-FtkGestureListenerDestroy = CFUNCTYPE(None, _FtkGestureListenerPtr)
+FtkGestureListenerOnClicked = ctypes.CFUNCTYPE(ctypes.c_int, _FtkGestureListenerPtr, _FtkEventPtr)
+FtkGestureListenerOnDblClicked = ctypes.CFUNCTYPE(ctypes.c_int, _FtkGestureListenerPtr, _FtkEventPtr)
+FtkGestureListenerOnLongPressed = ctypes.CFUNCTYPE(ctypes.c_int, _FtkGestureListenerPtr, _FtkEventPtr)
+FtkGestureListenerOnFling = ctypes.CFUNCTYPE(ctypes.c_int, _FtkGestureListenerPtr,
+        _FtkEventPtr, _FtkEventPtr, ctypes.c_int, ctypes.c_int)
+FtkGestureListenerOnScroll = ctypes.CFUNCTYPE(ctypes.c_int, _FtkGestureListenerPtr,
+        _FtkEventPtr, _FtkEventPtr, ctypes.c_int, ctypes.c_int)
+FtkGestureListenerDestroy = ctypes.CFUNCTYPE(None, _FtkGestureListenerPtr)
 
 FtkGestureListener._fields_ = [
         ('on_fling', FtkGestureListenerOnFling),
@@ -37,7 +37,7 @@ FtkGestureListener._fields_ = [
         ('on_dbl_clicked', FtkGestureListenerOnDblClicked),
         ('on_long_pressed', FtkGestureListenerOnLongPressed),
         ('destroy', FtkGestureListenerDestroy),
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_gesture_listener_on_clicked(thiz, event):

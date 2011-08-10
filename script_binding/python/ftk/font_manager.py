@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.font_desc
@@ -14,15 +14,15 @@ import ftk.font
 
 # ftk_font_manager.h
 
-class FtkFontManager(Structure):
+class FtkFontManager(ctypes.Structure):
     pass
 
-_FtkFontManagerPtr = POINTER(FtkFontManager)
+_FtkFontManagerPtr = ctypes.POINTER(FtkFontManager)
 
 ftk_font_manager_create = ftk.dll.function('ftk_font_manager_create',
         '',
         args=['max_font_nr'],
-        arg_types=[c_int],
+        arg_types=[ctypes.c_int],
         return_type=_FtkFontManagerPtr,
         dereference_return=True,
         require_return=True)
@@ -32,14 +32,14 @@ ftk_font_manager_get_default_font = ftk.dll.function(
         '',
         args=['thiz'],
         arg_types=[_FtkFontManagerPtr],
-        return_type=POINTER(ftk.font.FtkFont),
+        return_type=ctypes.POINTER(ftk.font.FtkFont),
         dereference_return=True)
 
 ftk_font_manager_load = ftk.dll.function('ftk_font_manager_load',
         '',
         args=['thiz', 'font_desc'],
-        arg_types=[_FtkFontManagerPtr, POINTER(ftk.font_desc.FtkFontDesc)],
-        return_type=POINTER(ftk.font.FtkFont),
+        arg_types=[_FtkFontManagerPtr, ctypes.POINTER(ftk.font_desc.FtkFontDesc)],
+        return_type=ctypes.POINTER(ftk.font.FtkFont),
         dereference_return=True)
 
 ftk_font_manager_destroy = ftk.dll.function('ftk_font_manager_destroy',

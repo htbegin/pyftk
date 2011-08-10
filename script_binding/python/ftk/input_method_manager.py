@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -15,14 +15,14 @@ import ftk.input_method
 
 # ftk_input_method_manager.h
 
-class FtkInputMethodManager(Structure):
+class FtkInputMethodManager(ctypes.Structure):
     pass
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
-_FtkInputMethodPtr = POINTER(ftk.input_method.FtkInputMethod)
+_FtkInputMethodPtr = ctypes.POINTER(ftk.input_method.FtkInputMethod)
 
-_FtkInputMethodManagerPtr = POINTER(FtkInputMethodManager)
+_FtkInputMethodManagerPtr = ctypes.POINTER(FtkInputMethodManager)
 
 ftk_input_method_manager_create = ftk.dll.function(
         'ftk_input_method_manager_create',
@@ -38,16 +38,16 @@ ftk_input_method_manager_count = ftk.dll.function(
         '',
         args=['thiz'],
         arg_types=[_FtkInputMethodManagerPtr],
-        return_type=c_size_t)
+        return_type=ctypes.c_size_t)
 
 _ftk_input_method_manager_get = ftk.dll.private_function(
         'ftk_input_method_manager_get',
-        arg_types=[_FtkInputMethodManagerPtr, c_uint, POINTER(_FtkInputMethodPtr)],
-        return_type=c_int)
+        arg_types=[_FtkInputMethodManagerPtr, ctypes.c_uint, ctypes.POINTER(_FtkInputMethodPtr)],
+        return_type=ctypes.c_int)
 
 def ftk_input_method_manager_get(thiz, index):
     im_ptr = _FtkInputMethodPtr()
-    ret = _ftk_input_method_manager_get(thiz, index, byref(im_ptr))
+    ret = _ftk_input_method_manager_get(thiz, index, ctypes.byref(im_ptr))
     if ret == ftk.constants.RET_OK:
         return (ret, im_ptr.contents)
     else:
@@ -55,12 +55,12 @@ def ftk_input_method_manager_get(thiz, index):
 
 _ftk_input_method_manager_get_current = ftk.dll.private_function(
         'ftk_input_method_manager_get_current',
-        arg_types=[_FtkInputMethodManagerPtr, POINTER(_FtkInputMethodPtr)],
-        return_type=c_int)
+        arg_types=[_FtkInputMethodManagerPtr, ctypes.POINTER(_FtkInputMethodPtr)],
+        return_type=ctypes.c_int)
 
 def ftk_input_method_manager_get_current(thiz):
     im_ptr = _FtkInputMethodPtr()
-    ret = _ftk_input_method_manager_get_current(thiz, byref(im_ptr))
+    ret = _ftk_input_method_manager_get_current(thiz, ctypes.byref(im_ptr))
     if ret == ftk.constants.RET_OK:
         return (ret, im_ptr.contents)
     else:
@@ -70,29 +70,29 @@ ftk_input_method_manager_set_current = ftk.dll.function(
         'ftk_input_method_manager_set_current',
         '',
         args=['thiz', 'index'],
-        arg_types=[_FtkInputMethodManagerPtr, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkInputMethodManagerPtr, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_input_method_manager_set_current_type = ftk.dll.function(
         'ftk_input_method_manager_set_current_type',
         '',
         args=['thiz', 'type'],
-        arg_types=[_FtkInputMethodManagerPtr, c_int],
-        return_type=c_int)
+        arg_types=[_FtkInputMethodManagerPtr, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_input_method_manager_register = ftk.dll.function(
         'ftk_input_method_manager_register',
         '',
         args=['thiz', 'im'],
         arg_types=[_FtkInputMethodManagerPtr, _FtkInputMethodPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_input_method_manager_unregister = ftk.dll.function(
         'ftk_input_method_manager_unregister',
         '',
         args=['thiz', 'im'],
         arg_types=[_FtkInputMethodManagerPtr, _FtkInputMethodPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_input_method_manager_destroy = ftk.dll.function(
         'ftk_input_method_manager_destroy',
@@ -106,18 +106,18 @@ ftk_input_method_manager_focus_out = ftk.dll.function(
         '',
         args=['thiz', 'widget'],
         arg_types=[_FtkInputMethodManagerPtr, _FtkWidgetPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_input_method_manager_focus_ack_commit = ftk.dll.function(
         'ftk_input_method_manager_focus_ack_commit',
         '',
         args=['thiz'],
         arg_types=[_FtkInputMethodManagerPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_input_method_manager_focus_in = ftk.dll.function(
         'ftk_input_method_manager_focus_in',
         '',
         args=['thiz', 'widget'],
         arg_types=[_FtkInputMethodManagerPtr, _FtkWidgetPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)

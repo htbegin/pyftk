@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -17,34 +17,34 @@ import ftk.display
 
 # ftk_canvas.h
 
-_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
-_FtkRegionPtr = POINTER(ftk.typedef.FtkRegion)
-_FtkPointPtr = POINTER(ftk.typedef.FtkPoint)
-_FtkRectPtr = POINTER(ftk.typedef.FtkRect)
-_FtkGcPtr = POINTER(ftk.gc.FtkGc)
+_FtkBitmapPtr = ctypes.POINTER(ftk.bitmap.FtkBitmap)
+_FtkRegionPtr = ctypes.POINTER(ftk.typedef.FtkRegion)
+_FtkPointPtr = ctypes.POINTER(ftk.typedef.FtkPoint)
+_FtkRectPtr = ctypes.POINTER(ftk.typedef.FtkRect)
+_FtkGcPtr = ctypes.POINTER(ftk.gc.FtkGc)
 
-class FtkCanvas(Structure):
+class FtkCanvas(ctypes.Structure):
     pass
 
-_FtkCanvasPtr = POINTER(FtkCanvas)
+_FtkCanvasPtr = ctypes.POINTER(FtkCanvas)
 
-FtkCanvasSyncGc = CFUNCTYPE(c_int, _FtkCanvasPtr)
-FtkCanvasSetClip = CFUNCTYPE(c_int, _FtkCanvasPtr, _FtkRegionPtr)
-FtkCanvasDrawPixels = CFUNCTYPE(c_int, _FtkCanvasPtr, _FtkPointPtr, c_uint)
-FtkCanvasDrawLine = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint)
-FtkCanvasClearRect = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint)
-FtkCanvasDrawRect = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_uint, c_uint, c_int, c_int)
-FtkCanvasDrawBitmap = CFUNCTYPE(c_int, _FtkCanvasPtr, _FtkBitmapPtr,
-        _FtkRectPtr, _FtkRectPtr, c_int)
-FtkCanvasDrawString = CFUNCTYPE(c_int, _FtkCanvasPtr, c_uint, c_uint, c_char_p, c_int, c_int)
-FtkCanvasLockBuffer = CFUNCTYPE(c_int, _FtkCanvasPtr, POINTER(_FtkBitmapPtr))
-FtkCanvasUnlockBuffer = CFUNCTYPE(c_int, _FtkCanvasPtr)
-FtkCanvasDestroy = CFUNCTYPE(None, _FtkCanvasPtr)
+FtkCanvasSyncGc = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr)
+FtkCanvasSetClip = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, _FtkRegionPtr)
+FtkCanvasDrawPixels = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, _FtkPointPtr, ctypes.c_uint)
+FtkCanvasDrawLine = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint)
+FtkCanvasClearRect = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint)
+FtkCanvasDrawRect = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_int, ctypes.c_int)
+FtkCanvasDrawBitmap = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, _FtkBitmapPtr,
+        _FtkRectPtr, _FtkRectPtr, ctypes.c_int)
+FtkCanvasDrawString = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_char_p, ctypes.c_int, ctypes.c_int)
+FtkCanvasLockBuffer = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr, ctypes.POINTER(_FtkBitmapPtr))
+FtkCanvasUnlockBuffer = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr)
+FtkCanvasDestroy = ctypes.CFUNCTYPE(None, _FtkCanvasPtr)
 
 FtkCanvas._fields_ = [
         ('gc', ftk.gc.FtkGc),
-        ('width', c_uint),
-        ('height', c_uint),
+        ('width', ctypes.c_uint),
+        ('height', ctypes.c_uint),
         ('sync_gc', FtkCanvasSyncGc),
         ('set_clip', FtkCanvasSetClip),
         ('draw_pixels', FtkCanvasDrawPixels),
@@ -57,7 +57,7 @@ FtkCanvas._fields_ = [
         ('unlock_buffer', FtkCanvasUnlockBuffer),
         ('destroy', FtkCanvasDestroy),
 
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_canvas_sync_gc(thiz):
@@ -116,7 +116,7 @@ def ftk_canvas_lock_buffer(thiz):
     bitmap = None
     if thiz.lock_buffer:
         bitmap_ptr = _FtkBitmapPtr()
-        ret = thiz.lock_buffer(thiz, byref(bitmap_ptr))
+        ret = thiz.lock_buffer(thiz, ctypes.byref(bitmap_ptr))
         if ret == ftk.constants.RET_OK:
             bitmap = bitmap_ptr.contents
     else:
@@ -137,13 +137,13 @@ ftk_canvas_reset_gc = ftk.dll.function('ftk_canvas_reset_gc',
         '',
         args=['thiz', 'gc'],
         arg_types=[_FtkCanvasPtr, _FtkGcPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_canvas_set_gc = ftk.dll.function('ftk_canvas_set_gc',
         '',
         args=['thiz', 'gc'],
         arg_types=[_FtkCanvasPtr, _FtkGcPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_canvas_get_gc = ftk.dll.function('ftk_canvas_get_gc',
         '',
@@ -156,23 +156,23 @@ ftk_canvas_set_clip_rect = ftk.dll.function('ftk_canvas_set_clip_rect',
         '',
         args=['thiz', 'rect'],
         arg_types=[_FtkCanvasPtr, _FtkRectPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_canvas_set_clip_region = ftk.dll.function('ftk_canvas_set_clip_region',
         '',
         args=['thiz', 'region'],
         arg_types=[_FtkCanvasPtr, _FtkRegionPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 _ftk_cavans_get_clip_region = ftk.dll.private_function(
         'ftk_cavans_get_clip_region',
-        arg_types=[_FtkCanvasPtr, POINTER(_FtkRegionPtr)],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, ctypes.POINTER(_FtkRegionPtr)],
+        return_type=ctypes.c_int)
 
 def ftk_cavans_get_clip_region(thiz):
     region = None
     region_ptr = _FtkRegionPtr()
-    ret = _ftk_cavans_get_clip_region(thiz, byref(region_ptr))
+    ret = _ftk_cavans_get_clip_region(thiz, ctypes.byref(region_ptr))
     if ret == ftk.constants.RET_OK:
         region = region_ptr.contents
     return (ret, region)
@@ -180,24 +180,24 @@ def ftk_cavans_get_clip_region(thiz):
 ftk_canvas_draw_vline = ftk.dll.function('ftk_canvas_draw_vline',
         '',
         args=['thiz', 'x', 'y', 'h'],
-        arg_types=[_FtkCanvasPtr, c_uint, c_uint, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_canvas_draw_hline = ftk.dll.function('ftk_canvas_draw_hline',
         '',
         args=['thiz', 'x', 'y', 'w'],
-        arg_types=[_FtkCanvasPtr, c_uint, c_uint, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_canvas_font_height = ftk.dll.function('ftk_canvas_font_height',
         '',
         args=['thiz'],
         arg_types=[_FtkCanvasPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 _ftk_canvas_get_extent = ftk.dll.private_function('ftk_canvas_get_extent',
-        arg_types=[_FtkCanvasPtr, c_char_p, c_int],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, ctypes.c_char_p, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 def ftk_canvas_get_extent(thiz, text):
     return _ftk_canvas_get_extent(thiz, text, len(text))
@@ -206,32 +206,32 @@ ftk_canvas_calc_str_visible_range = ftk.dll.function(
         'ftk_canvas_calc_str_visible_range',
         '',
         args=['thiz', 'start', 'vstart', 'vend', 'width'],
-        arg_types=[_FtkCanvasPtr, c_char_p, c_int, c_int, c_uint],
-        return_type=c_char_p)
+        arg_types=[_FtkCanvasPtr, ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_uint],
+        return_type=ctypes.c_char_p)
 
 ftk_canvas_draw_bitmap_simple = ftk.dll.function(
         'ftk_canvas_draw_bitmap_simple',
         '',
         args=['thiz', 'b', 'x', 'y', 'w', 'h', 'ox', 'oy'],
-        arg_types=[_FtkCanvasPtr, _FtkBitmapPtr, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, _FtkBitmapPtr, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_canvas_draw_bg_image = ftk.dll.function('ftk_canvas_draw_bg_image',
         '',
         args=['thiz', 'bitmap', 'style', 'x', 'y', 'w', 'h'],
-        arg_types=[_FtkCanvasPtr, _FtkBitmapPtr, c_int, c_uint, c_uint, c_uint, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, _FtkBitmapPtr, ctypes.c_int, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_canvas_show = ftk.dll.function('ftk_canvas_show',
         '',
         args=['thiz', 'display', 'rect', 'ox', 'oy'],
-        arg_types=[_FtkCanvasPtr, POINTER(ftk.display.FtkDisplay), _FtkRectPtr, c_int, c_int],
-        return_type=c_int)
+        arg_types=[_FtkCanvasPtr, ctypes.POINTER(ftk.display.FtkDisplay), _FtkRectPtr, ctypes.c_int, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_canvas_create = ftk.dll.function('ftk_canvas_create',
         '',
         args=['w', 'h', 'clear_color'],
-        arg_types=[c_uint, c_uint, POINTER(ftk.typedef.FtkColor)],
+        arg_types=[ctypes.c_uint, ctypes.c_uint, ctypes.POINTER(ftk.typedef.FtkColor)],
         return_type=_FtkCanvasPtr,
         dereference_return=True,
         require_return=True)

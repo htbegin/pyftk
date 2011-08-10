@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -15,24 +15,24 @@ import ftk.event
 
 # ftk_source.h
 
-class FtkSource(Structure):
+class FtkSource(ctypes.Structure):
     pass
 
-_FtkSourcePtr = POINTER(FtkSource)
+_FtkSourcePtr = ctypes.POINTER(FtkSource)
 
-FtkSourceGetFd = CFUNCTYPE(c_int, _FtkSourcePtr)
-FtkSourceCheck = CFUNCTYPE(c_int, _FtkSourcePtr)
-FtkSourceDispatch = CFUNCTYPE(c_int, _FtkSourcePtr)
-FtkSourceDestroy = CFUNCTYPE(None, _FtkSourcePtr)
+FtkSourceGetFd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkSourcePtr)
+FtkSourceCheck = ctypes.CFUNCTYPE(ctypes.c_int, _FtkSourcePtr)
+FtkSourceDispatch = ctypes.CFUNCTYPE(ctypes.c_int, _FtkSourcePtr)
+FtkSourceDestroy = ctypes.CFUNCTYPE(None, _FtkSourcePtr)
 
 FtkSource._fields_ = [
         ('get_fd', FtkSourceGetFd),
         ('check', FtkSourceCheck),
         ('dispatch', FtkSourceDispatch),
         ('destroy', FtkSourceDestroy),
-        ('ref', c_int),
-        ('disable', c_int),
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('ref', ctypes.c_int),
+        ('disable', ctypes.c_int),
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_source_disable(thiz):
@@ -68,8 +68,8 @@ _source_cb_refs = {}
 
 def ftk_source_destroy(thiz):
     if thiz.destroy:
-        if addressof(thiz) in _source_cb_refs:
-            del _source_cb_refs[addressof(thiz)]
+        if ctypes.addressof(thiz) in _source_cb_refs:
+            del _source_cb_refs[ctypes.addressof(thiz)]
         thiz.destroy(thiz)
 
 def ftk_source_ref(thiz):
@@ -83,7 +83,7 @@ def ftk_source_unref(thiz):
 # ftk_source_idle.h
 
 _ftk_source_idle_create = ftk.dll.private_function('ftk_source_idle_create',
-        arg_types=[ftk.typedef.FtkIdle, c_void_p],
+        arg_types=[ftk.typedef.FtkIdle, ctypes.c_void_p],
         return_type=_FtkSourcePtr,
         dereference_return=True,
         require_return=True)
@@ -94,13 +94,13 @@ def ftk_source_idle_create(action, user_data):
 
     func = ftk.typedef.FtkIdle(_action)
     result = _ftk_source_idle_create(func, None)
-    _source_cb_refs[addressof(result)] = func
+    _source_cb_refs[ctypes.addressof(result)] = func
     return result
 
 # ftk_source_timer.h
 
 _ftk_source_timer_create = ftk.dll.private_function('ftk_source_timer_create',
-        arg_types=[c_int, ftk.typedef.FtkTimer, c_void_p],
+        arg_types=[ctypes.c_int, ftk.typedef.FtkTimer, ctypes.c_void_p],
         return_type=_FtkSourcePtr,
         dereference_return=True,
         require_return=True)
@@ -111,26 +111,26 @@ def ftk_source_timer_create(interval, action, user_data):
 
     func = ftk.typedef.FtkTimer(_action)
     result = _ftk_source_timer_create(interval, func, None)
-    _source_cb_refs[addressof(result)] = func
+    _source_cb_refs[ctypes.addressof(result)] = func
     return result
 
 ftk_source_timer_reset = ftk.dll.function('ftk_source_timer_reset',
         '',
         args=['thiz'],
         arg_types=[_FtkSourcePtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_source_timer_modify = ftk.dll.function('ftk_source_timer_modify',
         '',
         args=['thiz', 'interval'],
-        arg_types=[_FtkSourcePtr, c_int],
-        return_type=c_int)
+        arg_types=[_FtkSourcePtr, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 # ftk_source_primary.h
 
 _ftk_source_primary_create = ftk.dll.private_function(
         'ftk_source_primary_create',
-        arg_types=[ftk.event.FtkOnEvent, c_void_p],
+        arg_types=[ftk.event.FtkOnEvent, ctypes.c_void_p],
         return_type=_FtkSourcePtr,
         dereference_return=True,
         require_return=True)
@@ -141,11 +141,11 @@ def ftk_source_primary_create(on_event, user_data):
 
     func = ftk.event.FtkOnEvent(_on_event)
     result = _ftk_source_primary_create(func, None)
-    _source_cb_refs[addressof(result)] = func
+    _source_cb_refs[ctypes.addressof(result)] = func
     return result
 
 ftk_source_queue_event = ftk.dll.function('ftk_source_queue_event',
         '',
         args=['thiz', 'event'],
-        arg_types=[_FtkSourcePtr, POINTER(ftk.event.FtkEvent)],
-        return_type=c_int)
+        arg_types=[_FtkSourcePtr, ctypes.POINTER(ftk.event.FtkEvent)],
+        return_type=ctypes.c_int)

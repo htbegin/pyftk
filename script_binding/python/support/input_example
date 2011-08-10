@@ -1,0 +1,35 @@
+from ctypes import *
+from  ctypes  import *
+from	ctypes	import *
+
+c_bool
+ c_bool
+_c_bool
+c_bool_
+abool
+boolb
+ctypes.c_bool
+
+c_wchar
+ c_wchar
+_c_wchar
+c_wchar_
+Zc_wchar
+c_wcharY
+ctypes.c_wchar
+
+addressof
+ addressof
+_addressof
+addressof_
+Maddressof
+addressofN
+ctypes.addressof
+
+cast
+ cast
+_cast
+cast_
+jcast
+castk
+ctypes.cast

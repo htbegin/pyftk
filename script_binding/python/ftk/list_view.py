@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -17,14 +17,14 @@ import ftk.list_model
 
 # ftk_list_view.h
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
-_FtkListModelPtr = POINTER(ftk.list_model.FtkListModel)
+_FtkListModelPtr = ctypes.POINTER(ftk.list_model.FtkListModel)
 
 ftk_list_view_create = ftk.dll.function('ftk_list_view_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, c_int, c_int, c_int, c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
@@ -32,20 +32,20 @@ ftk_list_view_create = ftk.dll.function('ftk_list_view_create',
 ftk_list_view_init = ftk.dll.function('ftk_list_view_init',
         '',
         args=['thiz', 'model', 'render', 'item_height'],
-        arg_types=[_FtkWidgetPtr, _FtkListModelPtr, POINTER(ftk.list_render.FtkListRender), c_int],
-        return_type=c_int)
+        arg_types=[_FtkWidgetPtr, _FtkListModelPtr, ctypes.POINTER(ftk.list_render.FtkListRender), ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_list_view_get_selected = ftk.dll.function('ftk_list_view_get_selected',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_list_view_set_cursor = ftk.dll.function('ftk_list_view_set_cursor',
         '',
         args=['thiz', 'current'],
-        arg_types=[_FtkWidgetPtr, c_int],
-        return_type=c_int)
+        arg_types=[_FtkWidgetPtr, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_list_view_get_model = ftk.dll.function('ftk_list_view_get_model',
         '',
@@ -56,8 +56,8 @@ ftk_list_view_get_model = ftk.dll.function('ftk_list_view_get_model',
 
 _ftk_list_view_set_clicked_listener = ftk.dll.private_function(
         'ftk_list_view_set_clicked_listener',
-        arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, c_void_p],
-        return_type=c_int)
+        arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, ctypes.c_void_p],
+        return_type=ctypes.c_int)
 
 _listener_refs = {}
 def ftk_list_view_set_clicked_listener(thiz, listener, ctx):
@@ -67,7 +67,7 @@ def ftk_list_view_set_clicked_listener(thiz, listener, ctx):
     callback = ftk.typedef.FtkListener(_listener)
     ret = _ftk_list_view_set_clicked_listener(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        _listener_refs[addressof(thiz)] = callback
+        _listener_refs[ctypes.addressof(thiz)] = callback
 
     return ret
 
@@ -76,4 +76,4 @@ ftk_list_view_repaint_focus_item = ftk.dll.function(
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)

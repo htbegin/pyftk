@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -16,26 +16,26 @@ import ftk.widget
 
 # ftk_list_render.h
 
-_FtkListModelPtr = POINTER(ftk.list_model.FtkListModel)
-_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkListModelPtr = ctypes.POINTER(ftk.list_model.FtkListModel)
+_FtkCanvasPtr = ctypes.POINTER(ftk.canvas.FtkCanvas)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
-class FtkListRender(Structure):
+class FtkListRender(ctypes.Structure):
     pass
 
-_FtkListRenderPtr = POINTER(FtkListRender)
+_FtkListRenderPtr = ctypes.POINTER(FtkListRender)
 
-FtkListRenderInit = CFUNCTYPE(c_int, _FtkListRenderPtr, _FtkListModelPtr, _FtkWidgetPtr)
-FtkListRenderPaint = CFUNCTYPE(c_int, _FtkListRenderPtr, _FtkCanvasPtr, c_int,
-        c_int, c_int, c_int, c_int)
-FtkListRenderDestroy = CFUNCTYPE(None, _FtkListRenderPtr)
+FtkListRenderInit = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListRenderPtr, _FtkListModelPtr, _FtkWidgetPtr)
+FtkListRenderPaint = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListRenderPtr, _FtkCanvasPtr, ctypes.c_int,
+        ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int)
+FtkListRenderDestroy = ctypes.CFUNCTYPE(None, _FtkListRenderPtr)
 
 FtkListRender._fields_ = [
         ('init', FtkListRenderInit),
         ('paint', FtkListRenderPaint),
         ('destroy', FtkListRenderDestroy),
 
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY),
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY),
         ]
 
 def ftk_list_render_init(thiz, model, list_view):
@@ -67,5 +67,5 @@ ftk_list_render_default_set_marquee_attr = ftk.dll.function(
         'ftk_list_render_default_set_marquee_attr',
         '',
         args=['thiz', 'marquee_attr'],
-        arg_types=[_FtkListRenderPtr, c_int],
-        return_type=c_int)
+        arg_types=[_FtkListRenderPtr, ctypes.c_int],
+        return_type=ctypes.c_int)

@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -14,30 +14,30 @@ import ftk.widget
 
 # ftk_animation_trigger.h
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
-class FtkAnimationTrigger(Structure):
+class FtkAnimationTrigger(ctypes.Structure):
     pass
 
-class FtkAnimationEvent(Structure):
+class FtkAnimationEvent(ctypes.Structure):
     _fields_ = [
-            ('type', c_int),
+            ('type', ctypes.c_int),
             ('old_window', _FtkWidgetPtr),
             ('new_window', _FtkWidgetPtr)
             ]
 
-_FtkAnimationTriggerPtr = POINTER(FtkAnimationTrigger)
+_FtkAnimationTriggerPtr = ctypes.POINTER(FtkAnimationTrigger)
 
-_FtkAnimationEventPtr = POINTER(FtkAnimationEvent)
+_FtkAnimationEventPtr = ctypes.POINTER(FtkAnimationEvent)
 
-FtkAnimationTriggerOnEvent = CFUNCTYPE(c_int, _FtkAnimationTriggerPtr, _FtkAnimationEventPtr)
-FtkAnimationTriggerDestroy = CFUNCTYPE(None, _FtkAnimationTriggerPtr)
+FtkAnimationTriggerOnEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkAnimationTriggerPtr, _FtkAnimationEventPtr)
+FtkAnimationTriggerDestroy = ctypes.CFUNCTYPE(None, _FtkAnimationTriggerPtr)
 
 FtkAnimationTrigger._fields_ = [
         ('on_event', FtkAnimationTriggerOnEvent),
         ('destroy', FtkAnimationTriggerDestroy),
 
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_animation_trigger_on_event(thiz, event):
@@ -54,7 +54,7 @@ ftk_animation_trigger_default_create = ftk.dll.function(
         'ftk_animation_trigger_default_create',
         '',
         args=['theme', 'filename'],
-        arg_types=[c_char_p, c_char_p],
+        arg_types=[ctypes.c_char_p, ctypes.c_char_p],
         return_type=_FtkAnimationTriggerPtr,
         dereference_return=True,
         require_return=True)

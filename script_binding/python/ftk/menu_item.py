@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -15,7 +15,7 @@ import ftk.widget
 
 # ftk_menu_item.h
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
 ftk_menu_item_create = ftk.dll.function('ftk_menu_item_create',
         '',
@@ -27,8 +27,8 @@ ftk_menu_item_create = ftk.dll.function('ftk_menu_item_create',
 
 _ftk_menu_item_set_clicked_listener = ftk.dll.private_function(
         'ftk_menu_item_set_clicked_listener',
-        arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, c_void_p],
-        return_type=c_int)
+        arg_types=[_FtkWidgetPtr, ftk.typedef.FtkListener, ctypes.c_void_p],
+        return_type=ctypes.c_int)
 
 _listener_refs = {}
 def ftk_menu_item_set_clicked_listener(thiz, listener, ctx):
@@ -38,5 +38,5 @@ def ftk_menu_item_set_clicked_listener(thiz, listener, ctx):
     callback = ftk.typedef.FtkListener(_listener)
     ret = _ftk_menu_item_set_clicked_listener(thiz, callback, None)
     if ret == ftk.constants.RET_OK:
-        _listener_refs[addressof(thiz)] = callback
+        _listener_refs[ctypes.addressof(thiz)] = callback
     return ret

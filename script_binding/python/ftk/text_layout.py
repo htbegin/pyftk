@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -14,22 +14,22 @@ import ftk.font
 
 # ftk_layout.h
 
-_FtkFontPtr = POINTER(ftk.font.FtkFont)
+_FtkFontPtr = ctypes.POINTER(ftk.font.FtkFont)
 
-class FtkTextLayout(Structure):
+class FtkTextLayout(ctypes.Structure):
     pass
 
-class FtkTextLine(Structure):
+class FtkTextLine(ctypes.Structure):
     _fields_ = [
-            ('len', c_int),
-            ('extent', c_int),
-            ('xoffset', c_int),
-            ('pos_v2l', POINTER(c_int)),
-            ('text', c_char_p),
-            ('attr', c_int)
+            ('len', ctypes.c_int),
+            ('extent', ctypes.c_int),
+            ('xoffset', ctypes.c_int),
+            ('pos_v2l', ctypes.POINTER(ctypes.c_int)),
+            ('text', ctypes.c_char_p),
+            ('attr', ctypes.c_int)
             ]
 
-_FtkTextLayoutPtr = POINTER(FtkTextLayout)
+_FtkTextLayoutPtr = ctypes.POINTER(FtkTextLayout)
 
 ftk_text_layout_create = ftk.dll.function('ftk_text_layout_create',
         '',
@@ -43,47 +43,47 @@ ftk_text_layout_set_font = ftk.dll.function('ftk_text_layout_set_font',
         '',
         args=['thiz', 'font'],
         arg_types=[_FtkTextLayoutPtr, _FtkFontPtr],
-        return_type=c_int)
+        return_type=ctypes.c_int)
 
 ftk_text_layout_set_width = ftk.dll.function('ftk_text_layout_set_width',
         '',
         args=['thiz', 'width'],
-        arg_types=[_FtkTextLayoutPtr, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkTextLayoutPtr, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_text_layout_set_text = ftk.dll.function('ftk_text_layout_set_text',
         '',
         args=['thiz', 'text', 'len'],
-        arg_types=[_FtkTextLayoutPtr, c_char_p, c_int],
-        return_type=c_int)
+        arg_types=[_FtkTextLayoutPtr, ctypes.c_char_p, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_text_layout_set_wrap_mode = ftk.dll.function(
         'ftk_text_layout_set_wrap_mode',
         '',
         args=['thiz', 'wrap_mode'],
-        arg_types=[_FtkTextLayoutPtr, c_int],
-        return_type=c_int)
+        arg_types=[_FtkTextLayoutPtr, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_text_layout_init = ftk.dll.function('ftk_text_layout_init',
         '',
         args=['thiz', 'text', 'len', 'font', 'width'],
-        arg_types=[_FtkTextLayoutPtr, c_char_p, c_int, _FtkFontPtr, c_uint],
-        return_type=c_int)
+        arg_types=[_FtkTextLayoutPtr, ctypes.c_char_p, ctypes.c_int, _FtkFontPtr, ctypes.c_uint],
+        return_type=ctypes.c_int)
 
 ftk_text_layout_skip_to = ftk.dll.function('ftk_text_layout_skip_to',
         '',
         args=['thiz', 'pos'],
-        arg_types=[_FtkTextLayoutPtr, c_int],
-        return_type=c_int)
+        arg_types=[_FtkTextLayoutPtr, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 _ftk_text_layout_get_visual_line = ftk.dll.private_function(
         'ftk_text_layout_get_visual_line',
-        arg_types=[_FtkTextLayoutPtr, POINTER(FtkTextLine)],
-        return_type=c_int)
+        arg_types=[_FtkTextLayoutPtr, ctypes.POINTER(FtkTextLine)],
+        return_type=ctypes.c_int)
 
 def ftk_text_layout_get_visual_line(thiz):
     line = FtkTextLine()
-    ret = _ftk_text_layout_get_visual_line(thiz, byref(line))
+    ret = _ftk_text_layout_get_visual_line(thiz, ctypes.byref(line))
     if ret != ftk.constants.RET_OK:
         line = None
     return (ret, line)

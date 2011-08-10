@@ -7,7 +7,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
 import logging
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -40,7 +40,7 @@ def ftk_loge(msg):
     _logger.error(msg)
 
 _ftk_set_log_level = ftk.dll.private_function('ftk_set_log_level',
-        arg_types=[c_int],
+        arg_types=[ctypes.c_int],
         return_type=None)
 
 _level_map = {
@@ -59,4 +59,4 @@ ftk_default_log_level = ftk.dll.function('ftk_default_log_level',
         '',
         args=[],
         arg_types=[],
-        return_type=c_int)
+        return_type=ctypes.c_int)

@@ -6,26 +6,26 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
 
 # ftk_interpolator.h
 
-class FtkInterpolator(Structure):
+class FtkInterpolator(ctypes.Structure):
     pass
 
-_FtkInterpolatorPtr = POINTER(FtkInterpolator)
+_FtkInterpolatorPtr = ctypes.POINTER(FtkInterpolator)
 
-FtkInterpolatorGet = CFUNCTYPE(c_float, _FtkInterpolatorPtr, c_float)
+FtkInterpolatorGet = ctypes.CFUNCTYPE(ctypes.c_float, _FtkInterpolatorPtr, ctypes.c_float)
 
-FtkInterpolatorDestroy = CFUNCTYPE(None, _FtkInterpolatorPtr)
+FtkInterpolatorDestroy = ctypes.CFUNCTYPE(None, _FtkInterpolatorPtr)
 
 FtkInterpolator._fields_ = [
         ('get', FtkInterpolatorGet),
         ('destroy', FtkInterpolatorDestroy),
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_interpolator_get(thiz, percent):

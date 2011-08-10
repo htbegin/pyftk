@@ -6,55 +6,55 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.typedef
 import ftk.constants
 
 # ftk_event.h
 
-class _FtkIdleEvent(Structure):
+class _FtkIdleEvent(ctypes.Structure):
     _fields_ = [
             ('action', ftk.typedef.FtkIdle),
-            ('user_data', c_void_p),
+            ('user_data', ctypes.c_void_p),
             ]
 
-class _FtkTimerEvent(Structure):
+class _FtkTimerEvent(ctypes.Structure):
     _fields_ = [
             ('action', ftk.typedef.FtkTimer),
-            ('interval', c_int),
-            ('user_data', c_void_p),
+            ('interval', ctypes.c_int),
+            ('user_data', ctypes.c_void_p),
             ]
 
-class _FtkKeyEvent(Structure):
+class _FtkKeyEvent(ctypes.Structure):
     _fields_ = [
-            ('code', c_int),
+            ('code', ctypes.c_int),
             ]
 
-class _FtkMouseEvent(Structure):
+class _FtkMouseEvent(ctypes.Structure):
     _fields_ = [
-            ('press', c_ubyte),
-            ('button', c_ubyte),
-            ('x', c_ushort),
-            ('y', c_ushort),
+            ('press', ctypes.c_ubyte),
+            ('button', ctypes.c_ubyte),
+            ('x', ctypes.c_ushort),
+            ('y', ctypes.c_ushort),
             ]
 
-class _FtkEventUnion(Union):
+class _FtkEventUnion(ctypes.Union):
     _fields_ = [
             ('idle', _FtkIdleEvent),
             ('timer', _FtkTimerEvent),
             ('key', _FtkKeyEvent),
             ('mouse', _FtkMouseEvent),
             ('rect', ftk.typedef.FtkRect),
-            ('extra', c_void_p),
+            ('extra', ctypes.c_void_p),
             ]
 
-class FtkEvent(Structure):
+class FtkEvent(ctypes.Structure):
     _fields_ = [
-            ('type', c_int),
-            ('widget', c_void_p),
-            ('time', c_uint),
+            ('type', ctypes.c_int),
+            ('widget', ctypes.c_void_p),
+            ('time', ctypes.c_uint),
             ('u', _FtkEventUnion),
             ]
 
-FtkOnEvent = CFUNCTYPE(c_int, c_void_p, POINTER(FtkEvent))
+FtkOnEvent = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.POINTER(FtkEvent))

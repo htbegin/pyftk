@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.constants
@@ -15,19 +15,19 @@ import ftk.bitmap
 
 # ftk_list_model.h
 
-_FtkBitmapPtr = POINTER(ftk.bitmap.FtkBitmap)
+_FtkBitmapPtr = ctypes.POINTER(ftk.bitmap.FtkBitmap)
 
-class FtkListModel(Structure):
+class FtkListModel(ctypes.Structure):
     pass
 
-_FtkListModelPtr = POINTER(FtkListModel)
+_FtkListModelPtr = ctypes.POINTER(FtkListModel)
 
-FtkListModelGetTotal = CFUNCTYPE(c_int, _FtkListModelPtr)
-FtkListModelGetData = CFUNCTYPE(c_int, _FtkListModelPtr, c_uint, POINTER(c_void_p))
-FtkListModelDestroy = CFUNCTYPE(None, _FtkListModelPtr)
-FtkListModelAdd = CFUNCTYPE(c_int, _FtkListModelPtr, c_void_p)
-FtkListModelReset = CFUNCTYPE(c_int, _FtkListModelPtr)
-FtkListModelRemove = CFUNCTYPE(c_int, _FtkListModelPtr, c_uint)
+FtkListModelGetTotal = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr)
+FtkListModelGetData = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr, ctypes.c_uint, ctypes.POINTER(ctypes.c_void_p))
+FtkListModelDestroy = ctypes.CFUNCTYPE(None, _FtkListModelPtr)
+FtkListModelAdd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr, ctypes.c_void_p)
+FtkListModelReset = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr)
+FtkListModelRemove = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr, ctypes.c_uint)
 
 FtkListModel._fields_ = [
         ('get_total', FtkListModelGetTotal),
@@ -37,27 +37,27 @@ FtkListModel._fields_ = [
         ('remove', FtkListModelRemove),
         ('destroy', FtkListModelDestroy),
 
-        ('ref', c_int),
-        ('disable_notify', c_int),
-        ('listener_ctx', c_void_p),
+        ('ref', ctypes.c_int),
+        ('disable_notify', ctypes.c_int),
+        ('listener_ctx', ctypes.c_void_p),
         ('listener', ftk.typedef.FtkListener),
 
-        ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
 # FIXME: thread-safe
 _user_data_refs = [None]
-class FtkListItemInfo(Structure):
+class FtkListItemInfo(ctypes.Structure):
     _fields_ = [
-            ('text', c_char_p),
-            ('disable', c_int),
-            ('value', c_int),
-            ('state', c_int),
-            ('type', c_int),
+            ('text', ctypes.c_char_p),
+            ('disable', ctypes.c_int),
+            ('value', ctypes.c_int),
+            ('state', ctypes.c_int),
+            ('type', ctypes.c_int),
             ('_left_icon_ptr', _FtkBitmapPtr),
             ('_right_icon_ptr', _FtkBitmapPtr),
-            ('_user_data', c_void_p),
-            ('_extra_user_data', c_void_p),
+            ('_user_data', ctypes.c_void_p),
+            ('_extra_user_data', ctypes.c_void_p),
             ]
 
     def __init__(self, text=None, disable=0, value=0, state=0, type=0,
@@ -85,7 +85,7 @@ class FtkListItemInfo(Structure):
 
     def _set_icon(self, attr, value):
         if value is not None:
-            setattr(self, attr, pointer(value))
+            setattr(self, attr, ctypes.pointer(value))
         else:
             setattr(self, attr, _FtkBitmapPtr())
 
@@ -118,7 +118,7 @@ class FtkListItemInfo(Structure):
             _user_data_refs[self._user_data] = value
         else:
             _user_data_refs.append(value)
-            self._user_data = c_void_p(len(_user_data_refs) - 1)
+            self._user_data = ctypes.c_void_p(len(_user_data_refs) - 1)
 
     @property
     def extra_user_data(self):
@@ -160,7 +160,7 @@ def ftk_list_model_add(thiz, item):
         raise TypeError("item should be a instance of FtkListItemInfo")
 
     if thiz.add:
-        void_ptr = cast(pointer(item), c_void_p)
+        void_ptr = ctypes.cast(ctypes.pointer(item), ctypes.c_void_p)
         ret = thiz.add(thiz, void_ptr)
         if ret == ftk.constants.RET_OK:
             ftk_list_model_notify(thiz)
@@ -199,10 +199,10 @@ def ftk_list_model_get_total(thiz):
 def ftk_list_model_get_data(thiz, index):
     data = None
     if thiz.get_data:
-        void_ptr = c_void_p()
-        ret = thiz.get_data(thiz, index, byref(void_ptr))
+        void_ptr = ctypes.c_void_p()
+        ret = thiz.get_data(thiz, index, ctypes.byref(void_ptr))
         if ret == ftk.constants.RET_OK:
-            data_ptr = cast(void_ptr, POINTER(FtkListItemInfo))
+            data_ptr = ctypes.cast(void_ptr, ctypes.POINTER(FtkListItemInfo))
             data = data_ptr.contents
     else:
         ret = ftk.constants.RET_FAIL
@@ -225,7 +225,7 @@ ftk_list_model_default_create = ftk.dll.function(
         'ftk_list_model_default_create',
         '',
         args=['init_nr'],
-        arg_types=[c_uint],
+        arg_types=[ctypes.c_uint],
         return_type=_FtkListModelPtr,
         dereference_return=True,
         require_return=True)

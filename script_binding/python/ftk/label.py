@@ -6,25 +6,25 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.widget
 
 # ftk_label.h
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
 ftk_label_create = ftk.dll.function('ftk_label_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, c_int, c_int, c_int, c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
 
 ftk_label_set_alignment = ftk.dll.function('ftk_label_set_alignment',
         '',
-        args=['thiz', 'alignment'],
-        arg_types=[_FtkWidgetPtr, c_int],
-        return_type=c_int)
+        args=['thiz', 'ctypes.alignment'],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int],
+        return_type=ctypes.c_int)

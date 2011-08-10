@@ -6,14 +6,14 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 def str_seq_to_c_char_p_array(str_seq, array_len=None):
     if str_seq is not None and str_seq:
         str_cnt = len(str_seq)
         if array_len is None:
             array_len = str_cnt
-        str_array = (c_char_p * array_len)()
+        str_array = (ctypes.c_char_p * array_len)()
         str_cnt = min(str_cnt, array_len)
         for idx in range(str_cnt):
             str_array[idx] = str_seq[idx]

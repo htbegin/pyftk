@@ -6,7 +6,7 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 import ftk.main_loop
@@ -28,37 +28,37 @@ import ftk.input_method_preeditor
 
 # ftk_globals.h
 
-_FtkSourcePtr = POINTER(ftk.source.FtkSource)
+_FtkSourcePtr = ctypes.POINTER(ftk.source.FtkSource)
 
-_FtkImPreeditorPtr = POINTER(ftk.input_method_preeditor.FtkImPreeditor)
+_FtkImPreeditorPtr = ctypes.POINTER(ftk.input_method_preeditor.FtkImPreeditor)
 
-_FtkDisplayPtr = POINTER(ftk.display.FtkDisplay)
+_FtkDisplayPtr = ctypes.POINTER(ftk.display.FtkDisplay)
 
-_FtkThemePtr = POINTER(ftk.theme.FtkTheme)
+_FtkThemePtr = ctypes.POINTER(ftk.theme.FtkTheme)
 
-_FtkConfigPtr = POINTER(ftk.config.FtkConfig)
+_FtkConfigPtr = ctypes.POINTER(ftk.config.FtkConfig)
 
-_FtkInputMethodManagerPtr = POINTER(ftk.input_method_manager.FtkInputMethodManager)
+_FtkInputMethodManagerPtr = ctypes.POINTER(ftk.input_method_manager.FtkInputMethodManager)
 
-_FtkCanvasPtr = POINTER(ftk.canvas.FtkCanvas)
+_FtkCanvasPtr = ctypes.POINTER(ftk.canvas.FtkCanvas)
 
-_FtkSourcesManagerPtr = POINTER(ftk.sources_manager.FtkSourcesManager)
+_FtkSourcesManagerPtr = ctypes.POINTER(ftk.sources_manager.FtkSourcesManager)
 
-_FtkFontManagerPtr = POINTER(ftk.font_manager.FtkFontManager)
+_FtkFontManagerPtr = ctypes.POINTER(ftk.font_manager.FtkFontManager)
 
-_FtkWndManagerPtr = POINTER(ftk.wnd_manager.FtkWndManager)
+_FtkWndManagerPtr = ctypes.POINTER(ftk.wnd_manager.FtkWndManager)
 
-_FtkWidgetPtr = POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
 
-_FtkMainLoopPtr = POINTER(ftk.main_loop.FtkMainLoop)
+_FtkMainLoopPtr = ctypes.POINTER(ftk.main_loop.FtkMainLoop)
 
-_FtkBitmapFactoryPtr = POINTER(ftk.bitmap_factory.FtkBitmapFactory)
+_FtkBitmapFactoryPtr = ctypes.POINTER(ftk.bitmap_factory.FtkBitmapFactory)
 
-_FtkAllocatorPtr = POINTER(ftk.allocator.FtkAllocator)
+_FtkAllocatorPtr = ctypes.POINTER(ftk.allocator.FtkAllocator)
 
-_FtkAnimationTriggerPtr = POINTER(ftk.animation_trigger.FtkAnimationTrigger)
+_FtkAnimationTriggerPtr = ctypes.POINTER(ftk.animation_trigger.FtkAnimationTrigger)
 
-_FtkTextLayoutPtr = POINTER(ftk.text_layout.FtkTextLayout)
+_FtkTextLayoutPtr = ctypes.POINTER(ftk.text_layout.FtkTextLayout)
 
 ftk_default_display = ftk.dll.function('ftk_default_display',
         '',

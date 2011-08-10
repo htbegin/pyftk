@@ -6,21 +6,21 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 
 import ftk.dll
 
 # ftk_params.h
 
-class FtkParams(Structure):
+class FtkParams(ctypes.Structure):
     pass
 
-_FtkParamsPtr = POINTER(FtkParams)
+_FtkParamsPtr = ctypes.POINTER(FtkParams)
 
 ftk_params_create = ftk.dll.function('ftk_params_create',
         '',
         args=['max_params_nr', 'max_vars_nr'],
-        arg_types=[c_int, c_int],
+        arg_types=[ctypes.c_int, ctypes.c_int],
         return_type=_FtkParamsPtr,
         dereference_return=True,
         require_return=True)
@@ -28,32 +28,32 @@ ftk_params_create = ftk.dll.function('ftk_params_create',
 ftk_params_set_param = ftk.dll.function('ftk_params_set_param',
         '',
         args=['thiz', 'name', 'value'],
-        arg_types=[_FtkParamsPtr, c_char_p, c_char_p],
-        return_type=c_int)
+        arg_types=[_FtkParamsPtr, ctypes.c_char_p, ctypes.c_char_p],
+        return_type=ctypes.c_int)
 
 ftk_params_set_var = ftk.dll.function('ftk_params_set_var',
         '',
         args=['thiz', 'name', 'value'],
-        arg_types=[_FtkParamsPtr, c_char_p, c_char_p],
-        return_type=c_int)
+        arg_types=[_FtkParamsPtr, ctypes.c_char_p, ctypes.c_char_p],
+        return_type=ctypes.c_int)
 
 ftk_params_eval_int = ftk.dll.function('ftk_params_eval_int',
         '',
         args=['thiz', 'name', 'defval'],
-        arg_types=[_FtkParamsPtr, c_char_p, c_int],
-        return_type=c_int)
+        arg_types=[_FtkParamsPtr, ctypes.c_char_p, ctypes.c_int],
+        return_type=ctypes.c_int)
 
 ftk_params_eval_float = ftk.dll.function('ftk_params_eval_float',
         '',
         args=['thiz', 'name', 'defval'],
-        arg_types=[_FtkParamsPtr, c_char_p, c_float],
-        return_type=c_float)
+        arg_types=[_FtkParamsPtr, ctypes.c_char_p, ctypes.c_float],
+        return_type=ctypes.c_float)
 
 ftk_params_eval_string = ftk.dll.function('ftk_params_eval_string',
         '',
         args=['thiz', 'name'],
-        arg_types=[_FtkParamsPtr, c_char_p],
-        return_type=c_char_p)
+        arg_types=[_FtkParamsPtr, ctypes.c_char_p],
+        return_type=ctypes.c_char_p)
 
 ftk_params_dump = ftk.dll.function('ftk_params_dump',
         '',

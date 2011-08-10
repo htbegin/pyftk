@@ -6,16 +6,16 @@
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: $'
 
-from ctypes import *
+import ctypes
 from ctypes.util import find_library
 import sys
 
 # Private version checking declared before ftk.version can be
 # imported.
-class _FTK_version(Structure):
-    _fields_ = [('major', c_ubyte),
-                ('minor', c_ubyte),
-                ('patch', c_ubyte)]
+class _FTK_version(ctypes.Structure):
+    _fields_ = [('major', ctypes.c_ubyte),
+                ('minor', ctypes.c_ubyte),
+                ('patch', ctypes.c_ubyte)]
 
     def __repr__(self):
         return '%d.%d.%d' % \
@@ -52,13 +52,13 @@ class FTK_DLL:
         if not library:
             raise ImportError, 'Dynamic library "%s" was not found' % \
                 _platform_library_name(library_name)
-        self._dll = getattr(cdll, library)
+        self._dll = getattr(ctypes.cdll, library)
         
         # Get the version of the DLL we're using
         if version_function_name:
             try:
                 version_function = getattr(self._dll, version_function_name)
-                version_function.restype = POINTER(_FTK_version)
+                version_function.restype = ctypes.POINTER(_FTK_version)
                 self._version = _version_parts(version_function().contents)
             except AttributeError:
                 self._version = (0, 0, 0)
@@ -111,7 +111,7 @@ class FTK_DLL:
                 The ctypes class giving the wrapped function's native
                 return type.
             `dereference_return`
-                If True, the return value is assumed to be a pointer and
+                If True, the return value is assumed to be a ctypes.pointer and
                 will be dereferenced via ``.contents`` before being
                 returned to the user application.
             `require_return`
@@ -158,7 +158,7 @@ class FTK_DLL:
         func.restype = return_type
         if dereference_return:
             if require_return:
-                # Construct a function which dereferences the pointer result,
+                # Construct a function which dereferences the ctypes.pointer result,
                 # or raises an exception if NULL is returned.
                 def _f(*args, **kwargs):
                     result = func(*args, **kwargs)
@@ -167,7 +167,7 @@ class FTK_DLL:
                     import ftk.error
                     raise ftk.error.FtkException, ftk.error.ftk_get_error()
             else:
-                # Construct a function which dereferences the pointer result,
+                # Construct a function which dereferences the ctypes.pointer result,
                 # or returns None if NULL is returned.
                 def _f(*args, **kwargs):
                     result = func(*args, **kwargs)
