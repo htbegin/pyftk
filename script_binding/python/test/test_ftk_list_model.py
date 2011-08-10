@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
 import unittest
+import ctypes
 
 import common
 from ftk.constants import RET_OK, RET_FAIL, FTK_LIST_ITEM_NORMAL
+from ftk.typedef import FtkColor
+from ftk.bitmap import ftk_bitmap_create, ftk_bitmap_unref
 from ftk.list_model import *
 
 class TestListModel(unittest.TestCase):
@@ -15,14 +18,7 @@ class TestListModel(unittest.TestCase):
         ftk_list_model_destroy(self.model)
 
     def test_add_get_one(self):
-        item = FtkListItemInfo()
-
-        self.assertEqual(item.text, None)
-
-        item.text = "one"
-        self.assertEqual(item.text, "one")
-
-        self.assertEqual(item.disable, 0)
+        item = FtkListItemInfo(text="one")
 
         ret = ftk_list_model_add(self.model, item)
         self.assertEqual(ret, RET_OK)
@@ -36,10 +32,7 @@ class TestListModel(unittest.TestCase):
         self.assertEqual(data.disable, 1)
 
     def test_add_get_two(self):
-        item = FtkListItemInfo()
-        item.text = "add"
-        item.disable = 0
-        item.type = FTK_LIST_ITEM_NORMAL
+        item = FtkListItemInfo(text="add", type=FTK_LIST_ITEM_NORMAL)
 
         ret = ftk_list_model_add(self.model, item)
         self.assertEqual(ret, RET_OK)
@@ -63,15 +56,8 @@ class TestListModel(unittest.TestCase):
         self.assertEqual(total, 0)
 
     def test_add_remove(self):
-        add_item = FtkListItemInfo()
-        add_item.text = "add"
-        add_item.disable = 0
-        add_item.type = FTK_LIST_ITEM_NORMAL
-
-        del_item = FtkListItemInfo()
-        del_item.text = "del"
-        del_item.disable = 0
-        del_item.type = FTK_LIST_ITEM_NORMAL
+        add_item = FtkListItemInfo(text="add", type=FTK_LIST_ITEM_NORMAL)
+        del_item = FtkListItemInfo(text="del", type=FTK_LIST_ITEM_NORMAL)
 
         items = (add_item, del_item)
         for item in items:
@@ -90,11 +76,8 @@ class TestListModel(unittest.TestCase):
 
     def test_get_set_user_data(self):
         user_data = "user_data"
-        extra_user_data = "extra_user_data"
-
         item = FtkListItemInfo()
         item.user_data = user_data
-        item.extra_user_data = extra_user_data
 
         ret = ftk_list_model_add(self.model, item)
         self.assertEqual(ret, RET_OK)
@@ -102,7 +85,48 @@ class TestListModel(unittest.TestCase):
         (ret, data) = ftk_list_model_get_data(self.model, 0)
         self.assertEqual(ret, RET_OK)
         self.assertTrue(data.user_data is user_data)
-        self.assertTrue(data.extra_user_data is extra_user_data)
+
+class TestListItem(unittest.TestCase):
+    def setUp(self):
+        common.setup_allocator()
+
+    def test_dft_value(self):
+        item = FtkListItemInfo()
+
+        self.assertEqual(item.text, None)
+        self.assertEqual(item.disable, 0)
+        self.assertEqual(item.value, 0)
+        self.assertEqual(item.state, 0)
+        self.assertEqual(item.type, 0)
+        self.assertEqual(item.left_icon, None)
+        self.assertEqual(item.right_icon, None)
+        self.assertEqual(item.user_data, None)
+        self.assertEqual(item.extra_user_data, None)
+
+    def test_icon_member(self):
+        icon_one = ftk_bitmap_create(1, 1, FtkColor())
+        icon_two = ftk_bitmap_create(2, 2, FtkColor())
+
+        item = FtkListItemInfo(left_icon=icon_one)
+        item.left_icon = icon_two
+
+        self.assertEqual(ctypes.addressof(item.left_icon),
+                ctypes.addressof(icon_two))
+
+        ftk_bitmap_unref(icon_two)
+        ftk_bitmap_unref(icon_one)
+
+    def test_udata_member(self):
+        udata_one = {"list" : "model"}
+        udata_two = {"list" : "view"}
+        item = FtkListItemInfo(user_data=udata_one)
+        item.user_data = udata_two
+        self.assertTrue(item.user_data is udata_two)
+
+    def test_extra_udata_member(self):
+        item = FtkListItemInfo()
+        self.assertRaises(AttributeError,
+                setattr, item, "extra_user_data", None)
 
 if __name__ == "__main__":
     unittest.main()

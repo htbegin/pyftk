@@ -45,6 +45,8 @@ FtkListModel._fields_ = [
         ('priv', c_byte * ftk.constants.ZERO_LEN_ARRAY)
         ]
 
+# FIXME: thread-safe
+_user_data_refs = [None]
 class FtkListItemInfo(Structure):
     _fields_ = [
             ('text', c_char_p),
@@ -52,11 +54,75 @@ class FtkListItemInfo(Structure):
             ('value', c_int),
             ('state', c_int),
             ('type', c_int),
-            ('left_icon', _FtkBitmapPtr),
-            ('right_icon', _FtkBitmapPtr),
-            ('user_data', c_void_p),
-            ('extra_user_data', c_void_p),
+            ('_left_icon_ptr', _FtkBitmapPtr),
+            ('_right_icon_ptr', _FtkBitmapPtr),
+            ('_user_data', c_void_p),
+            ('_extra_user_data', c_void_p),
             ]
+
+    def __init__(self, text=None, disable=0, value=0, state=0, type=0,
+            left_icon=None, right_icon=None,
+            user_data=None, extra_user_data=None):
+        if text is not None:
+            self.text = text
+        self.disable = disable
+        self.value = value
+        self.state = state
+        self.type = type
+        if left_icon is not None:
+            self.left_icon = left_icon
+        if right_icon is not None:
+            self.right_icon = right_icon
+        if user_data is not None:
+            self.user_data = user_data
+
+    def _get_icon(self, attr):
+        ptr = getattr(self, attr)
+        if ptr:
+            return ptr.contents
+        else:
+            return None
+
+    def _set_icon(self, attr, value):
+        if value is not None:
+            setattr(self, attr, pointer(value))
+        else:
+            setattr(self, attr, _FtkBitmapPtr())
+
+    @property
+    def left_icon(self):
+        return self._get_icon("_left_icon_ptr")
+
+    @left_icon.setter
+    def left_icon(self, value):
+        return self._set_icon("_left_icon_ptr", value)
+
+    @property
+    def right_icon(self):
+        return self._get_icon("_right_icon_ptr")
+
+    @right_icon.setter
+    def right_icon(self, value):
+        return self._set_icon("_right_icon_ptr", value)
+
+    @property
+    def user_data(self):
+        if self._user_data:
+            return _user_data_refs[self._user_data]
+        else:
+            return None
+
+    @user_data.setter
+    def user_data(self, value):
+        if self._user_data:
+            _user_data_refs[self._user_data] = value
+        else:
+            _user_data_refs.append(value)
+            self._user_data = c_void_p(len(_user_data_refs) - 1)
+
+    @property
+    def extra_user_data(self):
+        return None
 
 def ftk_list_model_enable_notify(thiz):
     if thiz.disable_notify > 0:

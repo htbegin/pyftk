@@ -2,7 +2,6 @@
 # -*- coding: utf8 -*-
 
 import sys
-from ctypes import pointer
 
 from ftk import *
 
@@ -58,14 +57,12 @@ def ftk_main():
     filename = "%s/alarm%s" % (
             ftk_config_get_test_data_dir(ftk_default_config()),
             FTK_STOCK_IMG_SUFFIX)
-    left_icon_obj = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
-    left_icon = pointer(left_icon_obj)
+    left_icon = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
 
     filename = "%s/search%s" % (
             ftk_config_get_test_data_dir(ftk_default_config()),
             FTK_STOCK_IMG_SUFFIX)
-    right_icon_obj = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
-    right_icon = pointer(right_icon_obj)
+    right_icon = ftk_bitmap_factory_load(ftk_default_bitmap_factory(), filename)
 
     for idx in range(4):
         info = FtkListItemInfo()
