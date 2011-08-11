@@ -6,6 +6,7 @@ import os
 from optparse import OptionParser
 import fnmatch
 import re
+import textwrap
 
 from pyparsing import *
 
@@ -13,7 +14,7 @@ class C2PythonConverter(object):
     def __init__(self, typedef_fname=None):
         self._create_parse_grammer()
         self._create_type_dict(typedef_fname)
-        self._create_pointer_info()
+        self._create_pointer_ptn()
 
     def _create_parse_grammer(self):
         atom_var_type = Literal("void") | \
@@ -61,24 +62,24 @@ class C2PythonConverter(object):
     def _create_type_dict(self, fname):
         self.type_dict = {
                 "void" : "None",
-                "char" : "c_byte",
-                "unsigned char" : "c_ubyte",
-                "short" : "c_short",
-                "unsigned short" : "c_ushort",
-                "int" : "c_int",
-                "unsigned int" : "c_uint",
-                "long" : "c_long",
-                "unsigned long" : "c_ulong",
-                "long long" : "c_longlong",
-                "unsigned long long" : "c_ulonglong",
-                "float" : "c_float",
-                "double" : "c_double",
-                "long double" : "c_longdouble",
-                "const char *" : "c_char_p",
-                "const unsigned char *" : "c_char_p",
-                "char *" : "c_char_p",
-                "unsigned char *" : "c_char_p",
-                "void *" : "c_void_p",
+                "char" : "ctypes.c_byte",
+                "unsigned char" : "ctypes.c_ubyte",
+                "short" : "ctypes.c_short",
+                "unsigned short" : "ctypes.c_ushort",
+                "int" : "ctypes.c_int",
+                "unsigned int" : "ctypes.c_uint",
+                "long" : "ctypes.c_long",
+                "unsigned long" : "ctypes.c_ulong",
+                "long long" : "ctypes.c_longlong",
+                "unsigned long long" : "ctypes.c_ulonglong",
+                "float" : "ctypes.c_float",
+                "double" : "ctypes.c_double",
+                "long double" : "ctypes.c_longdouble",
+                "const char *" : "ctypes.c_char_p",
+                "const unsigned char *" : "ctypes.c_char_p",
+                "char *" : "ctypes.c_char_p",
+                "unsigned char *" : "ctypes.c_char_p",
+                "void *" : "ctypes.c_void_p",
                 }
 
         if fname is None:
@@ -100,7 +101,7 @@ class C2PythonConverter(object):
                     continue
                 self.type_dict[key] = val
 
-    def _create_pointer_info(self):
+    def _create_pointer_ptn(self):
         self.pointer_re = re.compile(r"POINTER[(](?P<type>[a-zA-Z_.]+)[)]")
 
     def _scan_func_decs(self, content):
@@ -478,7 +479,7 @@ class C2PythonConverter(object):
 
         return struct_type_def
 
-    def _convert_func_dec(self, func, content):
+    def _convert_func_dec(self, content, func=None):
         decs = []
         func_decs = self._scan_func_decs(content)
         for dec in func_decs:
@@ -492,7 +493,7 @@ class C2PythonConverter(object):
 
         return decs
 
-    def run(self, finput, func, mpath, only_struct, only_func):
+    def run(self, finput, mpath, struct_enabled, func_enabled):
         self.mpath = mpath
         self.pointer_dict = {}
         self.local_struct_type_ptr_dict = {}
@@ -502,12 +503,13 @@ class C2PythonConverter(object):
             content = fd.read()
 
             self._create_private_types(content)
-            if not only_func:
+
+            if struct_enabled:
                 defs = self._convert_struct_type_def(content)
             else:
                 defs = []
-            if not only_struct:
-                decs = self._convert_func_dec(func, content)
+            if func_enabled:
+                decs = self._convert_func_dec(content)
             else:
                 decs = []
 
@@ -523,23 +525,20 @@ def strip_symbol_path(path, symbol):
 
 if __name__ == "__main__":
     opt_parser = OptionParser()
-    opt_parser.add_option("-f", "--file", dest="file",
-            help="the path of c header file", metavar="FILE")
-    opt_parser.add_option("-d", "--declaration", dest="func",
-            help="the name of the specific function", metavar="STRING")
+    opt_parser.add_option("-i", "--input", dest="file",
+            help="c header file", metavar="FILE")
     opt_parser.add_option("-m", "--module", dest="m_name",
             help="set the module name manually", metavar="STRING")
-    opt_parser.add_option("-s", "--struct", dest="struct_only",
+    opt_parser.add_option("-s", "--struct", dest="disable_struct",
             action="store_true", default=False,
-            help="generate the struct definitions only")
-    opt_parser.add_option("-p", "--func", dest="func_only",
+            help="disable the generation of struct definitions")
+    opt_parser.add_option("-f", "--function", dest="disable_func",
             action="store_true", default=False,
-            help="generate the function declarations only")
+            help="disable the generation of function definitions")
     (options, args) = opt_parser.parse_args()
 
     if options.file is None or not os.path.isfile(options.file) or \
             not fnmatch.fnmatch(options.file, "*.h") or \
-            (options.func is not None and not isinstance(options.func, str)) or \
             (options.m_name is not None and not isinstance(options.m_name, str)):
         opt_parser.print_help()
         sys.exit(1)
@@ -549,16 +548,13 @@ if __name__ == "__main__":
 
     if options.m_name is None:
         fname = os.path.basename(options.file)
-        if fnmatch.fnmatch(fname, "ftk_*.h"):
-            module_name = fname[4:-2]
-        else:
-            module_name = fname[0:-2]
+        module_name = fname[:-2]
     else:
         module_name = options.m_name
 
-    module_path = "".join(("ftk.", module_name, "."))
-    content = converter.run(options.file, options.func, module_path,
-            options.struct_only, options.func_only)
+    module_path = module_name
+    content = converter.run(options.file, module_path,
+            not options.disable_struct, not options.disable_func)
 
     if content:
         print content

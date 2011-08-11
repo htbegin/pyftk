@@ -1,131 +1,131 @@
-Ret = c_int
-size_t = c_size_t
+Ret = ctypes.c_int
+size_t = ctypes.c_size_t
 
-# ftk.constants
-FtkWidgetAttr = c_int
-FtkWidgetType = c_int
-FtkWidgetState = c_int
-FtkWrapMode = c_int
-FtkAlignment = c_int
-FtkLogLevel = c_int
-FtkPixelFormat = c_int
-FtkRotate = c_int
-FtkInputType = c_int
-FtkMarqueeAttr = c_int
-FtkBgStyle = c_int
-FtkFileBrowserType = c_int
+# ftk_constants
+FtkWidgetAttr = ctypes.c_int
+FtkWidgetType = ctypes.c_int
+FtkWidgetState = ctypes.c_int
+FtkWrapMode = ctypes.c_int
+FtkAlignment = ctypes.c_int
+FtkLogLevel = ctypes.c_int
+FtkPixelFormat = ctypes.c_int
+FtkRotate = ctypes.c_int
+FtkInputType = ctypes.c_int
+FtkMarqueeAttr = ctypes.c_int
+FtkBgStyle = ctypes.c_int
+FtkFileBrowserType = ctypes.c_int
 
-# ftk.app_window
-FtkPrepareOptionsMenu = ftk.app_window.FtkPrepareOptionsMenu
+# ftk_app_window
+FtkPrepareOptionsMenu = ftk_app_window.FtkPrepareOptionsMenu
 
-# ftk.widget
-FtkWidget = ftk.widget.FtkWidget
+# ftk_widget
+FtkWidget = ftk_widget.FtkWidget
 
-# ftk.event
-FtkEvent = ftk.event.FtkEvent
-FtkOnEvent = ftk.event.FtkOnEvent
+# ftk_event
+FtkEvent = ftk_event.FtkEvent
+FtkOnEvent = ftk_event.FtkOnEvent
 
-# ftk.canvas
-FtkCanvas = ftk.canvas.FtkCanvas
+# ftk_canvas
+FtkCanvas = ftk_canvas.FtkCanvas
 
-# ftk.typedef
-FtkDestroy = ftk.typedef.FtkDestroy
-FtkListener = ftk.typedef.FtkListener
-FtkRect = ftk.typedef.FtkRect
-FtkColor = ftk.typedef.FtkColor
-FtkTimer = ftk.typedef.FtkTimer
-FtkIdle = ftk.typedef.FtkIdle
+# ftk_typedef
+FtkDestroy = ftk_typedef.FtkDestroy
+FtkListener = ftk_typedef.FtkListener
+FtkRect = ftk_typedef.FtkRect
+FtkColor = ftk_typedef.FtkColor
+FtkTimer = ftk_typedef.FtkTimer
+FtkIdle = ftk_typedef.FtkIdle
 
-FtkPoint = ftk.typedef.FtkPoint
-FtkRegion = ftk.typedef.FtkRegion
-FtkCommitInfo = ftk.typedef.FtkCommitInfo
+FtkPoint = ftk_typedef.FtkPoint
+FtkRegion = ftk_typedef.FtkRegion
+FtkCommitInfo = ftk_typedef.FtkCommitInfo
 
-# ftk.gc
-FtkGc = ftk.gc.FtkGc
+# ftk_gc
+FtkGc = ftk_gc.FtkGc
 
-# ftk.bitmap
-FtkBitmap = ftk.bitmap.FtkBitmap
+# ftk_bitmap
+FtkBitmap = ftk_bitmap.FtkBitmap
 
-# ftk.source
-FtkSource = ftk.source.FtkSource
+# ftk_source
+FtkSource = ftk_source.FtkSource
 
-# ftk.sources_manager
-FtkSourcesManager = ftk.sources_manager.FtkSourcesManager
+# ftk_sources_manager
+FtkSourcesManager = ftk_sources_manager.FtkSourcesManager
 
-# ftk.main_loop
-FtkMainLoop = ftk.main_loop.FtkMainLoop
+# ftk_main_loop
+FtkMainLoop = ftk_main_loop.FtkMainLoop
 
-# ftk.params
-FtkParams = ftk.params.FtkParams
+# ftk_params
+FtkParams = ftk_params.FtkParams
 
-# ftk.allocator
-FtkAllocator = ftk.allocator.FtkAllocator
+# ftk_allocator
+FtkAllocator = ftk_allocator.FtkAllocator
 
-# ftk.font_desc
-FtkFontDesc = ftk.font_desc.FtkFontDesc
+# ftk_font_desc
+FtkFontDesc = ftk_font_desc.FtkFontDesc
 
-# ftk.font
-FtkFont = ftk.font.FtkFont
+# ftk_font
+FtkFont = ftk_font.FtkFont
 
-# ftk.font_manager
-FtkFontManager = ftk.font_manager.FtkFontManager
+# ftk_font_manager
+FtkFontManager = ftk_font_manager.FtkFontManager
 
-# ftk.config
-FtkConfig = ftk.config.FtkConfig
+# ftk_config
+FtkConfig = ftk_config.FtkConfig
 
-# ftk.text_layout
-FtkTextLayout = ftk.text_layout.FtkTextLayout
-FtkTextLine = ftk.text_layout.FtkTextLine
+# ftk_text_layout
+FtkTextLayout = ftk_text_layout.FtkTextLayout
+FtkTextLine = ftk_text_layout.FtkTextLine
 
-# ftk.gesture_listener
-FtkGestureListener = ftk.gesture_listener.FtkGestureListener
+# ftk_gesture_listener
+FtkGestureListener = ftk_gesture_listener.FtkGestureListener
 
-# ftk.gesture
-FtkGesture = ftk.gesture.FtkGesture
+# ftk_gesture
+FtkGesture = ftk_gesture.FtkGesture
 
-# ftk.icon_cache
-FtkIconCache = ftk.icon_cache.FtkIconCache
+# ftk_icon_cache
+FtkIconCache = ftk_icon_cache.FtkIconCache
 
-# ftk.image_decoder
-FtkImageDecoder = ftk.image_decoder.FtkImageDecoder
+# ftk_image_decoder
+FtkImageDecoder = ftk_image_decoder.FtkImageDecoder
 
-# ftk.bitmap_factory
-FtkBitmapFactory = ftk.bitmap_factory.FtkBitmapFactory
+# ftk_bitmap_factory
+FtkBitmapFactory = ftk_bitmap_factory.FtkBitmapFactory
 
-# ftk.display
-FtkDisplay = ftk.display.FtkDisplay
+# ftk_display
+FtkDisplay = ftk_display.FtkDisplay
 
-# ftk.list_model
-FtkListModel = ftk.list_model.FtkListModel
-FtkListItemInfo = ftk.list_model.FtkListItemInfo
+# ftk_list_model
+FtkListModel = ftk_list_model.FtkListModel
+FtkListItemInfo = ftk_list_model.FtkListItemInfo
 
-# ftk.list_render
-FtkListRender = ftk.list_render.FtkListRender
+# ftk_list_render
+FtkListRender = ftk_list_render.FtkListRender
 
-# ftk.wnd_manager
-FtkWndManager = ftk.wnd_manager.FtkWndManager
+# ftk_wnd_manager
+FtkWndManager = ftk_wnd_manager.FtkWndManager
 
-# ftk.theme
-FtkTheme = ftk.theme.FtkTheme
+# ftk_theme
+FtkTheme = ftk_theme.FtkTheme
 
-# ftk.xul
-FtkXulCallbacks = ftk.xul.FtkXulCallbacks
+# ftk_xul
+FtkXulCallbacks = ftk_xul.FtkXulCallbacks
 
-# ftk.animation_trigger
-FtkAnimationTrigger = ftk.animation_trigger.FtkAnimationTrigger
-FtkAnimationEvent = ftk.animation_trigger.FtkAnimationEvent
+# ftk_animation_trigger
+FtkAnimationTrigger = ftk_animation_trigger.FtkAnimationTrigger
+FtkAnimationEvent = ftk_animation_trigger.FtkAnimationEvent
 
-# ftk.input_method
-FtkInputMethod = ftk.input_method.FtkInputMethod
+# ftk_input_method
+FtkInputMethod = ftk_input_method.FtkInputMethod
 
-# ftk.input_method_manager
-FtkInputMethodManager = ftk.input_method_manager.FtkInputMethodManager
+# ftk_input_method_manager
+FtkInputMethodManager = ftk_input_method_manager.FtkInputMethodManager
 
-# ftk.input_method_preeditor
-FtkImPreeditor = ftk.input_method_preeditor.FtkImPreeditor
+# ftk_input_method_preeditor
+FtkImPreeditor = ftk_input_method_preeditor.FtkImPreeditor
 
-# ftk.interpolator
-FtkInterpolator = ftk.interpolator.FtkInterpolator
+# ftk_interpolator
+FtkInterpolator = ftk_interpolator.FtkInterpolator
 
-# ftk.animation
-FtkAnimation = ftk.animation.FtkAnimation
+# ftk_animation
+FtkAnimation = ftk_animation.FtkAnimation
