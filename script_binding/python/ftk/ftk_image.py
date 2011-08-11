@@ -28,4 +28,5 @@ ftk_image_set_image = ftk_dll.function('ftk_image_set_image',
         '',
         args=['thiz', 'image'],
         arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_bitmap.FtkBitmap)],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

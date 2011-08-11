@@ -34,10 +34,12 @@ ftk_combo_box_set_text = ftk_dll.function('ftk_combo_box_set_text',
         '',
         args=['thiz', 'text'],
         arg_types=[_FtkWidgetPtr, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_combo_box_append = ftk_dll.function('ftk_combo_box_append',
         '',
         args=['thiz', 'icon', 'text'],
         arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_bitmap.FtkBitmap), ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

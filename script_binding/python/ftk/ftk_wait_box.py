@@ -27,10 +27,12 @@ ftk_wait_box_start_waiting = ftk_dll.function('ftk_wait_box_start_waiting',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_wait_box_stop_waiting = ftk_dll.function('ftk_wait_box_stop_waiting',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

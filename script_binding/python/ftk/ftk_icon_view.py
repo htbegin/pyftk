@@ -78,12 +78,14 @@ ftk_icon_view_set_item_size = ftk_dll.function('ftk_icon_view_set_item_size',
         '',
         args=['thiz', 'size'],
         arg_types=[_FtkWidgetPtr, ctypes.c_uint],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _ftk_icon_view_set_clicked_listener = ftk_dll.private_function(
         'ftk_icon_view_set_clicked_listener',
         arg_types=[_FtkWidgetPtr, ftk_typedef.FtkListener, ctypes.c_void_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _listener_refs = {}
 def ftk_icon_view_set_clicked_listener(thiz, listener, ctx):
@@ -92,10 +94,8 @@ def ftk_icon_view_set_clicked_listener(thiz, listener, ctx):
         return listener(ctx, item_ptr.contents)
 
     callback = ftk_typedef.FtkListener(_listener)
-    ret = _ftk_icon_view_set_clicked_listener(thiz, callback, None)
-    if ret == ftk_constants.RET_OK:
-        _listener_refs[ctypes.addressof(thiz)] = callback
-    return ret
+    _ftk_icon_view_set_clicked_listener(thiz, callback, None)
+    _listener_refs[ctypes.addressof(thiz)] = callback
 
 ftk_icon_view_get_count = ftk_dll.function('ftk_icon_view_get_count',
         '',
@@ -107,23 +107,22 @@ ftk_icon_view_remove = ftk_dll.function('ftk_icon_view_remove',
         '',
         args=['thiz', 'index'],
         arg_types=[_FtkWidgetPtr, ctypes.c_uint],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_icon_view_add = ftk_dll.function('ftk_icon_view_add',
         '',
         args=['thiz', 'item'],
         arg_types=[_FtkWidgetPtr, _FtkIconViewItemPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _ftk_icon_view_get = ftk_dll.private_function('ftk_icon_view_get',
         arg_types=[_FtkWidgetPtr, ctypes.c_uint, ctypes.POINTER(_FtkIconViewItemPtr)],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 def ftk_icon_view_get(thiz, index):
-    item = None
     item_ptr = _FtkIconViewItemPtr()
-    ret = _ftk_icon_view_get(thiz, index, ctypes.byref(item_ptr))
-    if ret == ftk_constants.RET_OK:
-        item = item_ptr.contents
-
-    return (ret, item)
+    _ftk_icon_view_get(thiz, index, ctypes.byref(item_ptr))
+    return item_ptr.contents

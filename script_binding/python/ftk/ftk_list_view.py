@@ -33,7 +33,8 @@ ftk_list_view_init = ftk_dll.function('ftk_list_view_init',
         '',
         args=['thiz', 'model', 'render', 'item_height'],
         arg_types=[_FtkWidgetPtr, _FtkListModelPtr, ctypes.POINTER(ftk_list_render.FtkListRender), ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_list_view_get_selected = ftk_dll.function('ftk_list_view_get_selected',
         '',
@@ -45,7 +46,8 @@ ftk_list_view_set_cursor = ftk_dll.function('ftk_list_view_set_cursor',
         '',
         args=['thiz', 'current'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_list_view_get_model = ftk_dll.function('ftk_list_view_get_model',
         '',
@@ -57,7 +59,8 @@ ftk_list_view_get_model = ftk_dll.function('ftk_list_view_get_model',
 _ftk_list_view_set_clicked_listener = ftk_dll.private_function(
         'ftk_list_view_set_clicked_listener',
         arg_types=[_FtkWidgetPtr, ftk_typedef.FtkListener, ctypes.c_void_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _listener_refs = {}
 def ftk_list_view_set_clicked_listener(thiz, listener, ctx):
@@ -65,15 +68,13 @@ def ftk_list_view_set_clicked_listener(thiz, listener, ctx):
         return listener(ctx, thiz)
 
     callback = ftk_typedef.FtkListener(_listener)
-    ret = _ftk_list_view_set_clicked_listener(thiz, callback, None)
-    if ret == ftk_constants.RET_OK:
-        _listener_refs[ctypes.addressof(thiz)] = callback
-
-    return ret
+    _ftk_list_view_set_clicked_listener(thiz, callback, None)
+    _listener_refs[ctypes.addressof(thiz)] = callback
 
 ftk_list_view_repaint_focus_item = ftk_dll.function(
         'ftk_list_view_repaint_focus_item',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

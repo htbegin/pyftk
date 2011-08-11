@@ -30,18 +30,21 @@ ftk_file_browser_set_path = ftk_dll.function('ftk_file_browser_set_path',
         '',
         args=['thiz', 'path'],
         arg_types=[_FtkWidgetPtr, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_file_browser_set_filter = ftk_dll.function('ftk_file_browser_set_filter',
         '',
         args=['thiz', 'mime_type'],
         arg_types=[_FtkWidgetPtr, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _ftk_file_browser_set_choosed_handler = ftk_dll.private_function(
         'ftk_file_browser_set_choosed_handler',
         arg_types=[_FtkWidgetPtr, FtkFileBrowserOnChoosed, ctypes.c_void_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _choosed_cb_refs = {}
 def ftk_file_browser_set_choosed_handler(thiz, on_choosed, ctx):
@@ -49,13 +52,12 @@ def ftk_file_browser_set_choosed_handler(thiz, on_choosed, ctx):
         return on_choosed(ctx, index, path)
 
     callback = FtkFileBrowserOnChoosed(_on_choosed)
-    ret = _ftk_file_browser_set_choosed_handler(thiz, callback, None)
-    if ret == ftk_constants.RET_OK:
-        _choosed_cb_refs[ctypes.addressof(thiz)] = callback
-    return ret
+    _ftk_file_browser_set_choosed_handler(thiz, callback, None)
+    _choosed_cb_refs[ctypes.addressof(thiz)] = callback
 
 ftk_file_browser_load = ftk_dll.function('ftk_file_browser_load',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

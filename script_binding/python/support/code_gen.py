@@ -607,7 +607,7 @@ if __name__ == "__main__":
     else:
         module_name = options.m_name
 
-    module_path = module_name
+    module_path = "".join((module_name, "."))
     content = converter.run(options.file, module_path,
             not options.disable_struct, not options.disable_func)
 

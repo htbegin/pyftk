@@ -10,6 +10,7 @@ import ctypes
 
 import ftk_dll
 import ftk_constants
+import ftk_util
 import ftk_canvas
 import ftk_list_model
 import ftk_widget
@@ -40,15 +41,17 @@ FtkListRender._fields_ = [
 
 def ftk_list_render_init(thiz, model, list_view):
     if thiz.init:
-        return thiz.init(thiz, model, list_view)
+        ret = thiz.init(thiz, model, list_view)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_render_paint(thiz, canvas, pos, x, y, w, h):
     if thiz.paint:
-        return thiz.paint(thiz, canvas, pos, x, y, w, h)
+        ret = thiz.paint(thiz, canvas, pos, x, y, w, h)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_render_destroy(thiz):
     if thiz.destroy:
@@ -68,4 +71,5 @@ ftk_list_render_default_set_marquee_attr = ftk_dll.function(
         '',
         args=['thiz', 'marquee_attr'],
         arg_types=[_FtkListRenderPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

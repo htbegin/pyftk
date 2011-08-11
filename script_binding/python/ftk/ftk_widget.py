@@ -144,13 +144,15 @@ ftk_widget_update = ftk_dll.function('ftk_widget_update',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_widget_update_rect = ftk_dll.function('ftk_widget_update_rect',
         '',
         args=['thiz', 'rect'],
         arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_typedef.FtkRect)],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_widget_get_gc = ftk_dll.function('ftk_widget_get_gc',
         '',
@@ -196,7 +198,8 @@ ftk_widget_invalidate = ftk_dll.function('ftk_widget_invalidate',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_widget_get_wrap_mode = ftk_dll.function('ftk_widget_get_wrap_mode',
         '',
@@ -382,8 +385,7 @@ ftk_widget_toplevel = ftk_dll.function('ftk_widget_toplevel',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
         return_type=_FtkWidgetPtr,
-        dereference_return=True,
-        require_return=True)
+        dereference_return=True)
 
 ftk_widget_parent = ftk_dll.function('ftk_widget_parent',
         '',
@@ -462,7 +464,8 @@ ftk_widget_paint_self = ftk_dll.function('ftk_widget_paint_self',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_widget_ref_self = ftk_dll.function('ftk_widget_ref_self',
         '',
@@ -480,4 +483,5 @@ ftk_widget_event = ftk_dll.function('ftk_widget_event',
         '',
         args=['thiz', 'event'],
         arg_types=[_FtkWidgetPtr, _FtkEventPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

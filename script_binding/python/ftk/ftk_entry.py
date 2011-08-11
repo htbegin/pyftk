@@ -33,22 +33,26 @@ ftk_entry_set_text = ftk_dll.function('ftk_entry_set_text',
         '',
         args=['thiz', 'text'],
         arg_types=[_FtkWidgetPtr, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_entry_set_tips = ftk_dll.function('ftk_entry_set_tips',
         '',
         args=['thiz', 'tips'],
         arg_types=[_FtkWidgetPtr, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_entry_set_input_type = ftk_dll.function('ftk_entry_set_input_type',
         '',
         args=['thiz', 'type'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_entry_insert_text = ftk_dll.function('ftk_entry_insert_text',
         '',
         args=['thiz', 'pos', 'text'],
         arg_types=[_FtkWidgetPtr, ctypes.c_uint, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

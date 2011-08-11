@@ -36,13 +36,15 @@ ftk_dialog_set_icon = ftk_dll.function('ftk_dialog_set_icon',
         '',
         args=['thiz', 'icon'],
         arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_bitmap.FtkBitmap)],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_dialog_hide_title = ftk_dll.function('ftk_dialog_hide_title',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_dialog_run = ftk_dll.function('ftk_dialog_run',
         '',
@@ -54,10 +56,12 @@ ftk_dialog_quit = ftk_dll.function('ftk_dialog_quit',
         '',
         args=['thiz'],
         arg_types=[_FtkWidgetPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_dialog_quit_after = ftk_dll.function('ftk_dialog_quit_after',
         '',
         args=['thiz', 'ms'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

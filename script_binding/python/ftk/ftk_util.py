@@ -8,6 +8,9 @@ __version__ = '$Id: $'
 
 import ctypes
 
+import ftk_constants
+import ftk_error
+
 def str_seq_to_c_char_p_array(str_seq, array_len=None):
     if str_seq is not None and str_seq:
         str_cnt = len(str_seq)
@@ -22,3 +25,7 @@ def str_seq_to_c_char_p_array(str_seq, array_len=None):
         str_array = None
 
     return (str_cnt, str_array)
+
+def handle_inline_func_retval(ret):
+    if ret != ftk_constants.RET_OK:
+        raise ftk_error.FtkError(ret)

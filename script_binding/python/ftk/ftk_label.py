@@ -27,4 +27,5 @@ ftk_label_set_alignment = ftk_dll.function('ftk_label_set_alignment',
         '',
         args=['thiz', 'ctypes.alignment'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
