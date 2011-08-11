@@ -1,5 +1,23 @@
-* ./runner ./test/test_ftk_xul_two.py
+* ./runner.py ./test/test_ftk_xul_two.py
 
 ftk/dll.py:164: RuntimeWarning: memory leak in callback function.
 	result = func(*args, **kwargs)
 
+* ./runner.py demo/demo_draw.py
+
+FtkError exception from ftk_widget_update in callback on_paint
+
+the invoke sequence of on_paint:
+
+ftk_window_idle_invalidate [win]
+	ftk_window_disable_update [win]
+	ftk_widget_paint [win]
+		ftk_window_disable_update [win]
+		ftk_widget_paint_self [win]
+			ftk_widget_paint [painter]
+				ftk_widget_paint_self [painter]
+					on_paint [painter]
+						ftk_widget_update [painter]
+							check updated_disabled [win] ==> 2 ==> return RET_FAIL
+		ftk_window_enable_update
+	ftk_window_enable_update

@@ -46,7 +46,9 @@ def on_paint(ctx, painter):
         p.y = int(y + height / 2 + h)
         ftk_canvas_draw_pixels(canvas, (p,))
 
-    return ftk_widget_update(painter)
+    #ftk_widget_update(painter)
+
+    return RET_OK
 
 def button_step_clicked(win, button):
     global g_width
