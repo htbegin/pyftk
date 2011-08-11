@@ -9,7 +9,7 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_priv_util
+import ftk_util
 
 # ftk_config.h
 
@@ -31,7 +31,7 @@ _ftk_config_init = ftk_dll.private_function('ftk_config_init',
         return_type=ctypes.c_int)
 
 def ftk_config_init(thiz, arg_seq):
-    argc, argv = ftk_priv_util.str_seq_to_c_char_p_array(arg_seq)
+    argc, argv = ftk_util.str_seq_to_c_char_p_array(arg_seq)
     return _ftk_config_init(thiz, argc, argv)
 
 ftk_config_load = ftk_dll.function('ftk_config_load',

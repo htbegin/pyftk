@@ -10,7 +10,7 @@ import ctypes
 
 import ftk_dll
 import ftk_constants
-import ftk_priv_util
+import ftk_util
 import ftk_bitmap
 
 # ftk_icon_cache.h
@@ -27,7 +27,7 @@ _ftk_icon_cache_create = ftk_dll.private_function('ftk_icon_cache_create',
         require_return=True)
 
 def ftk_icon_cache_create(root_path_seq, rel_path):
-    cnt, array = ftk_priv_util.str_seq_to_c_char_p_array(root_path_seq,
+    cnt, array = ftk_util.str_seq_to_c_char_p_array(root_path_seq,
             ftk_constants.FTK_ICON_PATH_NR)
     return _ftk_icon_cache_create(array, rel_path)
 
