@@ -266,3 +266,28 @@ c_char versus c_byte
 --------------------
 c_char in python is 1-character string, in c is char
 c_byte in python is int/long, in c is char
+
+------------
+error check
+------------
+
+function type
+
+* return object or info directly
+  + create fail, raise FtkError
+  + return pointer None, raise Nothing
+  + return str None or "", raise Nothing
+  + return NO Ret, raise Nothing
+
+* return multiple objects, no ret.
+  raise Nothing.
+
+const char* ftk_font_calc_str_visible_range(FtkFont* thiz, const char* start, int vstart, int vend, int width, int* extent);
+
+* return ret only (add errcheck)
+  + Ret, raise FtkError + ret
+
+* return ret and object (add errcheck)
+  same as "return ret only"
+
+* return None (no errcheck)

@@ -10,9 +10,11 @@ import ctypes
 from ctypes.util import find_library
 import sys
 
+import ftk_constants
+
 # Private version checking declared before ftk_version can be
 # imported.
-class _FTK_version(ctypes.Structure):
+class _FtkVersion(ctypes.Structure):
     _fields_ = [('major', ctypes.c_ubyte),
                 ('minor', ctypes.c_ubyte),
                 ('patch', ctypes.c_ubyte)]
@@ -23,7 +25,7 @@ class _FTK_version(ctypes.Structure):
 
 def _version_parts(v):
     '''Return a tuple (major, minor, patch) for `v`, which can be
-    an _FTK_version, string or tuple.'''
+    an _FtkVersion, string or tuple.'''
     if hasattr(v, 'major') and hasattr(v, 'minor') and hasattr(v, 'patch'):
         return v.major, v.minor, v.patch
     elif type(v) == tuple:
@@ -45,7 +47,7 @@ def _platform_library_name(library):
         return '%s.dll' % library
     return library
 
-class FTK_DLL:
+class FtkDLL:
     def __init__(self, library_name, version_function_name):
         self.library_name = library_name
         library = find_library(library_name)
@@ -58,7 +60,7 @@ class FTK_DLL:
         if version_function_name:
             try:
                 version_function = getattr(self._dll, version_function_name)
-                version_function.restype = ctypes.POINTER(_FTK_version)
+                version_function.restype = ctypes.POINTER(_FtkVersion)
                 self._version = _version_parts(version_function().contents)
             except AttributeError:
                 self._version = (0, 0, 0)
@@ -93,8 +95,7 @@ class FTK_DLL:
                  return_type=None, 
                  dereference_return=False, 
                  require_return=False,
-                 success_return=None,
-                 error_return=None,
+                 check_return=False,
                  since=None):
         '''Construct a wrapper function for ctypes.
 
@@ -118,15 +119,9 @@ class FTK_DLL:
                 Used in conjunction with `dereference_return`; if True, an
                 exception will be raised if the result is NULL; if False
                 None will be returned when the result is NULL.
-            `success_return`
-                If not None, the expected result of the wrapped function.
-                If the return value does not equal success_return, an
-                exception will be raised.
-            `error_return`
-                If not None, the error result of the wrapped function.  If
-                the return value equals error_return, an exception will be
-                raised.  Cannot be used in conjunction with
-                `success_return`.
+            `check_return`
+                If True, an FtkError exception will be raised if
+                the reuslt is not RET_OK.
             `since`
                 Tuple (major, minor, patch) or string 'x.y.z' of the first
                 version of ftk in which this function appears.  If the
@@ -165,7 +160,7 @@ class FTK_DLL:
                     if result:
                         return result.contents
                     import ftk_error
-                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
+                    raise ftk_error.FtkError(ftk_constants.RET_FAIL)
             else:
                 # Construct a function which dereferences the ctypes.pointer result,
                 # or returns None if NULL is returned.
@@ -174,33 +169,15 @@ class FTK_DLL:
                     if result:
                         return result.contents
                     return None
-        elif success_return is not None:
+        elif check_return:
             # Construct a function which returns None, but raises an exception
             # if the C function returns a failure code.
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
-                if result != success_return:
+                if result != ftk_constants.RET_OK:
                     import ftk_error
-                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
-                return result
-        elif error_return is not None:
-            # Construct a function which returns None, but raises an exception
-            # if the C function returns a failure code.
-            def _f(*args, **kwargs):
-                result = func(*args, **kwargs)
-                if result == error_return:
-                    import ftk_error
-                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
-                return result
-        elif require_return:
-            # Construct a function which returns the usual result, or returns
-            # None if NULL is returned.
-            def _f(*args, **kwargs):
-                result = func(*args, **kwargs)
-                if not result: 
-                    import ftk_error
-                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
-                return result
+                    raise ftk_error.FtkError(result)
+                return None
         else:
             # Construct a function which returns the C function's return
             # value.
@@ -216,7 +193,7 @@ class FTK_DLL:
         return _f
 
 # Shortcuts to the ftk core library
-_dll = FTK_DLL('ftk', '')
+_dll = FtkDLL('ftk', '')
 version_compatible = _dll.version_compatible
 assert_version_compatible = _dll.assert_version_compatible
 private_function = _dll.private_function
