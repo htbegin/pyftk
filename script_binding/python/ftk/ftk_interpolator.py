@@ -8,8 +8,8 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.constants
+import ftk_dll
+import ftk_constants
 
 # ftk_interpolator.h
 
@@ -25,7 +25,7 @@ FtkInterpolatorDestroy = ctypes.CFUNCTYPE(None, _FtkInterpolatorPtr)
 FtkInterpolator._fields_ = [
         ('get', FtkInterpolatorGet),
         ('destroy', FtkInterpolatorDestroy),
-        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_interpolator_get(thiz, percent):
@@ -38,7 +38,7 @@ def ftk_interpolator_destroy(thiz):
     if thiz.destroy:
         thiz.destroy(thiz)
 
-ftk_interpolator_linear_create = ftk.dll.function(
+ftk_interpolator_linear_create = ftk_dll.function(
         'ftk_interpolator_linear_create',
         '',
         args=[],
@@ -47,7 +47,7 @@ ftk_interpolator_linear_create = ftk.dll.function(
         dereference_return=True,
         require_return=True)
 
-ftk_interpolator_accelerate_create = ftk.dll.function(
+ftk_interpolator_accelerate_create = ftk_dll.function(
         'ftk_interpolator_accelerate_create',
         '',
         args=[],
@@ -56,7 +56,7 @@ ftk_interpolator_accelerate_create = ftk.dll.function(
         dereference_return=True,
         require_return=True)
 
-ftk_interpolator_decelerate_create = ftk.dll.function(
+ftk_interpolator_decelerate_create = ftk_dll.function(
         'ftk_interpolator_decelerate_create',
         '',
         args=[],
@@ -65,7 +65,7 @@ ftk_interpolator_decelerate_create = ftk.dll.function(
         dereference_return=True,
         require_return=True)
 
-ftk_interpolator_bounce_create = ftk.dll.function(
+ftk_interpolator_bounce_create = ftk_dll.function(
         'ftk_interpolator_bounce_create',
         '',
         args=[],
@@ -74,7 +74,7 @@ ftk_interpolator_bounce_create = ftk.dll.function(
         dereference_return=True,
         require_return=True)
 
-ftk_interpolator_acc_decelerate_create = ftk.dll.function(
+ftk_interpolator_acc_decelerate_create = ftk_dll.function(
         'ftk_interpolator_acc_decelerate_create',
         '',
         args=[],

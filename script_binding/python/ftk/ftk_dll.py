@@ -10,7 +10,7 @@ import ctypes
 from ctypes.util import find_library
 import sys
 
-# Private version checking declared before ftk.version can be
+# Private version checking declared before ftk_version can be
 # imported.
 class _FTK_version(ctypes.Structure):
     _fields_ = [('major', ctypes.c_ubyte),
@@ -77,8 +77,8 @@ class FTK_DLL:
     def assert_version_compatible(self, name, since):
         '''Raises an exception if `since` is later than the loaded library.'''
         if not version_compatible(since):
-            import ftk.error
-            raise ftk.error.FtkNotImplementedError, \
+            import ftk_error
+            raise ftk_error.FtkNotImplementedError, \
                 '%s requires ftk version %s; currently using version %s' % \
                 (name, _version_string(since), _version_string(self._version))
 
@@ -138,8 +138,8 @@ class FTK_DLL:
         # Check for version compatibility first
         if since and not self.version_compatible(since):
             def _f(*args, **kwargs):
-                import ftk.error
-                raise ftk.error.FtkNotImplementedError, \
+                import ftk_error
+                raise ftk_error.FtkNotImplementedError, \
                       '%s requires %s %s; currently using version %s' % \
                       (name, self.library_name, _version_string(since), 
                        _version_string(self._version))
@@ -164,8 +164,8 @@ class FTK_DLL:
                     result = func(*args, **kwargs)
                     if result:
                         return result.contents
-                    import ftk.error
-                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
+                    import ftk_error
+                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
             else:
                 # Construct a function which dereferences the ctypes.pointer result,
                 # or returns None if NULL is returned.
@@ -180,8 +180,8 @@ class FTK_DLL:
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
                 if result != success_return:
-                    import ftk.error
-                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
+                    import ftk_error
+                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
                 return result
         elif error_return is not None:
             # Construct a function which returns None, but raises an exception
@@ -189,8 +189,8 @@ class FTK_DLL:
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
                 if result == error_return:
-                    import ftk.error
-                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
+                    import ftk_error
+                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
                 return result
         elif require_return:
             # Construct a function which returns the usual result, or returns
@@ -198,8 +198,8 @@ class FTK_DLL:
             def _f(*args, **kwargs):
                 result = func(*args, **kwargs)
                 if not result: 
-                    import ftk.error
-                    raise ftk.error.FtkException, ftk.error.ftk_get_error()
+                    import ftk_error
+                    raise ftk_error.FtkException, ftk_error.ftk_get_error()
                 return result
         else:
             # Construct a function which returns the C function's return

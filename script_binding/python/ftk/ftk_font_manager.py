@@ -8,9 +8,9 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.font_desc
-import ftk.font
+import ftk_dll
+import ftk_font_desc
+import ftk_font
 
 # ftk_font_manager.h
 
@@ -19,7 +19,7 @@ class FtkFontManager(ctypes.Structure):
 
 _FtkFontManagerPtr = ctypes.POINTER(FtkFontManager)
 
-ftk_font_manager_create = ftk.dll.function('ftk_font_manager_create',
+ftk_font_manager_create = ftk_dll.function('ftk_font_manager_create',
         '',
         args=['max_font_nr'],
         arg_types=[ctypes.c_int],
@@ -27,22 +27,22 @@ ftk_font_manager_create = ftk.dll.function('ftk_font_manager_create',
         dereference_return=True,
         require_return=True)
 
-ftk_font_manager_get_default_font = ftk.dll.function(
+ftk_font_manager_get_default_font = ftk_dll.function(
         'ftk_font_manager_get_default_font',
         '',
         args=['thiz'],
         arg_types=[_FtkFontManagerPtr],
-        return_type=ctypes.POINTER(ftk.font.FtkFont),
+        return_type=ctypes.POINTER(ftk_font.FtkFont),
         dereference_return=True)
 
-ftk_font_manager_load = ftk.dll.function('ftk_font_manager_load',
+ftk_font_manager_load = ftk_dll.function('ftk_font_manager_load',
         '',
         args=['thiz', 'font_desc'],
-        arg_types=[_FtkFontManagerPtr, ctypes.POINTER(ftk.font_desc.FtkFontDesc)],
-        return_type=ctypes.POINTER(ftk.font.FtkFont),
+        arg_types=[_FtkFontManagerPtr, ctypes.POINTER(ftk_font_desc.FtkFontDesc)],
+        return_type=ctypes.POINTER(ftk_font.FtkFont),
         dereference_return=True)
 
-ftk_font_manager_destroy = ftk.dll.function('ftk_font_manager_destroy',
+ftk_font_manager_destroy = ftk_dll.function('ftk_font_manager_destroy',
         '',
         args=['thiz'],
         arg_types=[_FtkFontManagerPtr],

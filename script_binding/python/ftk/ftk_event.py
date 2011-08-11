@@ -8,20 +8,20 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.typedef
-import ftk.constants
+import ftk_typedef
+import ftk_constants
 
 # ftk_event.h
 
 class _FtkIdleEvent(ctypes.Structure):
     _fields_ = [
-            ('action', ftk.typedef.FtkIdle),
+            ('action', ftk_typedef.FtkIdle),
             ('user_data', ctypes.c_void_p),
             ]
 
 class _FtkTimerEvent(ctypes.Structure):
     _fields_ = [
-            ('action', ftk.typedef.FtkTimer),
+            ('action', ftk_typedef.FtkTimer),
             ('interval', ctypes.c_int),
             ('user_data', ctypes.c_void_p),
             ]
@@ -45,7 +45,7 @@ class _FtkEventUnion(ctypes.Union):
             ('timer', _FtkTimerEvent),
             ('key', _FtkKeyEvent),
             ('mouse', _FtkMouseEvent),
-            ('rect', ftk.typedef.FtkRect),
+            ('rect', ftk_typedef.FtkRect),
             ('extra', ctypes.c_void_p),
             ]
 

@@ -8,15 +8,15 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.bitmap
-import ftk.widget
+import ftk_dll
+import ftk_bitmap
+import ftk_widget
 
 # ftk_image.h
 
-_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 
-ftk_image_create = ftk.dll.function('ftk_image_create',
+ftk_image_create = ftk_dll.function('ftk_image_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
@@ -24,8 +24,8 @@ ftk_image_create = ftk.dll.function('ftk_image_create',
         dereference_return=True,
         require_return=True)
 
-ftk_image_set_image = ftk.dll.function('ftk_image_set_image',
+ftk_image_set_image = ftk_dll.function('ftk_image_set_image',
         '',
         args=['thiz', 'image'],
-        arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk.bitmap.FtkBitmap)],
+        arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_bitmap.FtkBitmap)],
         return_type=ctypes.c_int)

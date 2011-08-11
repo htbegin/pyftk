@@ -8,14 +8,14 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.constants
-import ftk.typedef
-import ftk.bitmap
+import ftk_dll
+import ftk_constants
+import ftk_typedef
+import ftk_bitmap
 
 # ftk_list_model.h
 
-_FtkBitmapPtr = ctypes.POINTER(ftk.bitmap.FtkBitmap)
+_FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
 
 class FtkListModel(ctypes.Structure):
     pass
@@ -40,9 +40,9 @@ FtkListModel._fields_ = [
         ('ref', ctypes.c_int),
         ('disable_notify', ctypes.c_int),
         ('listener_ctx', ctypes.c_void_p),
-        ('listener', ftk.typedef.FtkListener),
+        ('listener', ftk_typedef.FtkListener),
 
-        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY)
         ]
 
 # FIXME: thread-safe
@@ -127,33 +127,33 @@ class FtkListItemInfo(ctypes.Structure):
 def ftk_list_model_enable_notify(thiz):
     if thiz.disable_notify > 0:
         thiz.disable_notify -= 1
-        ret = ftk.constants.RET_OK
+        ret = ftk_constants.RET_OK
     else:
-        ret = ftk.constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
     return ret
 
 def ftk_list_model_disable_notify(thiz):
     thiz.disable_notify += 1
-    return ftk.constants.RET_OK
+    return ftk_constants.RET_OK
 
 def ftk_list_model_set_changed_listener(thiz, listener, ctx):
     def _listener(ignored, ignored_too):
         return listener(ctx, thiz)
 
-    callback = ftk.typedef.FtkListener(_listener)
+    callback = ftk_typedef.FtkListener(_listener)
     thiz.listener = callback
     thiz.listener_ctx = None
 
-    return ftk.constants.RET_OK
+    return ftk_constants.RET_OK
 
 def ftk_list_model_notify(thiz):
     if thiz.disable_notify <= 0:
         if thiz.listener:
             return thiz.listener(None, None)
         else:
-            return ftk.constants.RET_OK
+            return ftk_constants.RET_OK
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_list_model_add(thiz, item):
     if not isinstance(item, FtkListItemInfo):
@@ -162,30 +162,30 @@ def ftk_list_model_add(thiz, item):
     if thiz.add:
         void_ptr = ctypes.cast(ctypes.pointer(item), ctypes.c_void_p)
         ret = thiz.add(thiz, void_ptr)
-        if ret == ftk.constants.RET_OK:
+        if ret == ftk_constants.RET_OK:
             ftk_list_model_notify(thiz)
     else:
-        ret = ftk.constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
 
     return ret
 
 def ftk_list_model_remove(thiz, index):
     if thiz.remove:
         ret = thiz.remove(thiz, index)
-        if ret == ftk.constants.RET_OK:
+        if ret == ftk_constants.RET_OK:
             ftk_list_model_notify(thiz)
     else:
-        ret = ftk.constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
 
     return ret
 
 def ftk_list_model_reset(thiz):
     if thiz.reset:
         ret = thiz.reset(thiz)
-        if ret == ftk.constants.RET_OK:
+        if ret == ftk_constants.RET_OK:
             ftk_list_model_notify(thiz)
     else:
-        ret = ftk.constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
 
     return ret
 
@@ -201,11 +201,11 @@ def ftk_list_model_get_data(thiz, index):
     if thiz.get_data:
         void_ptr = ctypes.c_void_p()
         ret = thiz.get_data(thiz, index, ctypes.byref(void_ptr))
-        if ret == ftk.constants.RET_OK:
+        if ret == ftk_constants.RET_OK:
             data_ptr = ctypes.cast(void_ptr, ctypes.POINTER(FtkListItemInfo))
             data = data_ptr.contents
     else:
-        ret = ftk.constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
 
     return (ret, data)
 
@@ -221,7 +221,7 @@ def ftk_list_model_unref(thiz):
     if thiz.ref == 0:
         ftk_list_model_destroy(thiz)
 
-ftk_list_model_default_create = ftk.dll.function(
+ftk_list_model_default_create = ftk_dll.function(
         'ftk_list_model_default_create',
         '',
         args=['init_nr'],

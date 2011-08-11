@@ -8,14 +8,14 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.widget
+import ftk_dll
+import ftk_widget
 
 # ftk_label.h
 
-_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 
-ftk_label_create = ftk.dll.function('ftk_label_create',
+ftk_label_create = ftk_dll.function('ftk_label_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
@@ -23,7 +23,7 @@ ftk_label_create = ftk.dll.function('ftk_label_create',
         dereference_return=True,
         require_return=True)
 
-ftk_label_set_alignment = ftk.dll.function('ftk_label_set_alignment',
+ftk_label_set_alignment = ftk_dll.function('ftk_label_set_alignment',
         '',
         args=['thiz', 'ctypes.alignment'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],

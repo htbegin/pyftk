@@ -8,8 +8,8 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.constants
+import ftk_dll
+import ftk_constants
 
 # ftk_font_desc.h
 
@@ -20,7 +20,7 @@ class FtkFontDesc(ctypes.Structure):
 
 _FtkFontDescPtr = ctypes.POINTER(FtkFontDesc)
 
-ftk_font_desc_create = ftk.dll.function('ftk_font_desc_create',
+ftk_font_desc_create = ftk_dll.function('ftk_font_desc_create',
         '',
         args=['font_desc'],
         arg_types=[ctypes.c_char_p],
@@ -28,49 +28,49 @@ ftk_font_desc_create = ftk.dll.function('ftk_font_desc_create',
         dereference_return=True,
         require_return=True)
 
-ftk_font_desc_is_equal = ftk.dll.function('ftk_font_desc_is_equal',
+ftk_font_desc_is_equal = ftk_dll.function('ftk_font_desc_is_equal',
         '',
         args=['thiz', 'other'],
         arg_types=[_FtkFontDescPtr, _FtkFontDescPtr],
         return_type=ctypes.c_int)
 
-ftk_font_desc_is_bold = ftk.dll.function('ftk_font_desc_is_bold',
+ftk_font_desc_is_bold = ftk_dll.function('ftk_font_desc_is_bold',
         '',
         args=['thiz'],
         arg_types=[_FtkFontDescPtr],
         return_type=ctypes.c_int)
 
-ftk_font_desc_is_italic = ftk.dll.function('ftk_font_desc_is_italic',
+ftk_font_desc_is_italic = ftk_dll.function('ftk_font_desc_is_italic',
         '',
         args=['thiz'],
         arg_types=[_FtkFontDescPtr],
         return_type=ctypes.c_int)
 
-ftk_font_desc_get_size = ftk.dll.function('ftk_font_desc_get_size',
+ftk_font_desc_get_size = ftk_dll.function('ftk_font_desc_get_size',
         '',
         args=['thiz'],
         arg_types=[_FtkFontDescPtr],
         return_type=ctypes.c_int)
 
-ftk_font_desc_set_bold = ftk.dll.function('ftk_font_desc_set_bold',
+ftk_font_desc_set_bold = ftk_dll.function('ftk_font_desc_set_bold',
         '',
         args=['thiz', 'bold'],
         arg_types=[_FtkFontDescPtr, ctypes.c_int],
         return_type=ctypes.c_int)
 
-ftk_font_desc_set_italic = ftk.dll.function('ftk_font_desc_set_italic',
+ftk_font_desc_set_italic = ftk_dll.function('ftk_font_desc_set_italic',
         '',
         args=['thiz', 'italic'],
         arg_types=[_FtkFontDescPtr, ctypes.c_int],
         return_type=ctypes.c_int)
 
-ftk_font_desc_set_size = ftk.dll.function('ftk_font_desc_set_size',
+ftk_font_desc_set_size = ftk_dll.function('ftk_font_desc_set_size',
         '',
         args=['thiz', 'size'],
         arg_types=[_FtkFontDescPtr, ctypes.c_int],
         return_type=ctypes.c_int)
 
-_ftk_font_desc_get_string = ftk.dll.private_function(
+_ftk_font_desc_get_string = ftk_dll.private_function(
         'ftk_font_desc_get_string',
         arg_types=[_FtkFontDescPtr, ctypes.c_char_p, ctypes.c_uint],
         return_type=ctypes.c_int)
@@ -79,18 +79,18 @@ def ftk_font_desc_get_string(thiz):
     FONT_DESC_LEN = 64
     desc = ctypes.create_string_buffer(FONT_DESC_LEN)
     ret = _ftk_font_desc_get_string(thiz, desc, ctypes.sizeof(desc))
-    if ret == ftk.constants.RET_OK:
+    if ret == ftk_constants.RET_OK:
         return (ret, desc.value)
     else:
         return (ret, None)
 
-ftk_font_desc_ref = ftk.dll.function('ftk_font_desc_ref',
+ftk_font_desc_ref = ftk_dll.function('ftk_font_desc_ref',
         '',
         args=['thiz'],
         arg_types=[_FtkFontDescPtr],
         return_type=ctypes.c_int)
 
-ftk_font_desc_unref = ftk.dll.function('ftk_font_desc_unref',
+ftk_font_desc_unref = ftk_dll.function('ftk_font_desc_unref',
         '',
         args=['thiz'],
         arg_types=[_FtkFontDescPtr],

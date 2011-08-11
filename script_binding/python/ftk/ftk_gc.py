@@ -8,10 +8,10 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.constants
-import ftk.typedef
-import ftk.bitmap
-import ftk.font
+import ftk_constants
+import ftk_typedef
+import ftk_bitmap
+import ftk_font
 
 # ftk_gc.h
 
@@ -19,10 +19,10 @@ class FtkGc(ctypes.Structure):
     _fields_ = [
             ('ref', ctypes.c_int),
             ('mask', ctypes.c_uint),
-            ('bg', ftk.typedef.FtkColor),
-            ('fg', ftk.typedef.FtkColor),
-            ('_font_ptr', ctypes.POINTER(ftk.font.FtkFont)),
-            ('_bitmap_ptr', ctypes.POINTER(ftk.bitmap.FtkBitmap)),
+            ('bg', ftk_typedef.FtkColor),
+            ('fg', ftk_typedef.FtkColor),
+            ('_font_ptr', ctypes.POINTER(ftk_font.FtkFont)),
+            ('_bitmap_ptr', ctypes.POINTER(ftk_bitmap.FtkBitmap)),
             ('alpha', ctypes.c_ubyte),
             ('unused', ctypes.c_ubyte * 3),
             ('line_mask', ctypes.c_uint)
@@ -53,7 +53,7 @@ class FtkGc(ctypes.Structure):
         if value is not None:
             self._font_ptr = ctypes.pointer(value)
         else:
-            self._font_ptr = ctypes.POINTER(ftk.font.FtkFont)()
+            self._font_ptr = ctypes.POINTER(ftk_font.FtkFont)()
 
     @property
     def bitmap(self):
@@ -67,45 +67,45 @@ class FtkGc(ctypes.Structure):
         if value is not None:
             self._bitmap_ptr = ctypes.pointer(value)
         else:
-            self._bitmap_ptr = ctypes.POINTER(ftk.bitmap.FtkBitmap)()
+            self._bitmap_ptr = ctypes.POINTER(ftk_bitmap.FtkBitmap)()
 
 def ftk_gc_copy(dst, src):
     dst.mask |= src.mask
-    if src.mask & ftk.constants.FTK_GC_BG:
+    if src.mask & ftk_constants.FTK_GC_BG:
         dst.bg = src.bg
 
-    if src.mask & ftk.constants.FTK_GC_FG:
+    if src.mask & ftk_constants.FTK_GC_FG:
         dst.fg = src.fg
 
-    if src.mask & ftk.constants.FTK_GC_FONT:
+    if src.mask & ftk_constants.FTK_GC_FONT:
         if dst.font:
-            ftk.font.ftk_font_unref(dst.font)
+            ftk_font.ftk_font_unref(dst.font)
         dst.font = src.font
         if dst.font:
-            ftk.font.ftk_font_ref(dst.font)
+            ftk_font.ftk_font_ref(dst.font)
 
-    if src.mask & ftk.constants.FTK_GC_BITMAP:
+    if src.mask & ftk_constants.FTK_GC_BITMAP:
         if dst.bitmap:
-            ftk.bitmap.ftk_bitmap_unref(dst.bitmap)
+            ftk_bitmap.ftk_bitmap_unref(dst.bitmap)
         dst.bitmap = src.bitmap
         if dst.bitmap:
-            ftk.bitmap.ftk_bitmap_ref(dst.bitmap)
+            ftk_bitmap.ftk_bitmap_ref(dst.bitmap)
 
-    if src.mask & ftk.constants.FTK_GC_LINE_MASK:
+    if src.mask & ftk_constants.FTK_GC_LINE_MASK:
         dst.line_mask = src.line_mask
 
-    if src.mask & ftk.constants.FTK_GC_ALPHA:
+    if src.mask & ftk_constants.FTK_GC_ALPHA:
         dst.alpha = src.alpha
 
-    return ftk.constants.RET_OK
+    return ftk_constants.RET_OK
 
 def ftk_gc_reset(gc):
-    if gc.mask & ftk.constants.FTK_GC_BITMAP:
-        ftk.bitmap.ftk_bitmap_unref(gc.bitmap)
+    if gc.mask & ftk_constants.FTK_GC_BITMAP:
+        ftk_bitmap.ftk_bitmap_unref(gc.bitmap)
 
-    if gc.mask & ftk.constants.FTK_GC_FONT:
-        ftk.font.ftk_font_unref(gc.font)
+    if gc.mask & ftk_constants.FTK_GC_FONT:
+        ftk_font.ftk_font_unref(gc.font)
 
     ctypes.memset(ctypes.byref(gc), 0, ctypes.sizeof(gc))
 
-    return ftk.constants.RET_OK
+    return ftk_constants.RET_OK

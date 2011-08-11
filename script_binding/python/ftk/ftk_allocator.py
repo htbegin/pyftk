@@ -8,7 +8,7 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
+import ftk_dll
 
 # ftk_allocator.h
 
@@ -19,7 +19,7 @@ _FtkAllocatorPtr = ctypes.POINTER(FtkAllocator)
 
 # ftk_allocator_default.h
 
-ftk_allocator_default_create = ftk.dll.function('ftk_allocator_default_create',
+ftk_allocator_default_create = ftk_dll.function('ftk_allocator_default_create',
         '',
         args=[],
         arg_types=[],

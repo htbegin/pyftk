@@ -8,8 +8,8 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.constants
-import ftk.macros
+import ftk_constants
+import ftk_macros
 
 # ftk_typedef.h
 
@@ -68,7 +68,7 @@ class _FtkColorRGBA(ctypes.Structure):
             ('a', ctypes.c_ubyte),
             ]
 
-if ftk.macros.ftk_macros.FTK_COLOR_RGBA:
+if ftk_macros.ftk_macros.FTK_COLOR_RGBA:
     FtkColor = _FtkColorRGBA
 else:
     FtkColor = _FtkColorBGRA
@@ -82,6 +82,6 @@ FtkListener = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p)
 class FtkCommitInfo(ctypes.Structure):
     _fields_ = [
             ('candidate_nr', ctypes.c_uint),
-            ('raw_text', ctypes.c_byte * (ftk.constants.FTK_IM_RAW_TEXT_LENGTH + 1)),
-            ('candidates', ctypes.c_byte * (ftk.constants.FTK_IM_CANDIDATE_BUFF_LENGTH + 1)),
+            ('raw_text', ctypes.c_byte * (ftk_constants.FTK_IM_RAW_TEXT_LENGTH + 1)),
+            ('candidates', ctypes.c_byte * (ftk_constants.FTK_IM_CANDIDATE_BUFF_LENGTH + 1)),
             ]

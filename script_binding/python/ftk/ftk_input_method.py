@@ -8,10 +8,10 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.constants
-import ftk.event
-import ftk.widget
+import ftk_dll
+import ftk_constants
+import ftk_event
+import ftk_widget
 
 # ftk_input_method.h
 
@@ -19,8 +19,8 @@ class FtkInputMethod(ctypes.Structure):
     pass
 
 _FtkInputMethodPtr = ctypes.POINTER(FtkInputMethod)
-_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
-_FtkEventPtr = ctypes.POINTER(ftk.event.FtkEvent)
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
+_FtkEventPtr = ctypes.POINTER(ftk_event.FtkEvent)
 
 FtkInputMethodFocusIn = ctypes.CFUNCTYPE(ctypes.c_int, _FtkInputMethodPtr, _FtkWidgetPtr)
 FtkInputMethodFocusOut = ctypes.CFUNCTYPE(ctypes.c_int, _FtkInputMethodPtr)
@@ -39,32 +39,32 @@ FtkInputMethod._fields_ = [
         ('handle_event', FtkInputMethodHandleEvent),
         ('destroy', FtkInputMethodDestroy),
 
-        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY),
+        ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY),
         ]
 
 def ftk_input_method_focus_in(thiz, editor):
     if thiz.focus_in:
         return thiz.focus_in(thiz, editor)
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_input_method_focus_out(thiz):
     if thiz.focus_out:
         return thiz.focus_out(thiz)
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_input_method_set_type(thiz, input_type):
     if thiz.set_type:
         return thiz.set_type(thiz, input_type)
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_input_method_handle_event(thiz, event):
     if thiz.handle_event:
         return thiz.handle_event(thiz, event);
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_input_method_destroy(thiz):
     if thiz.destroy:

@@ -8,13 +8,13 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.constants
-import ftk.bitmap
+import ftk_dll
+import ftk_constants
+import ftk_bitmap
 
 # ftk_image_decoder.h
 
-_FtkBitmapPtr = ctypes.POINTER(ftk.bitmap.FtkBitmap)
+_FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
 
 class FtkImageDecoder(ctypes.Structure):
     pass
@@ -29,10 +29,10 @@ FtkImageDecoder._fields_ = [
         ('match', FtkImageDecoderMatch),
         ('decode', FtkImageDecoderDecode),
         ('destroy', FtkImageDecoderDestroy),
-        ('priv', ctypes.c_char_p * ftk.constants.ZERO_LEN_ARRAY),
+        ('priv', ctypes.c_char_p * ftk_constants.ZERO_LEN_ARRAY),
         ]
 
-ftk_image_bmp_decoder_create = ftk.dll.function('ftk_image_bmp_decoder_create',
+ftk_image_bmp_decoder_create = ftk_dll.function('ftk_image_bmp_decoder_create',
         '',
         args=[],
         arg_types=[],
@@ -40,7 +40,7 @@ ftk_image_bmp_decoder_create = ftk.dll.function('ftk_image_bmp_decoder_create',
         dereference_return=True,
         require_return=True)
 
-ftk_image_png_decoder_create = ftk.dll.function('ftk_image_png_decoder_create',
+ftk_image_png_decoder_create = ftk_dll.function('ftk_image_png_decoder_create',
         '',
         args=[],
         arg_types=[],
@@ -48,7 +48,7 @@ ftk_image_png_decoder_create = ftk.dll.function('ftk_image_png_decoder_create',
         dereference_return=True,
         require_return=True)
 
-ftk_image_jpeg_decoder_create = ftk.dll.function(
+ftk_image_jpeg_decoder_create = ftk_dll.function(
         'ftk_image_jpeg_decoder_create',
         '',
         args=[],
@@ -61,7 +61,7 @@ def ftk_image_decoder_match(thiz, filename):
     if thiz.match:
         return thiz.match(thiz, filename)
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_image_decoder_decode(thiz, filename):
     bmp = None

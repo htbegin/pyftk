@@ -9,8 +9,8 @@ __version__ = '$Id: $'
 import logging
 import ctypes
 
-import ftk.dll
-import ftk.constants
+import ftk_dll
+import ftk_constants
 
 _logger = logging.getLogger("ftk")
 _logger.setLevel(logging.DEBUG)
@@ -39,23 +39,23 @@ def ftk_logw(msg):
 def ftk_loge(msg):
     _logger.error(msg)
 
-_ftk_set_log_level = ftk.dll.private_function('ftk_set_log_level',
+_ftk_set_log_level = ftk_dll.private_function('ftk_set_log_level',
         arg_types=[ctypes.c_int],
         return_type=None)
 
 _level_map = {
-        ftk.constants.FTK_LOG_V : logging.DEBUG,
-        ftk.constants.FTK_LOG_D : logging.DEBUG,
-        ftk.constants.FTK_LOG_I : logging.INFO,
-        ftk.constants.FTK_LOG_W : logging.WARNING,
-        ftk.constants.FTK_LOG_E : logging.ERROR,
+        ftk_constants.FTK_LOG_V : logging.DEBUG,
+        ftk_constants.FTK_LOG_D : logging.DEBUG,
+        ftk_constants.FTK_LOG_I : logging.INFO,
+        ftk_constants.FTK_LOG_W : logging.WARNING,
+        ftk_constants.FTK_LOG_E : logging.ERROR,
         }
 def ftk_set_log_level(level):
     if level in _level_map:
         _logger.setLevel(_level_map[level])
         _ftk_set_log_level(level)
 
-ftk_default_log_level = ftk.dll.function('ftk_default_log_level',
+ftk_default_log_level = ftk_dll.function('ftk_default_log_level',
         '',
         args=[],
         arg_types=[],

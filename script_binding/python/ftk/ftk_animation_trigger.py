@@ -8,13 +8,13 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
-import ftk.constants
-import ftk.widget
+import ftk_dll
+import ftk_constants
+import ftk_widget
 
 # ftk_animation_trigger.h
 
-_FtkWidgetPtr = ctypes.POINTER(ftk.widget.FtkWidget)
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 
 class FtkAnimationTrigger(ctypes.Structure):
     pass
@@ -37,20 +37,20 @@ FtkAnimationTrigger._fields_ = [
         ('on_event', FtkAnimationTriggerOnEvent),
         ('destroy', FtkAnimationTriggerDestroy),
 
-        ('priv', ctypes.c_byte * ftk.constants.ZERO_LEN_ARRAY)
+        ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_animation_trigger_on_event(thiz, event):
     if thiz.event:
         return thiz.event(thiz, event)
     else:
-        return ftk.constants.RET_FAIL
+        return ftk_constants.RET_FAIL
 
 def ftk_animation_trigger_destroy(thiz):
     if thiz.destroy:
         return thiz.destroy(thiz)
 
-ftk_animation_trigger_default_create = ftk.dll.function(
+ftk_animation_trigger_default_create = ftk_dll.function(
         'ftk_animation_trigger_default_create',
         '',
         args=['theme', 'filename'],
@@ -59,14 +59,14 @@ ftk_animation_trigger_default_create = ftk.dll.function(
         dereference_return=True,
         require_return=True)
 
-ftk_animation_trigger_default_dump = ftk.dll.function(
+ftk_animation_trigger_default_dump = ftk_dll.function(
         'ftk_animation_trigger_default_dump',
         '',
         args=['thiz'],
         arg_types=[_FtkAnimationTriggerPtr],
         return_type=None)
 
-ftk_animation_trigger_silence_create = ftk.dll.function(
+ftk_animation_trigger_silence_create = ftk_dll.function(
         'ftk_animation_trigger_silence_create',
         '',
         args=[],

@@ -8,7 +8,7 @@ __version__ = '$Id: $'
 
 import ctypes
 
-import ftk.dll
+import ftk_dll
 
 class FtkException(Exception):
     '''Exception raised for all ftk errors.
