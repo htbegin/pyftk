@@ -33,11 +33,13 @@ ftk_progress_bar_set_percent = ftk_dll.function('ftk_progress_bar_set_percent',
         '',
         args=['thiz', 'percent'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_progress_bar_set_interactive = ftk_dll.function(
         'ftk_progress_bar_set_interactive',
         '',
         args=['thiz', 'interactive'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)

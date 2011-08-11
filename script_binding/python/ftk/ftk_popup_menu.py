@@ -38,7 +38,8 @@ ftk_popup_menu_add = ftk_dll.function('ftk_popup_menu_add',
         '',
         args=['thiz', 'info'],
         arg_types=[_FtkWidgetPtr, _FtkListItemInfoPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_popup_menu_calc_height = ftk_dll.function('ftk_popup_menu_calc_height',
         '',
@@ -46,19 +47,18 @@ ftk_popup_menu_calc_height = ftk_dll.function('ftk_popup_menu_calc_height',
         arg_types=[ctypes.c_int, ctypes.c_int],
         return_type=ctypes.c_int)
 
-_listener_refs = {}
 _ftk_popup_menu_set_clicked_listener = ftk_dll.private_function(
         'ftk_popup_menu_set_clicked_listener',
         arg_types=[_FtkWidgetPtr, ftk_typedef.FtkListener, ctypes.c_void_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
+_listener_refs = {}
 def ftk_popup_menu_set_clicked_listener(thiz, listener, ctx):
     def _listener(ignored, void_ptr):
         item_ptr = ctypes.cast(void_ptr, _FtkListItemInfoPtr)
         return listener(ctx, item_ptr.contents)
 
     callback = ftk_typedef.FtkListener(_listener)
-    ret = _ftk_popup_menu_set_clicked_listener(thiz, callback, None)
-    if ret == ftk_constants.RET_OK:
-        _listener_refs[ctypes.addressof(thiz)] = callback
-    return ret
+    _ftk_popup_menu_set_clicked_listener(thiz, callback, None)
+    _listener_refs[ctypes.addressof(thiz)] = callback
