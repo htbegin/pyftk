@@ -3,7 +3,7 @@
 import unittest
 
 import common
-from ftk.input_method_preeditor import *
+from ftk.ftk_input_method_preeditor import *
 
 class TestImPreeditor(unittest.TestCase):
     def setUp(self):

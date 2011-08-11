@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.animation import *
+from ftk.ftk_animation import *
 
 class TestAnimation(unittest.TestCase):
     def test_pass(self):

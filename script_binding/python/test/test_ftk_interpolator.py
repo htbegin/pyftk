@@ -4,7 +4,7 @@ import unittest
 
 import common
 
-from ftk.interpolator import *
+from ftk.ftk_interpolator import *
 
 class TestInterpolator(unittest.TestCase):
     def _run_till_full(self, interpolator):

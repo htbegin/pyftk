@@ -3,12 +3,12 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, FTK_GC_BG, FTK_GC_FONT, FTK_GC_BITMAP
-from ftk.typedef import FtkColor
-from ftk.font_desc import ftk_font_desc_create
-from ftk.font import ftk_font_create, ftk_font_unref
-from ftk.bitmap import ftk_bitmap_create, ftk_bitmap_unref
-from ftk.gc import *
+from ftk.ftk_constants import RET_OK, FTK_GC_BG, FTK_GC_FONT, FTK_GC_BITMAP
+from ftk.ftk_typedef import FtkColor
+from ftk.ftk_font_desc import ftk_font_desc_create
+from ftk.ftk_font import ftk_font_create, ftk_font_unref
+from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
+from ftk.ftk_gc import *
 
 class TestGcInit(unittest.TestCase):
     def setUp(self):

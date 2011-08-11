@@ -3,17 +3,16 @@
 import unittest
 
 import common
-from ftk.constants import FTK_EVT_IDLE
-from ftk.constants import RET_OK
-from ftk.event import FtkEvent
-from ftk.source import *
+from ftk.ftk_constants import FTK_EVT_IDLE, RET_OK, ZERO_LEN_ARRAY
+from ftk.ftk_event import FtkEvent
+from ftk.ftk_source import *
 
 class TestFtkSource(unittest.TestCase):
     def test_access_priv(self):
         self.assertTrue(hasattr(FtkSource, "priv"))
         self.assertTrue(hasattr(FtkSource.priv, "offset"))
         self.assertTrue(hasattr(FtkSource.priv, "size"))
-        self.assertEqual(FtkSource.priv.size, ftk.constants.ZERO_LEN_ARRAY)
+        self.assertEqual(FtkSource.priv.size, ZERO_LEN_ARRAY)
 
 _FTK_GET_FD_RVAL = 256
 def _get_fd(thiz):
@@ -34,16 +33,16 @@ def _destroy(thiz):
 class TestFtkSourceInlineFuncs(unittest.TestCase):
     def test_ftk_source_disable(self):
         src = FtkSource(disable=0)
-        self.assertEqual(ftk_source_disable(src), ftk.constants.RET_OK)
+        self.assertEqual(ftk_source_disable(src), RET_OK)
         self.assertEqual(src.disable, 1)
 
     def test_ftk_source_enable(self):
         src = FtkSource(disable=1)
-        self.assertEqual(ftk_source_enable(src), ftk.constants.RET_OK)
+        self.assertEqual(ftk_source_enable(src), RET_OK)
         self.assertEqual(src.disable, 0)
 
         src = FtkSource(disable=0)
-        self.assertEqual(ftk_source_enable(src), ftk.constants.RET_OK)
+        self.assertEqual(ftk_source_enable(src), RET_OK)
         self.assertEqual(src.disable, 0)
 
     def test_ftk_source_get_fd(self):

@@ -4,9 +4,9 @@ import unittest
 
 import common
 
-from ftk.constants import FTK_PIXEL_BGR24
-from ftk.display import ftk_display_destroy
-from ftk.display_mem import *
+from ftk.ftk_constants import FTK_PIXEL_BGR24
+from ftk.ftk_display import ftk_display_destroy
+from ftk.ftk_display_mem import *
 
 class TestDisplayMem(unittest.TestCase):
     def setUp(self):

@@ -4,9 +4,9 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, RET_FAIL
-from ftk.font_desc import ftk_font_desc_create, ftk_font_desc_unref
-from ftk.font import *
+from ftk.ftk_constants import RET_OK, RET_FAIL
+from ftk.ftk_font_desc import ftk_font_desc_create, ftk_font_desc_unref
+from ftk.ftk_font import *
 
 class TestFont(unittest.TestCase):
     def setUp(self):

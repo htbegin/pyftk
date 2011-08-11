@@ -3,9 +3,9 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, RET_FAIL
-from ftk.bitmap import ftk_bitmap_unref
-from ftk.image_decoder import *
+from ftk.ftk_constants import RET_OK, RET_FAIL
+from ftk.ftk_bitmap import ftk_bitmap_unref
+from ftk.ftk_image_decoder import *
 
 class TestImageDecoder(unittest.TestCase):
     def test_customized_decoder(self):

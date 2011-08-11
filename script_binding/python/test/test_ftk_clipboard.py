@@ -2,8 +2,8 @@
 
 import unittest
 
-from ftk.constants import RET_OK
-from ftk.clipboard import *
+from ftk.ftk_constants import RET_OK
+from ftk.ftk_clipboard import *
 
 class TestClipboard(unittest.TestCase):
     def test_get_set_1(self):

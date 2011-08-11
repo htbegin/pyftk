@@ -3,9 +3,9 @@
 import unittest
 
 import common
-from ftk.bitmap import *
-from ftk.image_decoder import *
-from ftk.bitmap_factory import *
+from ftk.ftk_bitmap import *
+from ftk.ftk_image_decoder import *
+from ftk.ftk_bitmap_factory import *
 
 class TestBitmapFactory(unittest.TestCase):
     def setUp(self):

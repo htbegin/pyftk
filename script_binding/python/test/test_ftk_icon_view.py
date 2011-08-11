@@ -4,11 +4,11 @@ import unittest
 import ctypes
 
 import common
-from ftk.constants import RET_OK
-from ftk.typedef import FtkColor
-from ftk.bitmap import ftk_bitmap_create, ftk_bitmap_unref
-from ftk.widget import ftk_widget_unref
-from ftk.icon_view import *
+from ftk.ftk_constants import RET_OK
+from ftk.ftk_typedef import FtkColor
+from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
+from ftk.ftk_widget import ftk_widget_unref
+from ftk.ftk_icon_view import *
 
 class TestIconViewItem(unittest.TestCase):
     def setUp(self):

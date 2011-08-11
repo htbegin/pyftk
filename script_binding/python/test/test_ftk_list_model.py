@@ -4,10 +4,10 @@ import unittest
 import ctypes
 
 import common
-from ftk.constants import RET_OK, RET_FAIL, FTK_LIST_ITEM_NORMAL
-from ftk.typedef import FtkColor
-from ftk.bitmap import ftk_bitmap_create, ftk_bitmap_unref
-from ftk.list_model import *
+from ftk.ftk_constants import RET_OK, RET_FAIL, FTK_LIST_ITEM_NORMAL
+from ftk.ftk_typedef import FtkColor
+from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
+from ftk.ftk_list_model import *
 
 class TestListModel(unittest.TestCase):
     def setUp(self):

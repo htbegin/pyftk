@@ -4,10 +4,10 @@ import unittest
 
 import sys
 from ftk import ftk_init, ftk_run, ftk_quit
-from ftk.constants import RET_OK, RET_REMOVE
-from ftk.source import ftk_source_timer_create
-from ftk.globals import ftk_default_main_loop
-from ftk.main_loop import ftk_main_loop_add_source
+from ftk.ftk_constants import RET_OK, RET_REMOVE
+from ftk.ftk_source import ftk_source_timer_create
+from ftk.ftk_globals import ftk_default_main_loop
+from ftk.ftk_main_loop import ftk_main_loop_add_source
 
 def quit_timer_action(ctx):
     ftk_quit()

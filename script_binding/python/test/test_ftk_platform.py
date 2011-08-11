@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.platform import *
+from ftk.ftk_platform import *
 
 class TestFtkPlatform(unittest.TestCase):
     def test_ftk_platform_init(self):

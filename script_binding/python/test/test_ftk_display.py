@@ -3,9 +3,9 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, FTK_PIXEL_BGR24
-from ftk.display_mem import ftk_display_mem_create
-from ftk.display import *
+from ftk.ftk_constants import RET_OK, FTK_PIXEL_BGR24
+from ftk.ftk_display_mem import ftk_display_mem_create
+from ftk.ftk_display import *
 
 class TestDisplay(unittest.TestCase):
     def setUp(self):

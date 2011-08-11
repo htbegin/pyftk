@@ -3,7 +3,7 @@
 import unittest
 
 import common
-from ftk.animation_trigger import *
+from ftk.ftk_animation_trigger import *
 
 class TestAnimationTrigger(unittest.TestCase):
     def setUp(self):

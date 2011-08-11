@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.typedef import *
+from ftk.ftk_typedef import *
 
 class TestFtkTypedef(unittest.TestCase):
     def test_FtkRegion_dft_val(self):

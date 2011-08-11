@@ -3,9 +3,9 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK
-from ftk.typedef import FtkColor
-from ftk.bitmap import *
+from ftk.ftk_constants import RET_OK
+from ftk.ftk_typedef import FtkColor
+from ftk.ftk_bitmap import *
 
 class TestBitmap(unittest.TestCase):
     def setUp(self):

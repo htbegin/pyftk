@@ -3,11 +3,11 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, RET_REMOVE
-from ftk.globals import ftk_set_primary_source, ftk_set_sources_manager
-from ftk.source import *
-from ftk.sources_manager import *
-from ftk.main_loop import *
+from ftk.ftk_constants import RET_OK, RET_REMOVE
+from ftk.ftk_globals import ftk_set_primary_source, ftk_set_sources_manager
+from ftk.ftk_source import *
+from ftk.ftk_sources_manager import *
+from ftk.ftk_main_loop import *
 
 class TestMainLoop(unittest.TestCase):
     def setUp(self):

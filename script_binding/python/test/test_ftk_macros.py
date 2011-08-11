@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.macros import ftk_macros
+from ftk.ftk_macros import ftk_macros
 
 class TestFtkMacros(unittest.TestCase):
     def test_USE_STD_MALLOC(self):

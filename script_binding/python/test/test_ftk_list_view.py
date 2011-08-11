@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.list_view import *
+from ftk.ftk_list_view import *
 
 class TestListView(unittest.TestCase):
     def test_pass(self):

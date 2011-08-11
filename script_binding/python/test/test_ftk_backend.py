@@ -3,8 +3,8 @@
 import unittest
 
 import common
-from ftk.backend import ftk_backend_init
-from ftk.constants import RET_OK
+from ftk.ftk_backend import ftk_backend_init
+from ftk.ftk_constants import RET_OK
 
 class TestFtkBackend(unittest.TestCase):
     def setUp(self):

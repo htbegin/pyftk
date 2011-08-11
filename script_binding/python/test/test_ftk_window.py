@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.window import *
+from ftk.ftk_window import *
 
 class TestWindow(unittest.TestCase):
     def test_pass(self):

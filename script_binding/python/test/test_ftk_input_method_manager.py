@@ -3,8 +3,8 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, RET_FAIL
-from ftk.input_method_manager import *
+from ftk.ftk_constants import RET_OK, RET_FAIL
+from ftk.ftk_input_method_manager import *
 
 class TestInputMethodManager(unittest.TestCase):
     def setUp(self):

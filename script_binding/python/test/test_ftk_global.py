@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.globals import *
+from ftk.ftk_globals import *
 
 class TestGlobals(unittest.TestCase):
     def test_pass(self):

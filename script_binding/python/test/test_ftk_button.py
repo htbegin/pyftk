@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.button import *
+from ftk.ftk_button import *
 
 class TestButton(unittest.TestCase):
     def test_pass(self):

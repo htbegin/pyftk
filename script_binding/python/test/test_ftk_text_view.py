@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.text_view import *
+from ftk.ftk_text_view import *
 
 class TestTextView(unittest.TestCase):
     def test_set_get_text(self):

@@ -4,8 +4,8 @@ import sys
 import unittest
 
 from ftk import ftk_init, ftk_run
-from ftk.widget import ftk_widget_show_all
-from ftk.xul import *
+from ftk.ftk_widget import ftk_widget_show_all
+from ftk.ftk_xul import *
 
 class TestXUL(unittest.TestCase):
     def test_load(self):

@@ -3,10 +3,10 @@
 import unittest
 
 import common
-from ftk.globals import ftk_set_sources_manager
-from ftk.sources_manager import *
-from ftk.main_loop import *
-from ftk.wnd_manager import *
+from ftk.ftk_globals import ftk_set_sources_manager
+from ftk.ftk_sources_manager import *
+from ftk.ftk_main_loop import *
+from ftk.ftk_wnd_manager import *
 
 class TestWndManager(unittest.TestCase):
     def setUp(self):

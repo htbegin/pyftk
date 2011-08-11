@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 
-from ftk.constants import FTK_LOG_D, FTK_LOG_I
-from ftk.macros import ftk_macros
-from ftk.config import ftk_config_create, ftk_config_get_rotate
-from ftk.theme import ftk_theme_create
-from ftk.font_manager import ftk_font_manager_create
-from ftk.bitmap_factory import ftk_bitmap_factory_create
-from ftk.sources_manager import ftk_sources_manager_create
-from ftk.main_loop import ftk_main_loop_create
-from ftk.wnd_manager import ftk_wnd_manager_default_create
-from ftk.backend import ftk_backend_init
-from ftk.display_rotate import ftk_display_rotate_create
-from ftk.log import ftk_set_log_level
-from ftk.globals import *
-from ftk.allocator import ftk_allocator_default_create
+from ftk.ftk_constants import FTK_LOG_D, FTK_LOG_I
+from ftk.ftk_macros import ftk_macros
+from ftk.ftk_config import ftk_config_create, ftk_config_get_rotate
+from ftk.ftk_theme import ftk_theme_create
+from ftk.ftk_font_manager import ftk_font_manager_create
+from ftk.ftk_bitmap_factory import ftk_bitmap_factory_create
+from ftk.ftk_sources_manager import ftk_sources_manager_create
+from ftk.ftk_main_loop import ftk_main_loop_create
+from ftk.ftk_wnd_manager import ftk_wnd_manager_default_create
+from ftk.ftk_backend import ftk_backend_init
+from ftk.ftk_display_rotate import ftk_display_rotate_create
+from ftk.ftk_log import ftk_set_log_level
+from ftk.ftk_globals import *
+from ftk.ftk_allocator import ftk_allocator_default_create
 
 def disable_verbose_log():
     ftk_set_log_level(FTK_LOG_D)

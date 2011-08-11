@@ -3,8 +3,8 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK, RET_FAIL
-from ftk.params import *
+from ftk.ftk_constants import RET_OK, RET_FAIL
+from ftk.ftk_params import *
 
 class TestFtkParams(unittest.TestCase):
     def setUp(self):

@@ -3,8 +3,8 @@
 import unittest
 
 import common
-from ftk.bitmap import ftk_bitmap_unref
-from ftk.icon_cache import *
+from ftk.ftk_bitmap import ftk_bitmap_unref
+from ftk.ftk_icon_cache import *
 
 class TestIconCache(unittest.TestCase):
     def setUp(self):

@@ -4,9 +4,9 @@ import unittest
 import ctypes
 
 import common
-from ftk.constants import RET_OK, RET_FAIL, FTK_MIN_SOURCE_NR
-from ftk.source import FtkSource
-from ftk.sources_manager import *
+from ftk.ftk_constants import RET_OK, RET_FAIL, FTK_MIN_SOURCE_NR
+from ftk.ftk_source import FtkSource
+from ftk.ftk_sources_manager import *
 
 class TestSourcesManager(unittest.TestCase):
     def setUp(self):

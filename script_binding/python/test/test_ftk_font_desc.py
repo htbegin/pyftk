@@ -2,7 +2,7 @@
 
 import unittest
 import common
-from ftk.font_desc import *
+from ftk.ftk_font_desc import *
 
 class TestFontDesc(unittest.TestCase):
     def setUp(self):

@@ -4,8 +4,8 @@ import unittest
 
 import common
 
-from ftk.font_desc import ftk_font_desc_create, ftk_font_desc_unref
-from ftk.font_manager import *
+from ftk.ftk_font_desc import ftk_font_desc_create, ftk_font_desc_unref
+from ftk.ftk_font_manager import *
 
 class TestFontManager(unittest.TestCase):
     def setUp(self):

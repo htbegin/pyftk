@@ -3,7 +3,7 @@
 import unittest
 
 from ftk import ftk_init, ftk_deinit
-from ftk.constants import RET_OK
+from ftk.ftk_constants import RET_OK
 
 class TestFtkInit(unittest.TestCase):
     def test_ftk_init(self):

@@ -3,8 +3,8 @@
 import unittest
 
 import common
-from ftk.constants import RET_OK
-from ftk.theme import *
+from ftk.ftk_constants import RET_OK
+from ftk.ftk_theme import *
 
 class TestFtkTheme(unittest.TestCase):
     def setUp(self):
