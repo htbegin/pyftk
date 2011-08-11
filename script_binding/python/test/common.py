@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from ftk.ftk_constants import FTK_LOG_D, FTK_LOG_I
+from ftk.ftk_constants import FTK_LOG_D, FTK_LOG_I, FTK_LOG_E
 from ftk.ftk_macros import ftk_macros
 from ftk.ftk_config import ftk_config_create, ftk_config_get_rotate
 from ftk.ftk_theme import ftk_theme_create
@@ -14,6 +14,9 @@ from ftk.ftk_display_rotate import ftk_display_rotate_create
 from ftk.ftk_log import ftk_set_log_level
 from ftk.ftk_globals import *
 from ftk.ftk_allocator import ftk_allocator_default_create
+
+def disable_warnning_log():
+    ftk_set_log_level(FTK_LOG_E)
 
 def disable_verbose_log():
     ftk_set_log_level(FTK_LOG_D)

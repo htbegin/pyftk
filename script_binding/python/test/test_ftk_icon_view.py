@@ -52,7 +52,10 @@ class TestIconView(unittest.TestCase):
         common.setup_theme()
         common.setup_bitmap()
         common.setup_font()
+        # parent is None
+        common.disable_warnning_log()
         self.view = ftk_icon_view_create(None, 0, 0, 40, 40)
+        common.disable_verbose_log()
 
     def test_item_operation(self):
         text_one = "one"

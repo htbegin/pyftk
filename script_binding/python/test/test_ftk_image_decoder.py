@@ -40,7 +40,10 @@ class TestPngImageDecoder(unittest.TestCase):
         self.assertTrue(bitmap is not None)
         ftk_bitmap_unref(bitmap)
 
+        # open file will fail
+        common.disable_debug_log()
         bitmap = ftk_image_decoder_decode(self.png, "no_exist.png")
+        common.disable_verbose_log()
         self.assertTrue(bitmap is None)
 
 if __name__ == "__main__":

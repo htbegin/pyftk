@@ -16,6 +16,7 @@ class TestFtkTheme(unittest.TestCase):
         ftk_theme_destroy(theme)
 
     def test_parse(self):
+        common.disable_debug_log()
         theme = ftk_theme_create(0)
         ret = ftk_theme_parse_file(theme, "theme/theme.xml")
         self.assertEqual(ret, RET_OK)

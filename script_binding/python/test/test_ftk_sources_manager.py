@@ -26,7 +26,10 @@ class TestSourcesManager(unittest.TestCase):
             self.assertEqual(ftk_sources_manager_add(manager, src), RET_OK)
         self.assertEqual(ftk_sources_manager_get_count(manager), capacity)
         src = FtkSource()
+        # the capacity is full
+        common.disable_warnning_log()
         self.assertEqual(ftk_sources_manager_add(manager, src), RET_FAIL)
+        common.disable_verbose_log()
         self.assertEqual(ftk_sources_manager_get_count(manager), capacity)
         ftk_sources_manager_destroy(manager)
 

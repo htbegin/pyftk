@@ -46,7 +46,9 @@ class TestListModel(unittest.TestCase):
         total = ftk_list_model_get_total(self.model)
         self.assertEqual(total, 1)
 
+        common.disable_warnning_log()
         (ret, data) = ftk_list_model_get_data(self.model, total)
+        common.disable_verbose_log()
         self.assertEqual(ret, RET_FAIL)
         self.assertEqual(data, None)
 
