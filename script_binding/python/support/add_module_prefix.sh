@@ -16,3 +16,7 @@ ssed -R -i \
 	-e 's/(?<!from )ftk\.([a-z_][a-z_]+)/ftk_\1/g' \
 	-e 's/(?<=from )ftk\.(?!ftk_)([a-z_]+)/ftk.ftk_\1/g' \
 	ftk/*.py
+
+ssed -R -i \
+	-e 's/(?<=from )ftk\.(?!ftk_)([a-z_]+)/ftk.ftk_\1/g' \
+	test/*.py

@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.util import *
+from ftk.priv_util import *
 
 class TestUtil(unittest.TestCase):
     def test_seq_to_array_1(self):
