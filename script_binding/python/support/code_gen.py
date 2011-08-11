@@ -102,7 +102,7 @@ class C2PythonConverter(object):
                 self.type_dict[key] = val
 
     def _create_pointer_ptn(self):
-        self.pointer_re = re.compile(r"POINTER[(](?P<type>[a-zA-Z_.]+)[)]")
+        self.pointer_re = re.compile(r"ctypes.POINTER[(](?P<type>[a-zA-Z_.]+)[)]")
 
     def _scan_func_decs(self, content):
         results = []
@@ -150,7 +150,7 @@ class C2PythonConverter(object):
         while tinfo[last_idx] == "*":
             deref_type_str = " ".join(tinfo[0:last_idx])
             if self._in_type_dict(deref_type_str):
-                prefix_str = "POINTER(" * (len(tinfo) - last_idx)
+                prefix_str = "ctypes.POINTER(" * (len(tinfo) - last_idx)
                 suffix_str = ")" * (len(tinfo) - last_idx)
                 rval = "".join((prefix_str,
                     self._type_dict_val(deref_type_str), suffix_str))
@@ -191,14 +191,18 @@ class C2PythonConverter(object):
             "'''"))
 
     """
-    ftk_window_set_animation_hint = ftk.dll.function('ftk_window_set_animation_hint',
+    ftk_window_set_animation_hint = ftk_dll.function(
+            'ftk_window_set_animation_hint',
             '',
             args=['thiz', 'hint'],
-            arg_types=[ftk.widget.FtkWidgetPtr, c_char_p],
-            return_type=c_int)
+            arg_types=[ftk_widget.FtkWidgetPtr, ctypes.c_char_p],
+            return_type=ctypes.c_int)
     """
     def _func_dec_str(self, func):
         (FUNC_RVAL_IDX, FUNC_NAME_IDX, FUNC_ARGS_IDX) = range(3)
+        enable_check_return = False
+        enable_dereference_return = False
+        enable_require_return = False
 
         rval_type = func[FUNC_RVAL_IDX]
         rval_type_str = self._type_str(rval_type)
@@ -208,6 +212,17 @@ class C2PythonConverter(object):
 
         func_name_str = func[FUNC_NAME_IDX]
         assert isinstance(func_name_str, str)
+
+        extra_line = 0
+        if rval_type[0] == "Ret":
+            enable_check_return = True
+            extra_line += 1
+        if rval_type_str.startswith("ctypes.POINTER"):
+            enable_dereference_return = True
+            extra_line += 1
+            if func_name_str.endswith("_create"):
+                enable_require_return = True
+                extra_line += 1
 
         arg_name_list = []
         arg_type_list = []
@@ -224,23 +239,63 @@ class C2PythonConverter(object):
                 assert isinstance(arg_type_str, str)
                 arg_type_list.append(arg_type_str)
 
-        line_one = "%s = ftk.dll.function('%s'," % (func_name_str, func_name_str)
-        if len(line_one) > 80:
-            line_one_fmt = "".join(("%s = ftk.dll.function(\n",
-                " " * 8, "'%s',"))
-            line_one = line_one_fmt % (func_name_str, func_name_str)
-        line_two = "".join((" " * 8, "'',"))
-        line_three_fmt = "".join((" " * 8, "args=[",
+        indent = " " * 8
+        all_line = []
+
+        line = "%s = ftk_dll.function('%s'," % (func_name_str, func_name_str)
+        all_line.append(line)
+
+        line = "".join((indent, "'',"))
+        all_line.append(line)
+
+        line_fmt = "".join((indent, "args=[",
             ", ".join(("'%s'",) * len(arg_name_list)),
             "],"))
-        line_three = line_three_fmt % tuple(arg_name_list)
-        line_four_fmt = "".join((" " * 8, "arg_types=[",
+        line = line_fmt % tuple(arg_name_list)
+        all_line.append(line)
+
+        line_fmt = "".join((indent, "arg_types=[",
             ", ".join(("%s",) * len(arg_type_list)),
             "],"))
-        line_four = line_four_fmt % tuple(arg_type_list)
-        line_five = "".join((" " * 8, "return_type=%s)")) % rval_type_str
+        line = line_fmt % tuple(arg_type_list)
+        all_line.append(line)
 
-        return "\n".join((line_one, line_two, line_three, line_four, line_five))
+        if extra_line:
+            line_end = ","
+        else:
+            line_end = ")"
+        line = "".join((indent, "return_type=%s%s" % \
+                (rval_type_str, line_end)))
+        all_line.append(line)
+
+        if enable_check_return:
+            extra_line -= 1
+            if extra_line:
+                line_end = ","
+            else:
+                line_end = ")"
+            line = "".join((indent, "check_return=True%s" % line_end))
+            all_line.append(line)
+
+        if enable_dereference_return:
+            extra_line -= 1
+            if extra_line:
+                line_end = ","
+            else:
+                line_end = ")"
+            line = "".join((indent, "dereference_return=True%s" % line_end))
+            all_line.append(line)
+
+        if enable_require_return:
+            extra_line -= 1
+            if extra_line:
+                line_end = ","
+            else:
+                line_end = ")"
+            line = "".join((indent, "require_return=True%s" % line_end))
+            all_line.append(line)
+
+        return "\n".join(all_line)
 
     def _func_dec_name(self, func):
         FUNC_NAME_IDX = 1
@@ -258,7 +313,7 @@ class C2PythonConverter(object):
         for k, v in self.pointer_dict.iteritems():
             if v >= REDEFINE_THRESHOLD:
                 alias = self._get_pointer_type_alias(k)
-                redefine_dict["".join(("POINTER(", k, ")"))] = alias
+                redefine_dict["".join(("ctypes.POINTER(", k, ")"))] = alias
 
         if len(redefine_dict) == 0:
             return results
@@ -301,7 +356,7 @@ class C2PythonConverter(object):
     """
     typedef const char * (*FtkXulTranslateText)(void * ctx, const char * text);
     ['const', 'char', '*'] FtkXulTranslateText [['void', '*', 'ctx'], ['const', 'char', '*', 'text']]
-    FtkXulTranslateText = CFUNCTYPE(c_char_p, c_void_p, c_char_p)
+    FtkXulTranslateText = CFUNCTYPE(ctypes.c_char_p, ctypes.c_void_p, ctypes.c_char_p)
     """
     def _exceptional_func_ptr_type_def_str(self, token):
         rval_type_str = " ".join(token.rval)
@@ -365,7 +420,7 @@ class C2PythonConverter(object):
     def _to_python_struct_type_dec(self, name):
         dec_list = []
         struct_ptr = "_%sPtr" % (name,)
-        struct_ptr_line = "%s = POINTER(%s)" % (struct_ptr, name)
+        struct_ptr_line = "%s = ctypes.POINTER(%s)" % (struct_ptr, name)
         self.local_struct_type_ptr_dict[struct_ptr] = struct_ptr_line
 
         struct_dec_line = "class %s(Structure):\n    pass" % (name,)
@@ -414,7 +469,7 @@ class C2PythonConverter(object):
         else:
             name = token.name.lstrip("_")
         struct_ptr = "_%sPtr" % (name,)
-        struct_ptr_line = "%s = POINTER(%s)" % (struct_ptr, name)
+        struct_ptr_line = "%s = ctypes.POINTER(%s)" % (struct_ptr, name)
         self.local_struct_type_ptr_dict[struct_ptr] = struct_ptr_line
 
         func_ptr_list = []
@@ -432,7 +487,7 @@ class C2PythonConverter(object):
                 try:
                     int(alen)
                 except ValueError:
-                    alen = "".join(("ftk.constants.", alen))
+                    alen = "".join(("ftk_constants.", alen))
                 type_str = " * ".join((type_str, alen))
             m_str = "('%s', %s)" % (m.name, type_str)
             m_list.append(m_str)
