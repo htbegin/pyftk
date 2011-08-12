@@ -684,10 +684,14 @@ class C2PythonConverter(object):
             return ptr_type
 
     def _generate_ptr_type_aliases(self):
+        indent = " " * 8
         lines = []
         for ptr_type, alias in self.ptr_type_alias_dict.iteritems():
             if self._derefer_type(ptr_type) not in self.all_struct_type_list:
-                lines.append("%s = %s" % (alias, ptr_type))
+                line = "%s = %s" % (alias, ptr_type)
+                if len(line) > self.line_width:
+                    line = "%s = \\\n%s%s" % (alias, indent, ptr_type)
+                lines.append(line)
         return lines
 
     def run(self, finput, mpath, struct_enabled, func_enabled):
