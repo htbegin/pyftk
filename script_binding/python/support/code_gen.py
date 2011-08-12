@@ -483,7 +483,7 @@ class C2PythonConverter(object):
                     self.ptr_type_ref_cnt_dict[ptr] += 1
 
     def _add_imported_module(self, mname):
-        if mname not in self.imported_module_list:
+        if mname not in self.imported_module_list and mname != "ctypes":
             self.imported_module_list.append(mname)
 
     def _update_imported_module_info(self, type_str):
@@ -506,23 +506,17 @@ class C2PythonConverter(object):
         self._update_imported_module_info(type_str)
 
     def _collect_global_info(self, content):
-        import_ctypes = False
         import_ftk_dll = False
 
         for token, start, end in self.func_ptr_type.scanString(content):
-            import_ctypes = True
             self._to_python_func_ptr_type_def(token, True)
         print self.ptr_type_ref_cnt_dict
         print self.imported_module_list
 
         for token, start, end in self.struct_type.scanString(content):
-            import_ctypes = True
             self._to_python_struct_type_def(token, True)
         print self.ptr_type_ref_cnt_dict
         print self.imported_module_list
-
-        if len(self.dec_only_struct_type_dict):
-            import_ctypes = True
 
         for token, start, end in self.func_dec.scanString(content):
             import_ftk_dll = True
@@ -530,8 +524,6 @@ class C2PythonConverter(object):
         print self.ptr_type_ref_cnt_dict
         print self.imported_module_list
 
-        if import_ctypes:
-            self._add_imported_module("ctypes")
         if import_ftk_dll:
             self._add_imported_module("ftk_dll")
 
