@@ -11,6 +11,7 @@ import ctypes
 import ftk_dll
 import ftk_constants
 import ftk_typedef
+import ftk_util
 import ftk_bitmap
 
 # ftk_list_model.h
@@ -23,11 +24,19 @@ class FtkListModel(ctypes.Structure):
 _FtkListModelPtr = ctypes.POINTER(FtkListModel)
 
 FtkListModelGetTotal = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr)
-FtkListModelGetData = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr, ctypes.c_uint, ctypes.POINTER(ctypes.c_void_p))
-FtkListModelDestroy = ctypes.CFUNCTYPE(None, _FtkListModelPtr)
-FtkListModelAdd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr, ctypes.c_void_p)
+
+FtkListModelGetData = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr,
+        ctypes.c_size_t, ctypes.POINTER(ctypes.c_void_p))
+
+FtkListModelAdd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr,
+        ctypes.c_void_p)
+
 FtkListModelReset = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr)
-FtkListModelRemove = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr, ctypes.c_uint)
+
+FtkListModelRemove = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListModelPtr,
+        ctypes.c_size_t)
+
+FtkListModelDestroy = ctypes.CFUNCTYPE(None, _FtkListModelPtr)
 
 FtkListModel._fields_ = [
         ('get_total', FtkListModelGetTotal),
@@ -36,12 +45,10 @@ FtkListModel._fields_ = [
         ('reset', FtkListModelReset),
         ('remove', FtkListModelRemove),
         ('destroy', FtkListModelDestroy),
-
         ('ref', ctypes.c_int),
         ('disable_notify', ctypes.c_int),
         ('listener_ctx', ctypes.c_void_p),
         ('listener', ftk_typedef.FtkListener),
-
         ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY)
         ]
 
@@ -130,11 +137,10 @@ def ftk_list_model_enable_notify(thiz):
         ret = ftk_constants.RET_OK
     else:
         ret = ftk_constants.RET_FAIL
-    return ret
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_model_disable_notify(thiz):
     thiz.disable_notify += 1
-    return ftk_constants.RET_OK
 
 def ftk_list_model_set_changed_listener(thiz, listener, ctx):
     def _listener(ignored, ignored_too):
@@ -144,16 +150,15 @@ def ftk_list_model_set_changed_listener(thiz, listener, ctx):
     thiz.listener = callback
     thiz.listener_ctx = None
 
-    return ftk_constants.RET_OK
-
 def ftk_list_model_notify(thiz):
     if thiz.disable_notify <= 0:
         if thiz.listener:
-            return thiz.listener(None, None)
+            ret = thiz.listener(None, None)
         else:
-            return ftk_constants.RET_OK
+            ret = ftk_constants.RET_OK
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_model_add(thiz, item):
     if not isinstance(item, FtkListItemInfo):
@@ -167,7 +172,7 @@ def ftk_list_model_add(thiz, item):
     else:
         ret = ftk_constants.RET_FAIL
 
-    return ret
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_model_remove(thiz, index):
     if thiz.remove:
@@ -177,7 +182,7 @@ def ftk_list_model_remove(thiz, index):
     else:
         ret = ftk_constants.RET_FAIL
 
-    return ret
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_model_reset(thiz):
     if thiz.reset:
@@ -187,7 +192,7 @@ def ftk_list_model_reset(thiz):
     else:
         ret = ftk_constants.RET_FAIL
 
-    return ret
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_list_model_get_total(thiz):
     if thiz.get_total:
@@ -197,17 +202,16 @@ def ftk_list_model_get_total(thiz):
     return ret
 
 def ftk_list_model_get_data(thiz, index):
-    data = None
     if thiz.get_data:
         void_ptr = ctypes.c_void_p()
         ret = thiz.get_data(thiz, index, ctypes.byref(void_ptr))
         if ret == ftk_constants.RET_OK:
             data_ptr = ctypes.cast(void_ptr, ctypes.POINTER(FtkListItemInfo))
-            data = data_ptr.contents
+            return data_ptr.contents
+        else:
+            ftk_util.handle_inline_func_retval(ret)
     else:
-        ret = ftk_constants.RET_FAIL
-
-    return (ret, data)
+        ftk_util.handle_inline_func_retval(ftk_constants.RET_FAIL)
 
 def ftk_list_model_destroy(thiz):
     if thiz.destroy:

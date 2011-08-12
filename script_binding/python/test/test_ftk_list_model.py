@@ -4,7 +4,8 @@ import unittest
 import ctypes
 
 import common
-from ftk.ftk_constants import RET_OK, RET_FAIL, FTK_LIST_ITEM_NORMAL
+from ftk.ftk_error import FtkError
+from ftk.ftk_constants import RET_FAIL, FTK_LIST_ITEM_NORMAL
 from ftk.ftk_typedef import FtkColor
 from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
 from ftk.ftk_list_model import *
@@ -20,25 +21,20 @@ class TestListModel(unittest.TestCase):
     def test_add_get_one(self):
         item = FtkListItemInfo(text="one")
 
-        ret = ftk_list_model_add(self.model, item)
-        self.assertEqual(ret, RET_OK)
-        (ret, data) = ftk_list_model_get_data(self.model, 0)
-        self.assertEqual(ret, RET_OK)
+        ftk_list_model_add(self.model, item)
+        data = ftk_list_model_get_data(self.model, 0)
 
         self.assertEqual(data.disable, 0)
         data.disable = 1
-        (ret, data) = ftk_list_model_get_data(self.model, 0)
-        self.assertEqual(ret, RET_OK)
+        data = ftk_list_model_get_data(self.model, 0)
         self.assertEqual(data.disable, 1)
 
     def test_add_get_two(self):
         item = FtkListItemInfo(text="add", type=FTK_LIST_ITEM_NORMAL)
 
-        ret = ftk_list_model_add(self.model, item)
-        self.assertEqual(ret, RET_OK)
+        ftk_list_model_add(self.model, item)
 
-        (ret, data) = ftk_list_model_get_data(self.model, 0)
-        self.assertEqual(ret, RET_OK)
+        data = ftk_list_model_get_data(self.model, 0)
         self.assertEqual(item.text, data.text)
         self.assertEqual(item.disable, data.disable)
         self.assertEqual(item.type, data.type)
@@ -47,13 +43,15 @@ class TestListModel(unittest.TestCase):
         self.assertEqual(total, 1)
 
         common.disable_warnning_log()
-        (ret, data) = ftk_list_model_get_data(self.model, total)
+        try:
+            data = ftk_list_model_get_data(self.model, total)
+        except FtkError, error:
+            self.assertEqual(error.errno, RET_FAIL)
+        else:
+            self.assertTrue(False)
         common.disable_verbose_log()
-        self.assertEqual(ret, RET_FAIL)
-        self.assertEqual(data, None)
 
-        ret = ftk_list_model_reset(self.model)
-        self.assertEqual(ret, RET_OK)
+        ftk_list_model_reset(self.model)
         total = ftk_list_model_get_total(self.model)
         self.assertEqual(total, 0)
 
@@ -63,15 +61,13 @@ class TestListModel(unittest.TestCase):
 
         items = (add_item, del_item)
         for item in items:
-            ret = ftk_list_model_add(self.model, item)
-            self.assertEqual(ret, RET_OK)
+            ftk_list_model_add(self.model, item)
 
         total = ftk_list_model_get_total(self.model)
         self.assertEqual(total, 2)
 
         for idx in range(total - 1, -1, -1):
-            ret = ftk_list_model_remove(self.model, idx)
-            self.assertEqual(ret, RET_OK)
+            ftk_list_model_remove(self.model, idx)
 
         total = ftk_list_model_get_total(self.model)
         self.assertEqual(total, 0)
@@ -81,11 +77,9 @@ class TestListModel(unittest.TestCase):
         item = FtkListItemInfo()
         item.user_data = user_data
 
-        ret = ftk_list_model_add(self.model, item)
-        self.assertEqual(ret, RET_OK)
+        ftk_list_model_add(self.model, item)
 
-        (ret, data) = ftk_list_model_get_data(self.model, 0)
-        self.assertEqual(ret, RET_OK)
+        data = ftk_list_model_get_data(self.model, 0)
         self.assertTrue(data.user_data is user_data)
 
 class TestListItem(unittest.TestCase):
