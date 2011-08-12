@@ -161,14 +161,17 @@ class C2PythonConverter(object):
     def _ptr_type_alias_str(self, type_str):
         result = self.pointer_re.search(type_str)
         if result is not None:
-            type = result.group('type')
+            type = result.group("type")
+            ptr_type = result.group(0)
+            if ptr_type in self.ptr_type_alias_dict:
+                alias = self.ptr_type_alias_dict[ptr_type]
+                return type_str.replace(ptr_type, alias)
             if type not in self.basic_type_dict.values() and \
                     self._need_create_ptr_type_alias(type):
                 parts = type.split(".")
                 alias = "_%sPtr" % parts[-1]
-                if parts[-1] not in self.all_struct_type_list:
-                    self.ptr_type_alias_dict[result.group(0)] = alias
-                return self.pointer_re.sub(alias, type_str)
+                self.ptr_type_alias_dict[ptr_type] = alias
+                return type_str.replace(ptr_type, alias)
             else:
                 return type_str
         else:
@@ -235,6 +238,7 @@ class C2PythonConverter(object):
             return_type=ctypes.c_int)
     """
     def _to_python_func_dec(self, token, only_check_type=False):
+        all_line = []
         enable_check_return = False
         enable_dereference_return = False
         enable_require_return = False
@@ -248,7 +252,7 @@ class C2PythonConverter(object):
                 return None
         assert isinstance(rval_type_str, str)
         if only_check_type:
-            self._update_global_info(rval_type_str)
+            self._update_global_info(rval_type_str, in_func_dec=True)
 
         func_name_str = token.name
         assert isinstance(func_name_str, str)
@@ -270,7 +274,12 @@ class C2PythonConverter(object):
                         return None
                 assert isinstance(arg_type_str, str)
                 if only_check_type:
-                    self._update_global_info(arg_type_str)
+                    self._update_global_info(arg_type_str, in_func_dec=True)
+                else:
+                    if arg_type_str in self.func_ptr_type_ref_dict and \
+                            self.func_ptr_type_ref_dict[arg_type_str] == 0:
+                        self._update_func_ptr_type_ref_info(arg_type_str)
+                        all_line.append(self.func_ptr_type_def_dict[arg_type_str])
                 arg_type_list.append(arg_type_str)
 
         if only_check_type:
@@ -289,7 +298,6 @@ class C2PythonConverter(object):
                 extra_line += 1
 
         indent = " " * 8
-        all_line = []
 
         line = "%s = ftk_dll.function('%s'," % (func_name_str, func_name_str)
         all_line.append(line)
@@ -355,52 +363,6 @@ class C2PythonConverter(object):
     def _get_pointer_type_alias(self, pointer_type):
         lists = pointer_type.split(".")
         return "".join(("_", lists[-1], "Ptr"))
-
-    def _redefine_pointer(self, results):
-        REDEFINE_THRESHOLD = 2
-        redefine_dict = {}
-        for k, v in self.pointer_dict.iteritems():
-            if v >= REDEFINE_THRESHOLD:
-                alias = self._get_pointer_type_alias(k)
-                redefine_dict["".join(("ctypes.POINTER(", k, ")"))] = alias
-
-        if len(redefine_dict) == 0:
-            return results
-
-        new_results = []
-        for alias, line in self.priv_struct_ptr_type_list.iteritems():
-            if alias not in redefine_dict.values():
-                alias_def = self.priv_struct_ptr_type_list[alias]
-                sub_str = "".join(("\n\n", alias_def))
-                for line in results:
-                    new_line = line.replace(sub_str, "")
-                    new_results.append(new_line)
-                results = new_results
-
-        redefine_results = []
-        for type, alias in redefine_dict.iteritems():
-            if alias in self.priv_struct_ptr_type_list:
-                continue
-            line = "%s = %s" % (alias, type)
-            redefine_results.append(line)
-
-        for lines in results:
-            for type, alias in redefine_dict.iteritems():
-                if alias in self.priv_struct_ptr_type_list:
-                    alias_def = self.priv_struct_ptr_type_list[alias]
-                    s_idx = lines.find(alias_def)
-                    if s_idx != -1:
-                        s_idx += len(alias_def)
-                        redefine_lines = "".join((lines[:s_idx],
-                                lines[s_idx:].replace(type, alias)))
-                    else:
-                        redefine_lines = lines.replace(type, alias)
-                else:
-                    redefine_lines = lines.replace(type, alias)
-                lines = redefine_lines
-            redefine_results.append(redefine_lines)
-
-        return redefine_results
 
     """
     typedef const char * (*FtkXulTranslateText)(void * ctx, const char * text);
@@ -518,9 +480,15 @@ class C2PythonConverter(object):
         elif len(parts) != 1:
             sys.stderr.write("invalid symbol path %s\n", type_str)
 
-    def _update_global_info(self, type_str):
+    def _update_func_ptr_type_ref_info(self, type_str):
+        if type_str in self.func_ptr_type_ref_dict:
+            self.func_ptr_type_ref_dict[type_str] += 1
+
+    def _update_global_info(self, type_str, in_func_dec=False):
         self._update_ptr_ref_info(type_str)
         self._update_imported_module_info(type_str)
+        if not in_func_dec:
+            self._update_func_ptr_type_ref_info(type_str)
 
     def _collect_global_info(self, content):
         import_ftk_dll = False
@@ -619,7 +587,7 @@ class C2PythonConverter(object):
                 self._update_global_info(type_str)
                 continue
 
-            if type_str in self.func_ptr_type_dict:
+            if type_str in self.func_ptr_type_def_dict:
                 func_ptr_list.append(type_str)
 
             if m.len:
@@ -639,7 +607,7 @@ class C2PythonConverter(object):
         def_list = []
         if token.has_alias:
             for func_ptr in func_ptr_list:
-                def_list.append(self.func_ptr_type_dict[func_ptr])
+                def_list.append(self.func_ptr_type_def_dict[func_ptr])
             line_one = "class %s(ctypes.Structure):" % (name,)
             line_two = "    _fields_ = ["
             line_mems_fmt = ",\n".join((("            %s",) * len(m_list)))
@@ -655,7 +623,7 @@ class C2PythonConverter(object):
             if self._need_create_ptr_type_alias(name):
                 def_list.append(struct_ptr_line)
             for func_ptr in func_ptr_list:
-                def_list.append(self.func_ptr_type_dict[func_ptr])
+                def_list.append(self.func_ptr_type_def_dict[func_ptr])
             first_line = "%s._fields_ = [" % (name,)
             middle_line_fmt = ",\n".join((("        %s",) * len(m_list)))
             middle_line = middle_line_fmt % tuple(m_list)
@@ -664,30 +632,37 @@ class C2PythonConverter(object):
             def_list.append(struct_line)
         return "\n\n".join(def_list)
 
-    def _convert_struct_type_def(self, content):
-        self.func_ptr_type_dict = {}
-        struct_type_def = []
+    def _generate_func_ptr_type_ref_info(self, content):
+        self.func_ptr_type_ref_dict = {}
 
         for token, start, end in self.func_ptr_type.scanString(content):
-            self.func_ptr_type_dict[token.name] = \
+            self.func_ptr_type_ref_dict[token.name] = 0
+
+    def _generate_func_ptr_type_def_info(self, content):
+        self.func_ptr_type_def_dict = {}
+
+        for token, start, end in self.func_ptr_type.scanString(content):
+            self.func_ptr_type_def_dict[token.name] = \
                     self._to_python_func_ptr_type_def(token)
 
-        for token, start, end in self.struct_type.scanString(content):
-            struct_type_def.append(self._to_python_struct_type_def(token))
+    def _convert_struct_type_def(self, content):
+        struct_type_def = []
 
         for alias in self.dec_only_struct_type_dict.itervalues():
             struct_type_def.append(self._to_python_struct_type_dec(alias))
+
+        for token, start, end in self.struct_type.scanString(content):
+            struct_type_def.append(self._to_python_struct_type_def(token))
 
         return struct_type_def
 
     def _convert_func_dec(self, content, func=None):
         decs = []
-        func_decs = self._scan_func_decs(content)
-        for dec in func_decs:
-            if func is not None and func != self._func_dec_name(dec):
+
+        for token, start, end in self.func_dec.scanString(content):
+            if func is not None and func != token.name:
                 continue
-            s = self._func_dec_str(dec)
-            decs.append(s)
+            decs.append(self._to_python_func_dec(token))
 
         if func is not None and len(decs) == 0:
             sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
@@ -707,31 +682,27 @@ class C2PythonConverter(object):
 
             self._collect_private_type_info(content)
 
+            self._generate_func_ptr_type_ref_info(content)
+
             self._enable_ptr_type_alias = False
             self._collect_global_info(content)
             self._enable_ptr_type_alias = True
+
+            self._generate_func_ptr_type_def_info(content)
 
             if struct_enabled:
                 defs = self._convert_struct_type_def(content)
             else:
                 defs = []
-            """
             if func_enabled:
                 decs = self._convert_func_dec(content)
             else:
                 decs = []
-            """
-        results.extend(defs)
-        """
-        results.extend(decs)
-        """
 
-        #results = self._redefine_pointer(results)
+        results.extend(defs)
+        results.extend(decs)
 
         return "\n\n".join(results)
-
-def strip_symbol_path(path, symbol):
-    return symbol.replace(path, "")
 
 if __name__ == "__main__":
     opt_parser = OptionParser()
