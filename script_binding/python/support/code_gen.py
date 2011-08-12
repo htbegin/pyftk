@@ -151,14 +151,23 @@ class C2PythonConverter(object):
 
         return val
 
+    def _need_create_ptr_type_alias(self, type):
+        ptr_type = "ctypes.POINTER(%s)" % type
+        if ptr_type in self.ptr_type_ref_cnt_dict:
+            return True
+        else:
+            return False
+
     def _ptr_type_alias_str(self, type_str):
         result = self.pointer_re.search(type_str)
         if result is not None:
             type = result.group('type')
-            if type not in self.basic_type_dict.values():
+            if type not in self.basic_type_dict.values() and \
+                    self._need_create_ptr_type_alias(type):
                 parts = type.split(".")
                 alias = "_%sPtr" % parts[-1]
-                self.ptr_type_alias_dict[result.group(0)] = alias
+                if parts[-1] not in self.all_struct_type_list:
+                    self.ptr_type_alias_dict[result.group(0)] = alias
                 return self.pointer_re.sub(alias, type_str)
             else:
                 return type_str
@@ -454,18 +463,26 @@ class C2PythonConverter(object):
     def _collect_private_type_info(self, content):
         self.priv_type_dict = {}
         self.dec_only_struct_type_dict = {}
+        self.struct_type_alias_dict = {}
+        self.all_struct_type_list = []
 
         for token, start, end in self.struct_alias.scanString(content):
             if not self._in_pub_type_dict(token.alias):
                 self.priv_type_dict[token.alias] = token.alias
             self.dec_only_struct_type_dict[token.name] = token.alias
+            self.all_struct_type_list.append(token.alias)
 
         for token, start, end in self.struct_type.scanString(content):
             if token.has_alias and not self._in_pub_type_dict(token.alias):
                 self.priv_type_dict[token.alias] = token.alias
+
             if not token.has_alias:
                 if token.name in self.dec_only_struct_type_dict:
+                    self.struct_type_alias_dict[token.name] = \
+                            self.dec_only_struct_type_dict[token.name]
                     del self.dec_only_struct_type_dict[token.name]
+            else:
+                self.all_struct_type_list.append(token.alias)
 
         for token, start, end in self.func_ptr_type.scanString(content):
             if not self._in_pub_type_dict(token.name):
@@ -531,14 +548,12 @@ class C2PythonConverter(object):
 
     def _to_python_struct_type_dec(self, name):
         dec_list = []
-        ptr = "ctypes.POINTER(%s)" % name
-        ptr_alias = "_%sPtr" % name
-        struct_ptr_line = "%s = %s" % (ptr_alias, ptr)
-        self.priv_struct_ptr_type_list.append(ptr)
 
-        struct_dec_line = "class %s(ctypes.Structure):\n    pass" % (name,)
+        struct_dec_line = "class %s(ctypes.Structure):\n    pass" % name
         dec_list.append(struct_dec_line)
-        dec_list.append(struct_ptr_line)
+        if self._need_create_ptr_type_alias(name):
+            struct_ptr_line = "_%sPtr = ctypes.POINTER(%s)" % (name, name)
+            dec_list.append(struct_ptr_line)
 
         return "\n\n".join(dec_list)
 
@@ -580,12 +595,15 @@ class C2PythonConverter(object):
         if token.has_alias:
             name = token.alias
         else:
-            # FIXME
-            name = token.name.lstrip("_")
-        ptr = "ctypes.POINTER(%s)" % name
-        ptr_alias = "_%sPtr" % (name,)
-        struct_ptr_line = "%s = %s" % (ptr_alias, ptr)
-        self.priv_struct_ptr_type_list.append(ptr)
+            if token.name in self.struct_type_alias_dict:
+                name = self.struct_type_alias_dict[token.name]
+            else:
+                sys.stderr.write("inconsistent struct definition style "
+                    "for %s\n" % token.name)
+                name = token.name.lstrip("_")
+
+        if self._need_create_ptr_type_alias(name):
+            struct_ptr_line = "_%sPtr = ctypes.POINTER(%s)" % (name, name)
 
         func_ptr_list = []
         m_list = []
@@ -629,11 +647,13 @@ class C2PythonConverter(object):
             line_end = "            ]"
             struct_line = "\n".join((line_one, line_two, line_mems, line_end))
             def_list.append(struct_line)
-            def_list.append(struct_ptr_line)
+            if self._need_create_ptr_type_alias(name):
+                def_list.append(struct_ptr_line)
         else:
             struct_dec_line = "class %s(ctypes.Structure):\n    pass" % (name,)
             def_list.append(struct_dec_line)
-            def_list.append(struct_ptr_line)
+            if self._need_create_ptr_type_alias(name):
+                def_list.append(struct_ptr_line)
             for func_ptr in func_ptr_list:
                 def_list.append(self.func_ptr_type_dict[func_ptr])
             first_line = "%s._fields_ = [" % (name,)
@@ -691,18 +711,18 @@ class C2PythonConverter(object):
             self._collect_global_info(content)
             self._enable_ptr_type_alias = True
 
-            """
             if struct_enabled:
                 defs = self._convert_struct_type_def(content)
             else:
                 defs = []
+            """
             if func_enabled:
                 decs = self._convert_func_dec(content)
             else:
                 decs = []
             """
-        """
         results.extend(defs)
+        """
         results.extend(decs)
         """
 
