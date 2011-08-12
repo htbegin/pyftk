@@ -31,10 +31,8 @@ class TestMainLoop(unittest.TestCase):
         ftk_set_primary_source(primary_src)
         idle_src = ftk_source_idle_create(on_idle_fn, None)
 
-        ret = ftk_main_loop_add_source(self.loop, idle_src)
-        self.assertEqual(ret, RET_OK)
-        ret = ftk_main_loop_remove_source(self.loop, idle_src)
-        self.assertEqual(ret, RET_OK)
+        ftk_main_loop_add_source(self.loop, idle_src)
+        ftk_main_loop_remove_source(self.loop, idle_src)
 
         ftk_source_unref(idle_src)
         ftk_source_unref(primary_src)
@@ -50,13 +48,11 @@ class TestMainLoop(unittest.TestCase):
         primary_src = ftk_source_primary_create(on_event_fn, None)
         ftk_set_primary_source(primary_src)
 
-        ret = ftk_sources_manager_add(self.manager, primary_src)
-        self.assertEqual(ret, RET_OK)
+        ftk_sources_manager_add(self.manager, primary_src)
 
         idle_src = ftk_source_idle_create(on_idle_fn, None)
 
-        ret = ftk_main_loop_add_source(self.loop, idle_src)
-        self.assertEqual(ret, RET_OK)
+        ftk_main_loop_add_source(self.loop, idle_src)
 
         ftk_main_loop_run(self.loop)
 
