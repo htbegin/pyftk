@@ -9,56 +9,58 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_main_loop
-import ftk_allocator
-import ftk_config
-import ftk_source
-import ftk_sources_manager
-import ftk_theme
-import ftk_font_manager
-import ftk_bitmap_factory
-import ftk_canvas
-import ftk_wnd_manager
 import ftk_display
+import ftk_main_loop
+import ftk_wnd_manager
 import ftk_widget
+import ftk_bitmap_factory
+import ftk_sources_manager
+import ftk_canvas
+import ftk_theme
+import ftk_source
+import ftk_config
+import ftk_allocator
 import ftk_text_layout
-import ftk_animation_trigger
 import ftk_input_method_manager
 import ftk_input_method_preeditor
+import ftk_font_manager
+import ftk_animation_trigger
 
 # ftk_globals.h
 
+_FtkAnimationTriggerPtr = \
+        ctypes.POINTER(ftk_animation_trigger.FtkAnimationTrigger)
+
 _FtkSourcePtr = ctypes.POINTER(ftk_source.FtkSource)
-
-_FtkImPreeditorPtr = ctypes.POINTER(ftk_input_method_preeditor.FtkImPreeditor)
-
-_FtkDisplayPtr = ctypes.POINTER(ftk_display.FtkDisplay)
-
-_FtkThemePtr = ctypes.POINTER(ftk_theme.FtkTheme)
-
-_FtkConfigPtr = ctypes.POINTER(ftk_config.FtkConfig)
-
-_FtkInputMethodManagerPtr = ctypes.POINTER(ftk_input_method_manager.FtkInputMethodManager)
-
-_FtkCanvasPtr = ctypes.POINTER(ftk_canvas.FtkCanvas)
-
-_FtkSourcesManagerPtr = ctypes.POINTER(ftk_sources_manager.FtkSourcesManager)
-
-_FtkFontManagerPtr = ctypes.POINTER(ftk_font_manager.FtkFontManager)
-
-_FtkWndManagerPtr = ctypes.POINTER(ftk_wnd_manager.FtkWndManager)
-
-_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 
 _FtkMainLoopPtr = ctypes.POINTER(ftk_main_loop.FtkMainLoop)
 
+_FtkImPreeditorPtr = ctypes.POINTER(ftk_input_method_preeditor.FtkImPreeditor)
+
+_FtkConfigPtr = ctypes.POINTER(ftk_config.FtkConfig)
+
+_FtkThemePtr = ctypes.POINTER(ftk_theme.FtkTheme)
+
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
+
 _FtkBitmapFactoryPtr = ctypes.POINTER(ftk_bitmap_factory.FtkBitmapFactory)
+
+_FtkWndManagerPtr = ctypes.POINTER(ftk_wnd_manager.FtkWndManager)
+
+_FtkTextLayoutPtr = ctypes.POINTER(ftk_text_layout.FtkTextLayout)
+
+_FtkSourcesManagerPtr = ctypes.POINTER(ftk_sources_manager.FtkSourcesManager)
+
+_FtkInputMethodManagerPtr = \
+        ctypes.POINTER(ftk_input_method_manager.FtkInputMethodManager)
+
+_FtkCanvasPtr = ctypes.POINTER(ftk_canvas.FtkCanvas)
 
 _FtkAllocatorPtr = ctypes.POINTER(ftk_allocator.FtkAllocator)
 
-_FtkAnimationTriggerPtr = ctypes.POINTER(ftk_animation_trigger.FtkAnimationTrigger)
+_FtkFontManagerPtr = ctypes.POINTER(ftk_font_manager.FtkFontManager)
 
-_FtkTextLayoutPtr = ctypes.POINTER(ftk_text_layout.FtkTextLayout)
+_FtkDisplayPtr = ctypes.POINTER(ftk_display.FtkDisplay)
 
 ftk_default_display = ftk_dll.function('ftk_default_display',
         '',

@@ -4,8 +4,8 @@ import unittest
 
 from ftk.ftk_globals import *
 
-class TestGlobals(unittest.TestCase):
-    def test_pass(self):
+class TestFtkGlobals(unittest.TestCase):
+    def _test(self):
         pass
 
 if __name__ == "__main__":
