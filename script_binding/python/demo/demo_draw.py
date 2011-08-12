@@ -26,7 +26,10 @@ def on_paint(ctx, painter):
     gc.mask = FTK_GC_FG
 
     w = g_width % width
-    ftk_canvas_set_gc(canvas, gc)
+    try:
+        ftk_canvas_set_gc(canvas, gc)
+    except FtkError:
+        pass
     ftk_canvas_draw_line(canvas, x, y + height / 2, x + w, y + height / 2)
 
     for i in range(0, height, 10):
@@ -37,7 +40,10 @@ def on_paint(ctx, painter):
 
     gc.fg.r = 0
     gc.fg.g = 0xff
-    ftk_canvas_set_gc(canvas, gc)
+    try:
+        ftk_canvas_set_gc(canvas, gc)
+    except FtkError:
+        pass
 
     for i in range(w):
         r =  2 * 3.14 * i / width
@@ -46,7 +52,10 @@ def on_paint(ctx, painter):
         p.y = int(y + height / 2 + h)
         ftk_canvas_draw_pixels(canvas, (p,))
 
-    #ftk_widget_update(painter)
+    try:
+        ftk_widget_update(painter)
+    except FtkError:
+        pass
 
     return RET_OK
 

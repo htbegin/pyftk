@@ -12,6 +12,7 @@ import ftk_dll
 import ftk_util
 
 from ftk.ftk_constants import *
+from ftk.ftk_error import *
 from ftk.ftk_backend import *
 from ftk.ftk_platform import *
 from ftk.ftk_typedef import *
