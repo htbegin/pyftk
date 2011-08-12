@@ -4,8 +4,8 @@ import unittest
 
 from ftk.ftk_animation import *
 
-class TestAnimation(unittest.TestCase):
-    def test_pass(self):
+class TestFtkAnimation(unittest.TestCase):
+    def _test(self):
         pass
 
 if __name__ == "__main__":
