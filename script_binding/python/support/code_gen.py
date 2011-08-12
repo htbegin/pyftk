@@ -15,7 +15,8 @@ class C2PythonConverter(object):
         self._create_parse_grammer()
         self._create_type_dict(typedef_fname)
         self._create_pointer_ptn()
-        self.text_wrapper = textwrap.TextWrapper(width=79)
+        self.line_width = 79
+        self.text_wrapper = textwrap.TextWrapper(width=self.line_width)
 
     def _create_parse_grammer(self):
         atom_var_type = Literal("void") | \
@@ -301,21 +302,32 @@ class C2PythonConverter(object):
         indent = " " * 8
 
         line = "%s = ftk_dll.function('%s'," % (func_name_str, func_name_str)
-        all_line.append(line)
+        if len(line) <= self.line_width:
+            all_line.append(line)
+        else:
+            line = "%s = ftk_dll.function(" % func_name_str
+            all_line.append(line)
+            line = "%s'%s'," % (indent, func_name_str)
+            all_line.append(line)
 
         line = "".join((indent, "'',"))
         all_line.append(line)
+
+        self.text_wrapper.initial_indent = ""
+        self.text_wrapper.subsequent_indent = " " * 12
 
         line_fmt = "".join((indent, "args=[",
             ", ".join(("'%s'",) * len(arg_name_list)),
             "],"))
         line = line_fmt % tuple(arg_name_list)
+        line = self.text_wrapper.fill(line)
         all_line.append(line)
 
         line_fmt = "".join((indent, "arg_types=[",
             ", ".join(("%s",) * len(arg_type_list)),
             "],"))
         line = line_fmt % tuple(arg_type_list)
+        line = self.text_wrapper.fill(line)
         all_line.append(line)
 
         if extra_line:
@@ -422,6 +434,7 @@ class C2PythonConverter(object):
             ", ".join(("%s",) * len(token.args)), ")"))
         line = line_fmt % tuple(line_content)
 
+        self.text_wrapper.initial_indent = ""
         self.text_wrapper.subsequent_indent = " " * 8
         return self.text_wrapper.fill(line)
 
