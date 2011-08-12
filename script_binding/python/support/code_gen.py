@@ -669,7 +669,30 @@ class C2PythonConverter(object):
 
         return decs
 
+    def _generate_import_statements(self):
+        import_lines = []
+
+        mnames = ["ftk_dll", "ftk_constants", "ftk_typedef"]
+        valid_mnames = [m for m in mnames if m in self.imported_module_list]
+        for m in self.imported_module_list:
+            if m not in mnames:
+                valid_mnames.append(m)
+
+        for m in valid_mnames:
+            import_lines.append("import %s" % m)
+
+        return "\n".join(import_lines)
+
+    def _generate_header(self):
+        header = []
+        if "%s." % self.fname[:-2] == self.mpath:
+            header.append(self._generate_import_statements())
+        header.append("# %s" % self.fname)
+
+        return header
+
     def run(self, finput, mpath, struct_enabled, func_enabled):
+        self.fname = os.path.basename(os.path.abspath(finput))
         self.mpath = mpath
         self.ptr_type_alias_dict = {}
         self.priv_struct_ptr_type_list = []
@@ -698,6 +721,10 @@ class C2PythonConverter(object):
                 decs = self._convert_func_dec(content)
             else:
                 decs = []
+
+        if struct_enabled and func_enabled:
+            header = self._generate_header()
+            results.extend(header)
 
         results.extend(defs)
         results.extend(decs)
