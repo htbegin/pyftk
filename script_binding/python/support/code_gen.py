@@ -15,6 +15,7 @@ class C2PythonConverter(object):
         self._create_parse_grammer()
         self._create_type_dict(typedef_fname)
         self._create_pointer_ptn()
+        self.text_wrapper = textwrap.TextWrapper(width=79)
 
     def _create_parse_grammer(self):
         atom_var_type = Literal("void") | \
@@ -420,7 +421,9 @@ class C2PythonConverter(object):
         line_fmt = "".join(("%s = ctypes.CFUNCTYPE(%s, ",
             ", ".join(("%s",) * len(token.args)), ")"))
         line = line_fmt % tuple(line_content)
-        return line
+
+        self.text_wrapper.subsequent_indent = " " * 8
+        return self.text_wrapper.fill(line)
 
     def _collect_private_type_info(self, content):
         self.priv_type_dict = {}
@@ -495,24 +498,16 @@ class C2PythonConverter(object):
 
         for token, start, end in self.func_ptr_type.scanString(content):
             self._to_python_func_ptr_type_def(token, True)
-        print self.ptr_type_ref_cnt_dict
-        print self.imported_module_list
 
         for token, start, end in self.struct_type.scanString(content):
             self._to_python_struct_type_def(token, True)
-        print self.ptr_type_ref_cnt_dict
-        print self.imported_module_list
 
         for token, start, end in self.func_dec.scanString(content):
             import_ftk_dll = True
             self._to_python_func_dec(token, True)
-        print self.ptr_type_ref_cnt_dict
-        print self.imported_module_list
 
         if import_ftk_dll:
             self._add_imported_module("ftk_dll")
-
-        print self.imported_module_list
 
     def _to_python_struct_type_dec(self, name):
         dec_list = []
