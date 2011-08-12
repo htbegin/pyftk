@@ -108,23 +108,6 @@ class C2PythonConverter(object):
     def _create_pointer_ptn(self):
         self.pointer_re = re.compile(r"ctypes.POINTER[(](?P<type>[a-zA-Z_.]+)[)]")
 
-    def _scan_func_decs(self, content):
-        results = []
-
-        for token, start, end in self.func_dec.scanString(content):
-            results.append([token.rval, token.name, token.args])
-
-        return results
-
-    def _gather_pointer_statistics(self, type_str):
-        result = self.pointer_re.search(type_str)
-        if result is not None:
-            type = result.group('type')
-            if type in self.pointer_dict:
-                self.pointer_dict[type] += 1
-            else:
-                self.pointer_dict[type] = 1
-
     def _in_pub_type_dict(self, type_str):
         if type_str in self.basic_type_dict or \
                 type_str in self.ext_type_dict:
@@ -206,17 +189,15 @@ class C2PythonConverter(object):
         sys.stderr.write("unknown type '%s'\n" % type_str)
         return None
 
-    def _exceptional_func_dec_str(self, func):
-        (FUNC_RVAL_IDX, FUNC_NAME_IDX, FUNC_ARGS_IDX) = range(3)
-
-        rval_type = func[FUNC_RVAL_IDX]
+    def _exceptional_func_dec_str(self, token):
+        rval_type = token.rval
         rval_type_str = " ".join(rval_type)
 
-        func_name_str = func[FUNC_NAME_IDX]
+        func_name_str = token.name
         assert isinstance(func_name_str, str)
 
         arg_info_list = []
-        args = func[FUNC_ARGS_IDX]
+        args = token.args
         if len(args) != 1 or args[0] != "void":
             for arg in args:
                 arg_name_str = arg.name
@@ -253,7 +234,7 @@ class C2PythonConverter(object):
         rval_type_str = self._type_str(rval_type)
         if rval_type_str is None:
             if not only_check_type:
-                return self._exceptional_func_dec_str(func)
+                return self._exceptional_func_dec_str(token)
             else:
                 return None
         assert isinstance(rval_type_str, str)
@@ -275,7 +256,7 @@ class C2PythonConverter(object):
                 arg_type_str = self._type_str(arg.type)
                 if arg_type_str is None:
                     if not only_check_type:
-                        return self._exceptional_func_dec_str(func)
+                        return self._exceptional_func_dec_str(token)
                     else:
                         return None
                 assert isinstance(arg_type_str, str)
@@ -371,16 +352,6 @@ class C2PythonConverter(object):
             all_line.append(line)
 
         return "\n".join(all_line)
-
-    def _func_dec_name(self, func):
-        FUNC_NAME_IDX = 1
-        func_name_str = func[FUNC_NAME_IDX]
-        assert isinstance(func_name_str, str)
-        return func_name_str
-
-    def _get_pointer_type_alias(self, pointer_type):
-        lists = pointer_type.split(".")
-        return "".join(("_", lists[-1], "Ptr"))
 
     """
     typedef const char * (*FtkXulTranslateText)(void * ctx, const char * text);
