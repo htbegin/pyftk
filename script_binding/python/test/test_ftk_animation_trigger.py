@@ -13,9 +13,11 @@ class TestAnimationTrigger(unittest.TestCase):
 
     def test_default_create(self):
         trigger = ftk_animation_trigger_default_create("default", "animations.xml")
+        ftk_animation_trigger_destroy(trigger)
 
     def test_silence_create(self):
         trigger = ftk_animation_trigger_silence_create()
+        ftk_animation_trigger_destroy(trigger)
 
 if __name__ == "__main__":
     unittest.main()
