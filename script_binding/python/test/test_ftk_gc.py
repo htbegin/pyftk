@@ -59,12 +59,10 @@ class TestGcOperation(unittest.TestCase):
 
     def test_copy(self):
         dst = FtkGc()
-        ret = ftk_gc_copy(dst, self.gc)
-        self.assertEqual(ret, RET_OK)
+        ftk_gc_copy(dst, self.gc)
 
     def test_reset(self):
-        ret = ftk_gc_reset(self.gc)
-        self.assertEqual(ret, RET_OK)
+        ftk_gc_reset(self.gc)
 
 if __name__ == "__main__":
     unittest.main()
