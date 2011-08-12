@@ -3,7 +3,6 @@
 import unittest
 
 import common
-from ftk.ftk_constants import RET_OK
 from ftk.ftk_theme import *
 
 class TestFtkTheme(unittest.TestCase):
@@ -18,8 +17,7 @@ class TestFtkTheme(unittest.TestCase):
     def test_parse(self):
         common.disable_debug_log()
         theme = ftk_theme_create(0)
-        ret = ftk_theme_parse_file(theme, "theme/theme.xml")
-        self.assertEqual(ret, RET_OK)
+        ftk_theme_parse_file(theme, "theme/theme.xml")
         ftk_theme_destroy(theme)
 
 if __name__ == "__main__":

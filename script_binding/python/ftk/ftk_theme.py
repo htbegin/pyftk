@@ -16,6 +16,11 @@ import ftk_animation_trigger
 
 # ftk_theme.h
 
+_FtkAnimationTriggerPtr = \
+        ctypes.POINTER(ftk_animation_trigger.FtkAnimationTrigger)
+
+_FtkFontPtr = ctypes.POINTER(ftk_font.FtkFont)
+
 _FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
 
 class FtkTheme(ctypes.Structure):
@@ -35,13 +40,15 @@ ftk_theme_parse_file = ftk_dll.function('ftk_theme_parse_file',
         '',
         args=['thiz', 'filename'],
         arg_types=[_FtkThemePtr, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_theme_parse_data = ftk_dll.function('ftk_theme_parse_data',
         '',
         args=['thiz', 'data', 'length'],
-        arg_types=[_FtkThemePtr, ctypes.POINTER(ctypes.c_char), ctypes.c_uint],
-        return_type=ctypes.c_int)
+        arg_types=[_FtkThemePtr, ctypes.c_char_p, ctypes.c_size_t],
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_theme_load_image = ftk_dll.function('ftk_theme_load_image',
         '',
@@ -79,7 +86,7 @@ ftk_theme_get_font = ftk_dll.function('ftk_theme_get_font',
         '',
         args=['thiz', 'type'],
         arg_types=[_FtkThemePtr, ctypes.c_int],
-        return_type=ctypes.POINTER(ftk_font.FtkFont),
+        return_type=_FtkFontPtr,
         dereference_return=True)
 
 ftk_theme_get_animation_trigger = ftk_dll.function(
@@ -87,7 +94,7 @@ ftk_theme_get_animation_trigger = ftk_dll.function(
         '',
         args=['thiz'],
         arg_types=[_FtkThemePtr],
-        return_type=ctypes.POINTER(ftk_animation_trigger.FtkAnimationTrigger),
+        return_type=_FtkAnimationTriggerPtr,
         dereference_return=True)
 
 ftk_theme_destroy = ftk_dll.function('ftk_theme_destroy',
