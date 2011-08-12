@@ -11,34 +11,58 @@ import ctypes
 import ftk_dll
 import ftk_constants
 import ftk_typedef
-import ftk_event
+import ftk_util
 import ftk_widget
+import ftk_event
 import ftk_main_loop
 
 # ftk_wnd_manager.h
 
-_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 _FtkRectPtr = ctypes.POINTER(ftk_typedef.FtkRect)
+
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
+
 _FtkEventPtr = ctypes.POINTER(ftk_event.FtkEvent)
+
+_FtkMainLoopPtr = ctypes.POINTER(ftk_main_loop.FtkMainLoop)
 
 class FtkWndManager(ctypes.Structure):
     pass
 
 _FtkWndManagerPtr = ctypes.POINTER(FtkWndManager)
 
-FtkWndManagerRestack = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkWidgetPtr, ctypes.c_int)
-FtkWndManagerGrab = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkWidgetPtr)
-FtkWndManagerUngrab = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkWidgetPtr)
-FtkWndManagerAdd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkWidgetPtr)
-FtkWndManagerRemove = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkWidgetPtr)
+FtkWndManagerGrab = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkWidgetPtr)
+
+FtkWndManagerUngrab = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkWidgetPtr)
+
+FtkWndManagerAdd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkWidgetPtr)
+
+FtkWndManagerRemove = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkWidgetPtr)
+
 FtkWndManagerUpdate = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr)
-FtkWndManagerGetWorkArea = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkRectPtr)
-FtkWndManagerQueueEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkEventPtr)
-FtkWndManagerDispatchEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr, _FtkEventPtr)
-FtkWndManagerAddGlobalListener = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
-        ftk_typedef.FtkListener, ctypes.c_void_p)
-FtkWndManagerRemoveGlobalListener = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
-        ftk_typedef.FtkListener, ctypes.c_void_p)
+
+FtkWndManagerRestack = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkWidgetPtr, ctypes.c_int)
+
+FtkWndManagerGetWorkArea = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkRectPtr)
+
+FtkWndManagerQueueEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkEventPtr)
+
+FtkWndManagerDispatchEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWndManagerPtr,
+        _FtkEventPtr)
+
+FtkWndManagerAddGlobalListener = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkWndManagerPtr, ftk_typedef.FtkListener, ctypes.c_void_p)
+
+FtkWndManagerRemoveGlobalListener = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkWndManagerPtr, ftk_typedef.FtkListener, ctypes.c_void_p)
+
 FtkWndManagerDestroy = ctypes.CFUNCTYPE(None, _FtkWndManagerPtr)
 
 FtkWndManager._fields_ = [
@@ -54,68 +78,75 @@ FtkWndManager._fields_ = [
         ('add_global_listener', FtkWndManagerAddGlobalListener),
         ('remove_global_listener', FtkWndManagerRemoveGlobalListener),
         ('destroy', FtkWndManagerDestroy),
-
         ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_wnd_manager_restack(thiz, window, offset):
     if thiz.restack:
-        thiz.restack(thiz, window, offset)
+        ret = thiz.restack(thiz, window, offset)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_grab(thiz, window):
     if thiz.grab:
-        thiz.grab(thiz, window)
+        ret = thiz.grab(thiz, window)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_ungrab(thiz, window):
     if thiz.ungrab:
-        thiz.ungrab(thiz, window)
+        ret = thiz.ungrab(thiz, window)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_add(thiz, window):
     if thiz.add:
-        thiz.add(thiz, window)
+        ret = thiz.add(thiz, window)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_remove(thiz, window):
     if thiz.remove:
-        thiz.remove(thiz, window)
+        ret = thiz.remove(thiz, window)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_update(thiz):
     if thiz.update:
-        thiz.update(thiz)
+        ret = thiz.update(thiz)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_get_work_area(thiz):
     if thiz.get_work_area:
         rect = ftk_typedef.FtkRect()
         ret = thiz.get_work_area(thiz, ctypes.byref(rect))
         if ret == ftk_constants.RET_OK:
-            return (ret, rect)
+            return rect
         else:
-            return (ret, None)
+            ftk_util.handle_inline_func_retval(ret)
     else:
-        return (ftk_constants.RET_FAIL, None)
+        ftk_util.handle_inline_func_retval(ftk_constants.RET_FAIL)
 
 def ftk_wnd_manager_queue_event(thiz, event):
     if thiz.queue_event:
-        thiz.queue_event(thiz, event)
+        ret = thiz.queue_event(thiz, event)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_dispatch_event(thiz, event):
     if thiz.dispatch_event:
-        thiz.dispatch_event(thiz, event)
+        ret = thiz.dispatch_event(thiz, event)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 _global_listener_refs = {}
 def ftk_wnd_manager_add_global_listener(thiz, listener, ctx):
@@ -129,9 +160,9 @@ def ftk_wnd_manager_add_global_listener(thiz, listener, ctx):
         if ret == ftk_constants.RET_OK:
             _global_listener_refs.setdefault(ctypes.addressof(thiz), {})\
                     [(listener, id(ctx))] = callback
-        return ret
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_remove_global_listener(thiz, listener, ctx):
     if thiz.remove_global_listener:
@@ -143,9 +174,11 @@ def ftk_wnd_manager_remove_global_listener(thiz, listener, ctx):
             ret = thiz.remove_global_listener(thiz, callback, None)
             if ret == ftk_constants.RET_OK:
                 del _global_listener_refs[f_key][s_key]
+        else:
+            ret = ftk_constants.RET_NOT_FOUND
     else:
         ret = ftk_constants.RET_FAIL
-    return ret
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_wnd_manager_destroy(thiz):
     if thiz.destroy:
@@ -155,20 +188,22 @@ ftk_wnd_manager_set_rotate = ftk_dll.function('ftk_wnd_manager_set_rotate',
         '',
         args=['thiz', 'rotate'],
         arg_types=[_FtkWndManagerPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_wnd_manager_queue_event_auto_rotate = ftk_dll.function(
         'ftk_wnd_manager_queue_event_auto_rotate',
         '',
         args=['thiz', 'event'],
         arg_types=[_FtkWndManagerPtr, _FtkEventPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_wnd_manager_default_create = ftk_dll.function(
         'ftk_wnd_manager_default_create',
         '',
         args=['main_loop'],
-        arg_types=[ctypes.POINTER(ftk_main_loop.FtkMainLoop)],
+        arg_types=[_FtkMainLoopPtr],
         return_type=_FtkWndManagerPtr,
         dereference_return=True,
         require_return=True)
