@@ -699,6 +699,21 @@ class C2PythonConverter(object):
 
         return header
 
+    def _derefer_type(self, ptr_type):
+        result = self.pointer_re.search(ptr_type)
+        if result is not None:
+            return result.group("type")
+        else:
+            sys.stderr.write("invalid pointer type %s\n" % ptr_type)
+            return ptr_type
+
+    def _generate_ptr_type_aliases(self):
+        lines = []
+        for ptr_type, alias in self.ptr_type_alias_dict.iteritems():
+            if self._derefer_type(ptr_type) not in self.all_struct_type_list:
+                lines.append("%s = %s" % (alias, ptr_type))
+        return lines
+
     def run(self, finput, mpath, struct_enabled, func_enabled):
         self.fname = os.path.basename(os.path.abspath(finput))
         self.mpath = mpath
@@ -733,6 +748,9 @@ class C2PythonConverter(object):
         if struct_enabled and func_enabled:
             header = self._generate_header()
             results.extend(header)
+
+            ptr_type_aliases = self._generate_ptr_type_aliases()
+            results.extend(ptr_type_aliases)
 
         results.extend(defs)
         results.extend(decs)
