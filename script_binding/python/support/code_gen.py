@@ -239,7 +239,7 @@ class C2PythonConverter(object):
                 return None
         assert isinstance(rval_type_str, str)
         if only_check_type:
-            self._update_ptr_ref_info(rval_type_str)
+            self._update_global_info(rval_type_str)
 
         func_name_str = token.name
         assert isinstance(func_name_str, str)
@@ -261,7 +261,7 @@ class C2PythonConverter(object):
                         return None
                 assert isinstance(arg_type_str, str)
                 if only_check_type:
-                    self._update_ptr_ref_info(arg_type_str)
+                    self._update_global_info(arg_type_str)
                 arg_type_list.append(arg_type_str)
 
         if only_check_type:
@@ -425,7 +425,7 @@ class C2PythonConverter(object):
                 return None
         assert isinstance(rval_type_str, str)
         if only_check_type:
-            self._update_ptr_ref_info(rval_type_str)
+            self._update_global_info(rval_type_str)
 
         func_ptr_type_name = token.name
         assert isinstance(rval_type_str, str)
@@ -440,16 +440,16 @@ class C2PythonConverter(object):
                     return None
             assert isinstance(arg_type_str, str)
             if only_check_type:
-                self._update_ptr_ref_info(arg_type_str)
+                self._update_global_info(arg_type_str)
             line_content.append(arg_type_str)
 
-        if not only_check_type:
-            line_fmt = "".join(("%s = ctypes.CFUNCTYPE(%s, ",
-                ", ".join(("%s",) * len(token.args)), ")"))
-            line = line_fmt % tuple(line_content)
-            return line
-        else:
+        if only_check_type:
             return None
+
+        line_fmt = "".join(("%s = ctypes.CFUNCTYPE(%s, ",
+            ", ".join(("%s",) * len(token.args)), ")"))
+        line = line_fmt % tuple(line_content)
+        return line
 
     def _collect_private_type_info(self, content):
         self.priv_type_dict = {}
@@ -482,18 +482,60 @@ class C2PythonConverter(object):
                 else:
                     self.ptr_type_ref_cnt_dict[ptr] += 1
 
-    def _collect_ptr_ref_info(self, content):
+    def _add_imported_module(self, mname):
+        if mname not in self.imported_module_list:
+            self.imported_module_list.append(mname)
+
+    def _update_imported_module_info(self, type_str):
+        if type_str.startswith("ctypes.POINTER"):
+            result = self.pointer_re.search(type_str)
+            if result is not None:
+                type_str = result.group("type")
+            else:
+                sys.stderr.write("invalid symbol path %s\n", type_str)
+                return
+
+        parts = type_str.split(".")
+        if len(parts) == 2:
+            self._add_imported_module(parts[0])
+        elif len(parts) != 1:
+            sys.stderr.write("invalid symbol path %s\n", type_str)
+
+    def _update_global_info(self, type_str):
+        self._update_ptr_ref_info(type_str)
+        self._update_imported_module_info(type_str)
+
+    def _collect_global_info(self, content):
+        import_ctypes = False
+        import_ftk_dll = False
+
         for token, start, end in self.func_ptr_type.scanString(content):
+            import_ctypes = True
             self._to_python_func_ptr_type_def(token, True)
         print self.ptr_type_ref_cnt_dict
+        print self.imported_module_list
 
         for token, start, end in self.struct_type.scanString(content):
+            import_ctypes = True
             self._to_python_struct_type_def(token, True)
         print self.ptr_type_ref_cnt_dict
+        print self.imported_module_list
+
+        if len(self.dec_only_struct_type_dict):
+            import_ctypes = True
 
         for token, start, end in self.func_dec.scanString(content):
+            import_ftk_dll = True
             self._to_python_func_dec(token, True)
         print self.ptr_type_ref_cnt_dict
+        print self.imported_module_list
+
+        if import_ctypes:
+            self._add_imported_module("ctypes")
+        if import_ftk_dll:
+            self._add_imported_module("ftk_dll")
+
+        print self.imported_module_list
 
     def _to_python_struct_type_dec(self, name):
         dec_list = []
@@ -564,7 +606,7 @@ class C2PythonConverter(object):
                     return None
 
             if only_check_type:
-                self._update_ptr_ref_info(type_str)
+                self._update_global_info(type_str)
                 continue
 
             if type_str in self.func_ptr_type_dict:
@@ -576,6 +618,7 @@ class C2PythonConverter(object):
                     int(alen)
                 except ValueError:
                     alen = "".join(("ftk_constants.", alen))
+                    self._add_imported_module("ftk_constants")
                 type_str = " * ".join((type_str, alen))
             m_str = "('%s', %s)" % (m.name, type_str)
             m_list.append(m_str)
@@ -644,6 +687,7 @@ class C2PythonConverter(object):
         self.ptr_type_alias_dict = {}
         self.priv_struct_ptr_type_list = []
         self.ptr_type_ref_cnt_dict = {}
+        self.imported_module_list = []
 
         results = []
         with open(finput, "rb") as fd:
@@ -652,7 +696,7 @@ class C2PythonConverter(object):
             self._collect_private_type_info(content)
 
             self._enable_ptr_type_alias = False
-            self._collect_ptr_ref_info(content)
+            self._collect_global_info(content)
             self._enable_ptr_type_alias = True
 
             """
