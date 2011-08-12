@@ -186,9 +186,13 @@ class C2PythonConverter(object):
             rval = self._type_dict_val(type_str)
             return rval
 
+        if tinfo[0] is "const":
+            first_idx = 1
+        else:
+            first_idx = 0
         last_idx = len(tinfo) - 1
         while tinfo[last_idx] == "*":
-            deref_type_str = " ".join(tinfo[0:last_idx])
+            deref_type_str = " ".join(tinfo[first_idx:last_idx])
             if self._in_type_dict(deref_type_str):
                 prefix_str = "ctypes.POINTER(" * (len(tinfo) - last_idx)
                 suffix_str = ")" * (len(tinfo) - last_idx)
@@ -295,7 +299,8 @@ class C2PythonConverter(object):
                 rval_type_str in self.ptr_type_alias_dict.values():
             enable_dereference_return = True
             extra_line += 1
-            if func_name_str.endswith("_create"):
+            if func_name_str.endswith("_create") or \
+                    func_name_str.endswith("_create_ex"):
                 enable_require_return = True
                 extra_line += 1
 
