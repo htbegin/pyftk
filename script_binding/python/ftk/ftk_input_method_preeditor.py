@@ -10,6 +10,7 @@ import ctypes
 
 import ftk_dll
 import ftk_constants
+import ftk_util
 import ftk_typedef
 import ftk_widget
 
@@ -19,22 +20,30 @@ _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 
 _FtkPointPtr = ctypes.POINTER(ftk_typedef.FtkPoint)
 
+_FtkCommitInfoPtr = ctypes.POINTER(ftk_typedef.FtkCommitInfo)
+
 class FtkImPreeditor(ctypes.Structure):
     pass
 
 _FtkImPreeditorPtr = ctypes.POINTER(FtkImPreeditor)
 
-FtkInputMethodPreeditorHide = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr)
+FtkInputMethodPreeditorHide = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkImPreeditorPtr)
 
-FtkInputMethodPreeditorShow = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, _FtkPointPtr)
+FtkInputMethodPreeditorShow = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkImPreeditorPtr, _FtkPointPtr)
 
-FtkInputMethodPreeditorReset = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr)
+FtkInputMethodPreeditorReset = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkImPreeditorPtr)
 
-FtkInputMethodPreeditorSetEditor = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, _FtkWidgetPtr)
+FtkInputMethodPreeditorSetEditor = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkImPreeditorPtr, _FtkWidgetPtr)
 
-FtkInputMethodPreeditorSetRawText = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, ctypes.c_char_p)
+FtkInputMethodPreeditorSetRawText = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkImPreeditorPtr, ctypes.c_char_p)
 
-FtkInputMethodPreeditorAddCandidate = ctypes.CFUNCTYPE(ctypes.c_int, _FtkImPreeditorPtr, ctypes.c_char_p)
+FtkInputMethodPreeditorAddCandidate = ctypes.CFUNCTYPE(ctypes.c_int,
+        _FtkImPreeditorPtr, ctypes.c_char_p)
 
 FtkInputMethodPreeditorDestroy = ctypes.CFUNCTYPE(None, _FtkImPreeditorPtr)
 
@@ -51,39 +60,45 @@ FtkImPreeditor._fields_ = [
 
 def ftk_input_method_preeditor_reset(thiz):
     if thiz.reset:
-        return thiz.reset(thiz)
+        ret = thiz.reset(thiz)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_input_method_preeditor_set_editor(thiz, editor):
     if thiz.set_editor:
-        return thiz.set_editor(thiz, editor)
+        ret = thiz.set_editor(thiz, editor)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_input_method_preeditor_set_raw_text(thiz, text):
     if thiz.set_raw_text:
-        return thiz.set_raw_text(thiz, text)
+        ret = thiz.set_raw_text(thiz, text)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_input_method_preeditor_add_candidate(thiz, text):
     if thiz.add_candidate:
-        return thiz.add_candidate(thiz, text)
+        ret = thiz.add_candidate(thiz, text)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_input_method_preeditor_hide(thiz):
     if thiz.hide:
-        return thiz.hide(thiz)
+        ret = thiz.hide(thiz)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_input_method_preeditor_show(thiz, caret):
     if thiz.show:
-        return thiz.show(thiz, caret)
+        ret = thiz.show(thiz, caret)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 def ftk_input_method_preeditor_destroy(thiz):
     if thiz.destroy:
@@ -92,8 +107,9 @@ def ftk_input_method_preeditor_destroy(thiz):
 ftk_im_show_preeditor = ftk_dll.function('ftk_im_show_preeditor',
         '',
         args=['editor', 'caret_pos', 'info'],
-        arg_types=[_FtkWidgetPtr, _FtkPointPtr, ctypes.POINTER(ftk_typedef.FtkCommitInfo)],
-        return_type=ctypes.c_int)
+        arg_types=[_FtkWidgetPtr, _FtkPointPtr, _FtkCommitInfoPtr],
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_input_method_preeditor_default_create = ftk_dll.function(
         'ftk_input_method_preeditor_default_create',
