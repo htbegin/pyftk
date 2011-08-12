@@ -412,9 +412,6 @@ FTK_GC_LINE_MASK = 32
 
 #BEGIN MANULLY-INSERTED CONSTANTS
 
-# From ftk_widget.h
-FTK_WIDGET_SUBCLASS_NR = 5
-
 # From ftk_sources_manager.c
 FTK_MIN_SOURCE_NR = 32
 

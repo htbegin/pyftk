@@ -18,42 +18,47 @@ import ftk_canvas
 # ftk_widget.h
 
 _FtkEventPtr = ctypes.POINTER(ftk_event.FtkEvent)
-_FtkCanvasPtr = ctypes.POINTER(ftk_canvas.FtkCanvas)
+
 _FtkGcPtr = ctypes.POINTER(ftk_gc.FtkGc)
+
+_FtkRectPtr = ctypes.POINTER(ftk_typedef.FtkRect)
+
+_FtkCanvasPtr = ctypes.POINTER(ftk_canvas.FtkCanvas)
+
+class FtkWidgetInfo(ctypes.Structure):
+    pass
+
+_FtkWidgetInfoPtr = ctypes.POINTER(FtkWidgetInfo)
 
 class FtkWidget(ctypes.Structure):
     pass
 
 _FtkWidgetPtr = ctypes.POINTER(FtkWidget)
 
-# FtkWidgetInfo is defined at ftk_widget.c
-class FtkWidgetInfo(ctypes.Structure):
-    pass
-
 FtkWidgetOnEvent = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWidgetPtr, _FtkEventPtr)
+
 FtkWidgetOnPaint = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWidgetPtr)
-FtkWidgetDestroy = ctypes.CFUNCTYPE(ctypes.c_int, _FtkWidgetPtr)
+
+FtkWidgetDestroy = ctypes.CFUNCTYPE(None, _FtkWidgetPtr)
 
 FtkWidget._fields_ = [
         ('ref', ctypes.c_int),
-
         ('on_event', FtkWidgetOnEvent),
         ('on_paint', FtkWidgetOnPaint),
         ('destroy', FtkWidgetDestroy),
-
         ('prev', _FtkWidgetPtr),
         ('next', _FtkWidgetPtr),
         ('parent', _FtkWidgetPtr),
         ('children', _FtkWidgetPtr),
-
-        ('priv', ctypes.POINTER(FtkWidgetInfo)),
-        ('priv_subclass', ctypes.c_void_p * ftk_constants.FTK_WIDGET_SUBCLASS_NR)
+        ('priv', _FtkWidgetInfoPtr),
+        ('priv_subclass', ctypes.c_void_p * 5)
         ]
 
 ftk_widget_init = ftk_dll.function('ftk_widget_init',
         '',
         args=['thiz', 'type', 'id', 'x', 'y', 'width', 'height', 'attr'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
         return_type=None)
 
 ftk_widget_type = ftk_dll.function('ftk_widget_type',
@@ -150,7 +155,7 @@ ftk_widget_update = ftk_dll.function('ftk_widget_update',
 ftk_widget_update_rect = ftk_dll.function('ftk_widget_update_rect',
         '',
         args=['thiz', 'rect'],
-        arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_typedef.FtkRect)],
+        arg_types=[_FtkWidgetPtr, _FtkRectPtr],
         return_type=ctypes.c_int,
         check_return=True)
 
@@ -240,7 +245,8 @@ ftk_widget_resize = ftk_dll.function('ftk_widget_resize',
 ftk_widget_move_resize = ftk_dll.function('ftk_widget_move_resize',
         '',
         args=['thiz', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int],
         return_type=None)
 
 ftk_widget_set_type = ftk_dll.function('ftk_widget_set_type',
