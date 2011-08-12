@@ -9,21 +9,24 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_typedef
-import ftk_list_model
-import ftk_bitmap
 import ftk_widget
+import ftk_bitmap
+import ftk_list_model
 
 # ftk_popup_menu.h
 
-_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 _FtkListItemInfoPtr = ctypes.POINTER(ftk_list_model.FtkListItemInfo)
+
+_FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
+
+_FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
 
 ftk_popup_menu_create = ftk_dll.function('ftk_popup_menu_create',
         '',
         args=['x', 'y', 'w', 'h', 'icon', 'title'],
-        arg_types=[ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.POINTER(ftk_bitmap.FtkBitmap), ctypes.c_char_p],
+        arg_types=[ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            _FtkBitmapPtr, ctypes.c_char_p],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)

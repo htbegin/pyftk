@@ -9,14 +9,11 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_widget
 
 # ftk_file_browser.h
 
 _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
-
-FtkFileBrowserOnChoosed = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_int, ctypes.c_char_p)
 
 ftk_file_browser_create = ftk_dll.function('ftk_file_browser_create',
         '',
@@ -40,6 +37,8 @@ ftk_file_browser_set_filter = ftk_dll.function('ftk_file_browser_set_filter',
         return_type=ctypes.c_int,
         check_return=True)
 
+FtkFileBrowserOnChoosed = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p,
+        ctypes.c_int, ctypes.c_char_p)
 _ftk_file_browser_set_choosed_handler = ftk_dll.private_function(
         'ftk_file_browser_set_choosed_handler',
         arg_types=[_FtkWidgetPtr, FtkFileBrowserOnChoosed, ctypes.c_void_p],

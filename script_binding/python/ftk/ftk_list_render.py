@@ -17,26 +17,31 @@ import ftk_widget
 
 # ftk_list_render.h
 
-_FtkListModelPtr = ctypes.POINTER(ftk_list_model.FtkListModel)
-_FtkCanvasPtr = ctypes.POINTER(ftk_canvas.FtkCanvas)
 _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
+
+_FtkListModelPtr = ctypes.POINTER(ftk_list_model.FtkListModel)
+
+_FtkCanvasPtr = ctypes.POINTER(ftk_canvas.FtkCanvas)
 
 class FtkListRender(ctypes.Structure):
     pass
 
 _FtkListRenderPtr = ctypes.POINTER(FtkListRender)
 
-FtkListRenderInit = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListRenderPtr, _FtkListModelPtr, _FtkWidgetPtr)
-FtkListRenderPaint = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListRenderPtr, _FtkCanvasPtr, ctypes.c_int,
-        ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int)
+FtkListRenderInit = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListRenderPtr,
+        _FtkListModelPtr, _FtkWidgetPtr)
+
+FtkListRenderPaint = ctypes.CFUNCTYPE(ctypes.c_int, _FtkListRenderPtr,
+        _FtkCanvasPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+        ctypes.c_int)
+
 FtkListRenderDestroy = ctypes.CFUNCTYPE(None, _FtkListRenderPtr)
 
 FtkListRender._fields_ = [
         ('init', FtkListRenderInit),
         ('paint', FtkListRenderPaint),
         ('destroy', FtkListRenderDestroy),
-
-        ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY),
+        ('priv', ctypes.c_byte * ftk_constants.ZERO_LEN_ARRAY)
         ]
 
 def ftk_list_render_init(thiz, model, list_view):

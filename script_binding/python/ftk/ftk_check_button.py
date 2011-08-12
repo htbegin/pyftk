@@ -9,7 +9,6 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_typedef
 import ftk_widget
 
@@ -20,7 +19,8 @@ _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 ftk_check_button_create = ftk_dll.function('ftk_check_button_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
@@ -29,7 +29,8 @@ ftk_check_button_create_radio = ftk_dll.function(
         'ftk_check_button_create_radio',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)

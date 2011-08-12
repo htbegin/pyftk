@@ -18,7 +18,8 @@ _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 ftk_entry_create = ftk_dll.function('ftk_entry_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
@@ -53,6 +54,6 @@ ftk_entry_set_input_type = ftk_dll.function('ftk_entry_set_input_type',
 ftk_entry_insert_text = ftk_dll.function('ftk_entry_insert_text',
         '',
         args=['thiz', 'pos', 'text'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_uint, ctypes.c_char_p],
+        arg_types=[_FtkWidgetPtr, ctypes.c_size_t, ctypes.c_char_p],
         return_type=ctypes.c_int,
         check_return=True)

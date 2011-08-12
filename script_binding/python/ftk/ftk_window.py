@@ -15,14 +15,17 @@ import ftk_bitmap
 
 # ftk_window.h
 
+_FtkRectPtr = ctypes.POINTER(ftk_typedef.FtkRect)
+
 _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
 
-_FtkRectPtr = ctypes.POINTER(ftk_typedef.FtkRect)
+_FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
 
 ftk_window_create = ftk_dll.function('ftk_window_create',
         '',
         args=['type', 'attr', 'x', 'y', 'width', 'height'],
-        arg_types=[ctypes.c_int, ctypes.c_uint, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[ctypes.c_int, ctypes.c_uint, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int, ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
@@ -99,7 +102,7 @@ ftk_window_set_background_with_alpha = ftk_dll.function(
         'ftk_window_set_background_with_alpha',
         '',
         args=['thiz', 'bitmap', 'bg'],
-        arg_types=[_FtkWidgetPtr, ctypes.POINTER(ftk_bitmap.FtkBitmap), ftk_typedef.FtkColor],
+        arg_types=[_FtkWidgetPtr, _FtkBitmapPtr, ftk_typedef.FtkColor],
         return_type=ctypes.c_int,
         check_return=True)
 

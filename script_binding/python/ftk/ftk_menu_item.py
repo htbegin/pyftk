@@ -9,7 +9,6 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_typedef
 import ftk_widget
 

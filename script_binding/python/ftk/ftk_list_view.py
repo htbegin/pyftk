@@ -9,22 +9,24 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_typedef
 import ftk_widget
-import ftk_list_render
 import ftk_list_model
+import ftk_list_render
 
 # ftk_list_view.h
 
 _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
+
+_FtkListRenderPtr = ctypes.POINTER(ftk_list_render.FtkListRender)
 
 _FtkListModelPtr = ctypes.POINTER(ftk_list_model.FtkListModel)
 
 ftk_list_view_create = ftk_dll.function('ftk_list_view_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
@@ -32,7 +34,8 @@ ftk_list_view_create = ftk_dll.function('ftk_list_view_create',
 ftk_list_view_init = ftk_dll.function('ftk_list_view_init',
         '',
         args=['thiz', 'model', 'render', 'item_height'],
-        arg_types=[_FtkWidgetPtr, _FtkListModelPtr, ctypes.POINTER(ftk_list_render.FtkListRender), ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, _FtkListModelPtr, _FtkListRenderPtr,
+            ctypes.c_int],
         return_type=ctypes.c_int,
         check_return=True)
 

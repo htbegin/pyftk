@@ -9,14 +9,11 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_widget
 
 # ftk_app_window.h
 
 _FtkWidgetPtr = ctypes.POINTER(ftk_widget.FtkWidget)
-
-_FtkPrepareOptionsMenu = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, _FtkWidgetPtr)
 
 ftk_app_window_create = ftk_dll.function('ftk_app_window_create',
         '',
@@ -26,6 +23,8 @@ ftk_app_window_create = ftk_dll.function('ftk_app_window_create',
         dereference_return=True,
         require_return=True)
 
+_FtkPrepareOptionsMenu = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p,
+        _FtkWidgetPtr)
 _ftk_app_window_set_on_prepare_options_menu = ftk_dll.private_function(
         'ftk_app_window_set_on_prepare_options_menu',
         arg_types=[_FtkWidgetPtr, _FtkPrepareOptionsMenu, ctypes.c_void_p],

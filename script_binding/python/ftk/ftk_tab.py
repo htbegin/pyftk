@@ -9,8 +9,8 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_bitmap
 import ftk_widget
+import ftk_bitmap
 
 # ftk_tab.h
 
@@ -21,7 +21,8 @@ _FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
 ftk_tab_create = ftk_dll.function('ftk_tab_create',
         '',
         args=['parent', 'x', 'y', 'width', 'height'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int],
         return_type=_FtkWidgetPtr,
         dereference_return=True,
         require_return=True)
