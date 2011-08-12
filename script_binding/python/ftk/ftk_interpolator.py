@@ -18,7 +18,8 @@ class FtkInterpolator(ctypes.Structure):
 
 _FtkInterpolatorPtr = ctypes.POINTER(FtkInterpolator)
 
-FtkInterpolatorGet = ctypes.CFUNCTYPE(ctypes.c_float, _FtkInterpolatorPtr, ctypes.c_float)
+FtkInterpolatorGet = ctypes.CFUNCTYPE(ctypes.c_float, _FtkInterpolatorPtr,
+        ctypes.c_float)
 
 FtkInterpolatorDestroy = ctypes.CFUNCTYPE(None, _FtkInterpolatorPtr)
 
