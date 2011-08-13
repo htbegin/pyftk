@@ -266,7 +266,10 @@ class C2PythonConverter(object):
                     if arg_type_str in self.func_ptr_type_ref_dict and \
                             self.func_ptr_type_ref_dict[arg_type_str] == 0:
                         self._update_func_ptr_type_ref_info(arg_type_str)
-                        all_line.append(self.func_ptr_type_def_dict[arg_type_str])
+                        line = "".join((
+                                self.func_ptr_type_def_dict[arg_type_str],
+                                "\n"))
+                        all_line.append(line)
                 arg_type_list.append(arg_type_str)
 
         if only_check_type:
