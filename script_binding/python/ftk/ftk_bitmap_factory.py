@@ -14,6 +14,10 @@ import ftk_image_decoder
 
 # ftk_bitmap_factory.h
 
+_FtkImageDecoderPtr = ctypes.POINTER(ftk_image_decoder.FtkImageDecoder)
+
+_FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
+
 class FtkBitmapFactory(ctypes.Structure):
     pass
 
@@ -31,15 +35,16 @@ ftk_bitmap_factory_load = ftk_dll.function('ftk_bitmap_factory_load',
         '',
         args=['thiz', 'filename'],
         arg_types=[_FtkBitmapFactoryPtr, ctypes.c_char_p],
-        return_type=ctypes.POINTER(ftk_bitmap.FtkBitmap),
+        return_type=_FtkBitmapPtr,
         dereference_return=True)
 
 ftk_bitmap_factory_add_decoder = ftk_dll.function(
         'ftk_bitmap_factory_add_decoder',
         '',
         args=['thiz', 'decoder'],
-        arg_types=[_FtkBitmapFactoryPtr, ctypes.POINTER(ftk_image_decoder.FtkImageDecoder)],
-        return_type=ctypes.c_int)
+        arg_types=[_FtkBitmapFactoryPtr, _FtkImageDecoderPtr],
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_bitmap_factory_destroy = ftk_dll.function('ftk_bitmap_factory_destroy',
         '',

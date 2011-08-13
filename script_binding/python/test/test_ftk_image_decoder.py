@@ -4,14 +4,19 @@ import unittest
 
 import common
 from ftk.ftk_constants import RET_OK, RET_FAIL
+from ftk.ftk_error import FtkError
 from ftk.ftk_bitmap import ftk_bitmap_unref
 from ftk.ftk_image_decoder import *
 
 class TestImageDecoder(unittest.TestCase):
     def test_customized_decoder(self):
         decoder = FtkImageDecoder()
-        ret = ftk_image_decoder_match(decoder, "test.png")
-        self.assertEqual(ret, RET_FAIL)
+        try:
+            ftk_image_decoder_match(decoder, "test.png")
+        except FtkError, error:
+            self.assertEqual(error.errno, RET_FAIL)
+        else:
+            self.assertTrue(False)
 
         ret = ftk_image_decoder_decode(decoder, "test.png")
         self.assertEqual(ret, None)
@@ -28,12 +33,21 @@ class TestPngImageDecoder(unittest.TestCase):
         self.assertTrue(self.png is not None)
 
     def test_png_decoder_match(self):
-        ret = ftk_image_decoder_match(self.png, "test.png")
-        self.assertEqual(ret, RET_OK)
-        ret = ftk_image_decoder_match(self.png, "test.jpeg")
-        self.assertEqual(ret, RET_FAIL)
-        ret = ftk_image_decoder_match(self.png, "test.bmp")
-        self.assertEqual(ret, RET_FAIL)
+        ftk_image_decoder_match(self.png, "test.png")
+
+        try:
+            ftk_image_decoder_match(self.png, "test.jpeg")
+        except FtkError, error:
+            self.assertEqual(error.errno, RET_FAIL)
+        else:
+            self.assertTrue(False)
+
+        try:
+            ftk_image_decoder_match(self.png, "test.bmp")
+        except FtkError, error:
+            self.assertEqual(error.errno, RET_FAIL)
+        else:
+            self.assertTrue(False)
 
     def test_png_decoder_decode(self):
         bitmap = ftk_image_decoder_decode(self.png, "test.png")
