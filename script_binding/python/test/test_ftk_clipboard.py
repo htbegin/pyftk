@@ -2,25 +2,22 @@
 
 import unittest
 
-from ftk.ftk_constants import RET_OK
 from ftk.ftk_clipboard import *
 
 class TestClipboard(unittest.TestCase):
     def test_get_set_1(self):
         text = "the Lord of the Ring"
-        ret = ftk_clipboard_set_text(text)
-        self.assertEqual(ret, RET_OK)
+        ftk_clipboard_set_text(text)
 
         got_text = ftk_clipboard_get_text()
-        self.assertEqual(text, got_text)
+        self.assertEqual(got_text, text)
 
     def test_get_set_2(self):
         text = ""
-        ret = ftk_clipboard_set_text(text)
-        self.assertEqual(ret, RET_OK)
+        ftk_clipboard_set_text(text)
 
         got_text = ftk_clipboard_get_text()
-        self.assertEqual(text, got_text)
+        self.assertEqual(got_text, None)
 
     def test_check(self):
         text = ""
