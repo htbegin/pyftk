@@ -20,6 +20,7 @@ class C2PythonConverter(object):
 
     def _create_parse_grammer(self):
         atom_var_type = Literal("void") | \
+                Literal("signed char") | \
                 Literal("char") | Literal("unsigned char") | \
                 Literal("short") | Literal("unsigned short") | \
                 Literal("int") | Literal("unsigned int") | \
@@ -65,6 +66,7 @@ class C2PythonConverter(object):
         self.basic_type_dict = {
                 "void" : "None",
                 "char" : "ctypes.c_byte",
+                "signed char" : "ctypes.c_byte",
                 "unsigned char" : "ctypes.c_ubyte",
                 "short" : "ctypes.c_short",
                 "unsigned short" : "ctypes.c_ushort",
