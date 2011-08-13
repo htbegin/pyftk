@@ -9,14 +9,17 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
+import ftk_error
 
 # ftk_font_desc.h
 
-# FtkFontDesc is defined at ftk_font_desc.c
 class FtkFontDesc(ctypes.Structure):
     def __str__(self):
-        return ftk_font_desc_get_string(self)[1]
+        try:
+            rval = ftk_font_desc_get_string(self)
+        except ftk_error.FtkError:
+            rval = "Unknown"
+        return rval
 
 _FtkFontDescPtr = ctypes.POINTER(FtkFontDesc)
 
@@ -56,33 +59,34 @@ ftk_font_desc_set_bold = ftk_dll.function('ftk_font_desc_set_bold',
         '',
         args=['thiz', 'bold'],
         arg_types=[_FtkFontDescPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_font_desc_set_italic = ftk_dll.function('ftk_font_desc_set_italic',
         '',
         args=['thiz', 'italic'],
         arg_types=[_FtkFontDescPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_font_desc_set_size = ftk_dll.function('ftk_font_desc_set_size',
         '',
         args=['thiz', 'size'],
         arg_types=[_FtkFontDescPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _ftk_font_desc_get_string = ftk_dll.private_function(
         'ftk_font_desc_get_string',
-        arg_types=[_FtkFontDescPtr, ctypes.c_char_p, ctypes.c_uint],
-        return_type=ctypes.c_int)
+        arg_types=[_FtkFontDescPtr, ctypes.c_char_p, ctypes.c_size_t],
+        return_type=ctypes.c_int,
+        check_return=True)
 
 def ftk_font_desc_get_string(thiz):
     FONT_DESC_LEN = 64
     desc = ctypes.create_string_buffer(FONT_DESC_LEN)
-    ret = _ftk_font_desc_get_string(thiz, desc, ctypes.sizeof(desc))
-    if ret == ftk_constants.RET_OK:
-        return (ret, desc.value)
-    else:
-        return (ret, None)
+    _ftk_font_desc_get_string(thiz, desc, ctypes.sizeof(desc))
+    return desc.value
 
 ftk_font_desc_ref = ftk_dll.function('ftk_font_desc_ref',
         '',

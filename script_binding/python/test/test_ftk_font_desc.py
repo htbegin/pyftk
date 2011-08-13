@@ -26,7 +26,7 @@ class TestFontDesc(unittest.TestCase):
         ftk_font_desc_unref(right)
 
         right = ftk_font_desc_create("size:32 bold:1 italic:0")
-        self.assertTrue(not ftk_font_desc_is_equal(left, right))
+        self.assertFalse(ftk_font_desc_is_equal(left, right))
         ftk_font_desc_unref(right)
 
         ftk_font_desc_unref(left)
@@ -38,7 +38,7 @@ class TestFontDesc(unittest.TestCase):
         desc_str_got = str(desc_obj)
         self.assertEqual(desc_str, desc_str_got)
 
-        desc_str_got = ftk_font_desc_get_string(desc_obj)[1]
+        desc_str_got = ftk_font_desc_get_string(desc_obj)
         self.assertEqual(desc_str, desc_str_got)
 
         ftk_font_desc_unref(desc_obj)
