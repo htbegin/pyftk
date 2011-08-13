@@ -15,6 +15,8 @@ import ftk_bitmap
 
 # ftk_icon_cache.h
 
+_FtkBitmapPtr = ctypes.POINTER(ftk_bitmap.FtkBitmap)
+
 class FtkIconCache(ctypes.Structure):
     pass
 
@@ -35,7 +37,7 @@ ftk_icon_cache_load = ftk_dll.function('ftk_icon_cache_load',
         '',
         args=['thiz', 'filename'],
         arg_types=[_FtkIconCachePtr, ctypes.c_char_p],
-        return_type=ctypes.POINTER(ftk_bitmap.FtkBitmap),
+        return_type=_FtkBitmapPtr,
         dereference_return=True)
 
 ftk_icon_cache_destroy = ftk_dll.function('ftk_icon_cache_destroy',

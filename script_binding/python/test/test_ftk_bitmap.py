@@ -26,22 +26,19 @@ class TestBitmap(unittest.TestCase):
     def test_copy_from_to_data_bgr24(self):
         point = "123"
         data = point * self.w * self.h
-        ret = ftk_bitmap_copy_from_data_bgr24(self.bitmap, data, self.w, self.h, None)
-        self.assertEqual(ret, RET_OK)
+        ftk_bitmap_copy_from_data_bgr24(self.bitmap, data, self.w, self.h, None)
         colors = ftk_bitmap_bits(self.bitmap)
         self.assertEqual(colors[0].b, ord(point[0]))
         self.assertEqual(colors[0].g, ord(point[1]))
         self.assertEqual(colors[0].r, ord(point[2]))
 
-        ret, copy_data = ftk_bitmap_copy_to_data_bgr24(self.bitmap, None, self.w, self.h)
-        self.assertEqual(ret, RET_OK)
+        copy_data = ftk_bitmap_copy_to_data_bgr24(self.bitmap, None, self.w, self.h)
         self.assertEqual(copy_data, data)
 
     def test_copy_from_to_bgra32(self):
         point = "123\xff"
         data = point * self.w * self.h
-        ret = ftk_bitmap_copy_from_data_bgra32(self.bitmap, data, self.w, self.h, None)
-        self.assertEqual(ret, RET_OK)
+        ftk_bitmap_copy_from_data_bgra32(self.bitmap, data, self.w, self.h, None)
 
         colors = ftk_bitmap_bits(self.bitmap)
         self.assertEqual(colors[0].b, ord(point[0]))
@@ -49,8 +46,7 @@ class TestBitmap(unittest.TestCase):
         self.assertEqual(colors[0].r, ord(point[2]))
         self.assertEqual(colors[0].a, 255)
 
-        ret, copy_data = ftk_bitmap_copy_to_data_bgra32(self.bitmap, None, self.w, self.h)
-        self.assertEqual(ret, RET_OK)
+        copy_data = ftk_bitmap_copy_to_data_bgra32(self.bitmap, None, self.w, self.h)
         self.assertEqual(data, copy_data)
 
     def tearDown(self):
