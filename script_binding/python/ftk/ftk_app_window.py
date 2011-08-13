@@ -25,6 +25,7 @@ ftk_app_window_create = ftk_dll.function('ftk_app_window_create',
 
 _FtkPrepareOptionsMenu = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p,
         _FtkWidgetPtr)
+
 _ftk_app_window_set_on_prepare_options_menu = ftk_dll.private_function(
         'ftk_app_window_set_on_prepare_options_menu',
         arg_types=[_FtkWidgetPtr, _FtkPrepareOptionsMenu, ctypes.c_void_p],
