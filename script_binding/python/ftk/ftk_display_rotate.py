@@ -33,7 +33,8 @@ ftk_display_set_rotate = ftk_dll.function('ftk_display_set_rotate',
         '',
         args=['thiz', 'rotate'],
         arg_types=[_FtkDisplayPtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_display_get_real_display = ftk_dll.function('ftk_display_get_real_display',
         '',

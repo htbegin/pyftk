@@ -15,13 +15,14 @@ import ftk_display
 
 # ftk_display_mem.h
 
-FtkDisplaySync = ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.POINTER(ftk_typedef.FtkRect))
+_FtkRectPtr = ctypes.POINTER(ftk_typedef.FtkRect)
 
 _FtkDisplayPtr = ctypes.POINTER(ftk_display.FtkDisplay)
 
 _ftk_display_mem_create = ftk_dll.private_function('ftk_display_mem_create',
-        arg_types=[ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_void_p, ftk_typedef.FtkDestroy, ctypes.c_void_p],
         return_type=_FtkDisplayPtr,
+        arg_types=[ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_void_p,
+            ftk_typedef.FtkDestroy, ctypes.c_void_p],
         dereference_return=True,
         require_return=True)
 
@@ -38,10 +39,13 @@ def ftk_display_mem_create(fmt, width, height, bits, on_destroy, ctx):
     _destroy_cb_refs[ctypes.addressof(display)] = callback
     return display
 
-_ftk_display_mem_set_sync_func = ftk_dll.private_function(\
+FtkDisplaySync = ctypes.CFUNCTYPE(None, ctypes.c_void_p, _FtkRectPtr)
+
+_ftk_display_mem_set_sync_func = ftk_dll.private_function(
         'ftk_display_mem_set_sync_func',
         arg_types=[_FtkDisplayPtr, FtkDisplaySync, ctypes.c_void_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 _sync_cb_refs = {}
 def ftk_display_mem_set_sync_func(thiz, sync, ctx):
@@ -49,11 +53,8 @@ def ftk_display_mem_set_sync_func(thiz, sync, ctx):
         sync(ctx, rect_ptr.contents)
 
     callback = FtkDisplaySync(_sync)
-    ret = _ftk_display_mem_set_sync_func(thiz, callback, None)
-    if ret == ftk_constants.RET_OK:
-        _sync_cb_refs[ctypes.addressof(thiz)] = callback
-
-    return ret
+    _ftk_display_mem_set_sync_func(thiz, callback, None)
+    _sync_cb_refs[ctypes.addressof(thiz)] = callback
 
 ftk_display_mem_is_active = ftk_dll.function('ftk_display_mem_is_active',
         '',
@@ -70,10 +71,13 @@ ftk_display_mem_get_pixel_format = ftk_dll.function(
 
 _ftk_display_mem_update_directly = ftk_dll.private_function(
         'ftk_display_mem_update_directly',
-        arg_types=[_FtkDisplayPtr, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint],
-        return_type=ctypes.c_int)
+        arg_types=[_FtkDisplayPtr, ctypes.c_int, ctypes.c_void_p,
+            ctypes.c_size_t, ctypes.c_size_t, ctypes.c_size_t,
+            ctypes.c_size_t],
+        return_type=ctypes.c_int,
+        check_return=True)
 
 def ftk_display_mem_update_directly(thiz, fmt, bits, rect):
     bits_ptr = ctypes.cast(ctypes.c_char_p(bits), ctypes.c_void_p)
-    return _ftk_display_mem_update_directly(thiz, fmt, bits_ptr,
+    _ftk_display_mem_update_directly(thiz, fmt, bits_ptr,
             rect.width, rect.height, rect.x, rect.y)
