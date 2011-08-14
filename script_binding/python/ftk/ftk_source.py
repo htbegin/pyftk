@@ -11,9 +11,12 @@ import ctypes
 import ftk_dll
 import ftk_constants
 import ftk_typedef
+import ftk_util
 import ftk_event
 
 # ftk_source.h
+
+_FtkEventPtr = ctypes.POINTER(ftk_event.FtkEvent)
 
 class FtkSource(ctypes.Structure):
     pass
@@ -21,8 +24,11 @@ class FtkSource(ctypes.Structure):
 _FtkSourcePtr = ctypes.POINTER(FtkSource)
 
 FtkSourceGetFd = ctypes.CFUNCTYPE(ctypes.c_int, _FtkSourcePtr)
+
 FtkSourceCheck = ctypes.CFUNCTYPE(ctypes.c_int, _FtkSourcePtr)
+
 FtkSourceDispatch = ctypes.CFUNCTYPE(ctypes.c_int, _FtkSourcePtr)
+
 FtkSourceDestroy = ctypes.CFUNCTYPE(None, _FtkSourcePtr)
 
 FtkSource._fields_ = [
@@ -37,14 +43,12 @@ FtkSource._fields_ = [
 
 def ftk_source_disable(thiz):
     thiz.disable += 1
-    return ftk_constants.RET_OK
 
 def ftk_source_enable(thiz):
     if thiz.disable > 0:
         thiz.disable -= 1
     else:
         thiz.disable = 0
-    return ftk_constants.RET_OK
 
 def ftk_source_get_fd(thiz):
     if thiz.get_fd:
@@ -60,9 +64,10 @@ def ftk_source_check(thiz):
 
 def ftk_source_dispatch(thiz):
     if thiz.dispatch:
-        return thiz.dispatch(thiz)
+        ret = thiz.dispatch(thiz)
     else:
-        return ftk_constants.RET_FAIL
+        ret = ftk_constants.RET_FAIL
+    ftk_util.handle_inline_func_retval(ret)
 
 _source_cb_refs = {}
 
@@ -118,13 +123,15 @@ ftk_source_timer_reset = ftk_dll.function('ftk_source_timer_reset',
         '',
         args=['thiz'],
         arg_types=[_FtkSourcePtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_source_timer_modify = ftk_dll.function('ftk_source_timer_modify',
         '',
         args=['thiz', 'interval'],
         arg_types=[_FtkSourcePtr, ctypes.c_int],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 # ftk_source_primary.h
 
@@ -147,5 +154,6 @@ def ftk_source_primary_create(on_event, user_data):
 ftk_source_queue_event = ftk_dll.function('ftk_source_queue_event',
         '',
         args=['thiz', 'event'],
-        arg_types=[_FtkSourcePtr, ctypes.POINTER(ftk_event.FtkEvent)],
-        return_type=ctypes.c_int)
+        arg_types=[_FtkSourcePtr, _FtkEventPtr],
+        return_type=ctypes.c_int,
+        check_return=True)

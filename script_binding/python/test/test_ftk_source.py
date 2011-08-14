@@ -26,23 +26,22 @@ _FTK_DISPATCH_RVAL = 1024
 def _dispatch(thiz):
     return _FTK_DISPATCH_RVAL
 
-_FTK_DESTROY_RVAL = None
 def _destroy(thiz):
-    return _FTK_DESTROY_RVAL
+    pass
 
-class TestFtkSourceInlineFuncs(unittest.TestCase):
+class TestFtkSourceInlineFuncs(common.FtkTestCase):
     def test_ftk_source_disable(self):
         src = FtkSource(disable=0)
-        self.assertEqual(ftk_source_disable(src), RET_OK)
+        ftk_source_disable(src)
         self.assertEqual(src.disable, 1)
 
     def test_ftk_source_enable(self):
         src = FtkSource(disable=1)
-        self.assertEqual(ftk_source_enable(src), RET_OK)
+        ftk_source_enable(src)
         self.assertEqual(src.disable, 0)
 
         src = FtkSource(disable=0)
-        self.assertEqual(ftk_source_enable(src), RET_OK)
+        ftk_source_enable(src)
         self.assertEqual(src.disable, 0)
 
     def test_ftk_source_get_fd(self):
@@ -55,11 +54,11 @@ class TestFtkSourceInlineFuncs(unittest.TestCase):
 
     def test_ftk_source_dispatch(self):
         src = FtkSource(dispatch=FtkSourceDispatch(_dispatch))
-        self.assertEqual(ftk_source_dispatch(src), _FTK_DISPATCH_RVAL)
+        self.assertFtkError(_FTK_DISPATCH_RVAL, ftk_source_dispatch, src)
 
     def test_ftk_source_destroy(self):
         src = FtkSource(destroy=FtkSourceDestroy(_destroy))
-        self.assertEqual(ftk_source_destroy(src), _FTK_DESTROY_RVAL)
+        ftk_source_destroy(src)
 
     def test_ftk_source_ref(self):
         src = FtkSource(ref=1)
@@ -75,7 +74,7 @@ class TestFtkSourceInlineFuncs(unittest.TestCase):
         ftk_source_unref(src)
         self.assertEqual(src.ref, 0)
 
-class TestFtkIdleSource(unittest.TestCase):
+class TestFtkIdleSource(common.FtkTestCase):
     def setUp(self):
         common.setup_allocator()
 
@@ -87,10 +86,10 @@ class TestFtkIdleSource(unittest.TestCase):
             return IDLE_ACTION_RVAL
 
         idle_src = ftk_source_idle_create(idle_action, user_data)
-        self.assertEqual(ftk_source_dispatch(idle_src), IDLE_ACTION_RVAL)
+        self.assertFtkError(IDLE_ACTION_RVAL, ftk_source_dispatch, idle_src)
         ftk_source_destroy(idle_src)
 
-class TestFtkTimerSource(unittest.TestCase):
+class TestFtkTimerSource(common.FtkTestCase):
     def setUp(self):
         common.setup_allocator()
 
@@ -102,7 +101,7 @@ class TestFtkTimerSource(unittest.TestCase):
             return TIMER_ACTION_RVAL
 
         timer_src = ftk_source_timer_create(1000, timer_action, user_data)
-        self.assertTrue(ftk_source_dispatch(timer_src), TIMER_ACTION_RVAL)
+        self.assertFtkError(TIMER_ACTION_RVAL, ftk_source_dispatch, timer_src)
         ftk_source_destroy(timer_src)
 
     def test_reset(self):
@@ -111,7 +110,7 @@ class TestFtkTimerSource(unittest.TestCase):
 
         user_data = set(["start", "end"])
         timer_src = ftk_source_timer_create(1000, timer_action, user_data)
-        self.assertEqual(ftk_source_timer_reset(timer_src), RET_OK)
+        ftk_source_timer_reset(timer_src)
         ftk_source_destroy(timer_src)
 
     def test_modify(self):
@@ -120,10 +119,10 @@ class TestFtkTimerSource(unittest.TestCase):
 
         user_data = "ftk"
         timer_src = ftk_source_timer_create(100, timer_action, user_data)
-        self.assertEqual(ftk_source_timer_modify(timer_src, 200), RET_OK)
+        ftk_source_timer_modify(timer_src, 200)
         ftk_source_destroy(timer_src)
 
-class TestFtkPrimarySource(unittest.TestCase):
+class TestFtkPrimarySource(common.FtkTestCase):
     def setUp(self):
         common.setup_allocator()
 

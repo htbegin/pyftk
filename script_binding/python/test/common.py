@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk.ftk_constants import FTK_LOG_D, FTK_LOG_I, FTK_LOG_E
+from ftk.ftk_constants import RET_OK, FTK_LOG_D, FTK_LOG_I, FTK_LOG_E
 from ftk.ftk_error import FtkError
 from ftk.ftk_macros import ftk_macros
 from ftk.ftk_config import ftk_config_create, ftk_config_get_rotate
@@ -56,9 +56,12 @@ def setup_display():
 
 class FtkTestCase(unittest.TestCase):
     def assertFtkError(self, errno, func, *args, **kwargs):
-        try:
-            func(*args, **kwargs)
-        except FtkError, error:
-            self.assertEqual(error.errno, errno)
+        if errno != RET_OK:
+            try:
+                func(*args, **kwargs)
+            except FtkError, error:
+                self.assertEqual(error.errno, errno)
+            else:
+                self.assertTrue(False)
         else:
-            self.assertTrue(False)
+            func(*args, **kwargs)
