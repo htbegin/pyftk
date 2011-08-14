@@ -7,8 +7,8 @@ import fnmatch
 import re
 
 def get_defined_modules(dname):
-    excluded_modules = ["__init__", "template", "dll", "error", "macros",
-            "priv_util"]
+    excluded_modules = ["__init__", "template", "ftk_dll", "ftk_macros",
+            "ftk_util"]
     modules = []
     for entry in os.listdir(dname):
         if fnmatch.fnmatch(entry, "*.py"):

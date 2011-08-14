@@ -20,10 +20,10 @@ if __name__ == "__main__":
         sys.stdout.write("Usage: %s py_script...\n" % sys.argv[0])
         sys.exit(1)
 
-    module_ptn = r"[a-zA-Z0-9_]+"
-    import_module_ptn = re.compile(r"^\s*import\s+ftk\.(%s)\s*$" % module_ptn,
+    module_ptn = r"ftk_[a-zA-Z][a-zA-Z0-9_]+"
+    import_module_ptn = re.compile(r"^\s*import\s+(%s)\s*$" % module_ptn,
             re.MULTILINE)
-    used_module_ptn = re.compile(r"ftk\.(%s)\." % module_ptn)
+    used_module_ptn = re.compile(r"(%s)\.[a-zA-Z][a-zA-Z0-9_]+" % module_ptn)
 
     for fname in sys.argv[1:]:
         if os.path.isfile(fname) and fnmatch.fnmatch(fname, "*.py"):
