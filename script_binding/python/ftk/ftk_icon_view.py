@@ -119,7 +119,7 @@ ftk_icon_view_add = ftk_dll.function('ftk_icon_view_add',
         check_return=True)
 
 _ftk_icon_view_get = ftk_dll.private_function('ftk_icon_view_get',
-        arg_types=[_FtkWidgetPtr, ctypes.c_uint,
+        arg_types=[_FtkWidgetPtr, ctypes.c_size_t,
             ctypes.POINTER(_FtkIconViewItemPtr)],
         return_type=ctypes.c_int,
         check_return=True)

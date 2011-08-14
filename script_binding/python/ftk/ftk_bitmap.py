@@ -34,13 +34,13 @@ ftk_bitmap_width = ftk_dll.function('ftk_bitmap_width',
         '',
         args=['thiz'],
         arg_types=[_FtkBitmapPtr],
-        return_type=ctypes.c_uint)
+        return_type=ctypes.c_size_t)
 
 ftk_bitmap_height = ftk_dll.function('ftk_bitmap_height',
         '',
         args=['thiz'],
         arg_types=[_FtkBitmapPtr],
-        return_type=ctypes.c_uint)
+        return_type=ctypes.c_size_t)
 
 _ftk_bitmap_bits = ftk_dll.private_function('ftk_bitmap_bits',
         arg_types=[_FtkBitmapPtr],

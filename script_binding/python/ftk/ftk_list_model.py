@@ -231,7 +231,7 @@ ftk_list_model_default_create = ftk_dll.function(
         'ftk_list_model_default_create',
         '',
         args=['init_nr'],
-        arg_types=[ctypes.c_uint],
+        arg_types=[ctypes.c_size_t],
         return_type=_FtkListModelPtr,
         dereference_return=True,
         require_return=True)

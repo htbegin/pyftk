@@ -85,7 +85,7 @@ FtkListener = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p)
 
 class FtkCommitInfo(ctypes.Structure):
     _fields_ = [
-            ('candidate_nr', ctypes.c_uint),
+            ('candidate_nr', ctypes.c_size_t),
             ('raw_text', ctypes.c_byte * (ftk_constants.FTK_IM_RAW_TEXT_LENGTH + 1)),
             ('candidates', ctypes.c_byte * (ftk_constants.FTK_IM_CANDIDATE_BUFF_LENGTH + 1)),
             ]
