@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
+import unittest
+
 from ftk.ftk_constants import FTK_LOG_D, FTK_LOG_I, FTK_LOG_E
+from ftk.ftk_error import FtkError
 from ftk.ftk_macros import ftk_macros
 from ftk.ftk_config import ftk_config_create, ftk_config_get_rotate
 from ftk.ftk_theme import ftk_theme_create
@@ -50,3 +53,12 @@ def setup_display():
     display = ftk_display_rotate_create(ftk_default_display(),
             ftk_config_get_rotate(ftk_default_config()))
     ftk_set_display(display)
+
+class FtkTestCase(unittest.TestCase):
+    def assertFtkError(self, errno, func, *args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except FtkError, error:
+            self.assertEqual(error.errno, errno)
+        else:
+            self.assertTrue(False)

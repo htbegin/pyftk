@@ -9,7 +9,6 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_dll
-import ftk_constants
 import ftk_source
 
 # ftk_sources_manager.h
@@ -33,13 +32,15 @@ ftk_sources_manager_add = ftk_dll.function('ftk_sources_manager_add',
         '',
         args=['thiz', 'source'],
         arg_types=[_FtkSourcesManagerPtr, _FtkSourcePtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_sources_manager_remove = ftk_dll.function('ftk_sources_manager_remove',
         '',
         args=['thiz', 'source'],
         arg_types=[_FtkSourcesManagerPtr, _FtkSourcePtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_sources_manager_get_count = ftk_dll.function(
         'ftk_sources_manager_get_count',
@@ -67,7 +68,8 @@ ftk_sources_manager_set_need_refresh = ftk_dll.function(
         '',
         args=['thiz'],
         arg_types=[_FtkSourcesManagerPtr],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_sources_manager_destroy = ftk_dll.function('ftk_sources_manager_destroy',
         '',

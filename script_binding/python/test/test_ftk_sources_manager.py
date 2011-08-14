@@ -4,11 +4,11 @@ import unittest
 import ctypes
 
 import common
-from ftk.ftk_constants import RET_OK, RET_FAIL, FTK_MIN_SOURCE_NR
+from ftk.ftk_constants import RET_FAIL, FTK_MIN_SOURCE_NR
 from ftk.ftk_source import FtkSource
 from ftk.ftk_sources_manager import *
 
-class TestSourcesManager(unittest.TestCase):
+class TestSourcesManager(common.FtkTestCase):
     def setUp(self):
         common.setup_allocator()
 
@@ -23,13 +23,15 @@ class TestSourcesManager(unittest.TestCase):
             capacity = FTK_MIN_SOURCE_NR
         for i in range(capacity):
             src = FtkSource()
-            self.assertEqual(ftk_sources_manager_add(manager, src), RET_OK)
+            ftk_sources_manager_add(manager, src)
         self.assertEqual(ftk_sources_manager_get_count(manager), capacity)
+
         src = FtkSource()
         # the capacity is full
         common.disable_warnning_log()
-        self.assertEqual(ftk_sources_manager_add(manager, src), RET_FAIL)
+        self.assertFtkError(RET_FAIL, ftk_sources_manager_add, manager, src)
         common.disable_verbose_log()
+
         self.assertEqual(ftk_sources_manager_get_count(manager), capacity)
         ftk_sources_manager_destroy(manager)
 
@@ -39,11 +41,11 @@ class TestSourcesManager(unittest.TestCase):
         if capacity < FTK_MIN_SOURCE_NR:
             capacity = FTK_MIN_SOURCE_NR
         src_one = FtkSource()
-        self.assertEqual(ftk_sources_manager_add(manager, src_one), RET_OK)
+        ftk_sources_manager_add(manager, src_one)
         src_two = FtkSource()
-        self.assertEqual(ftk_sources_manager_add(manager, src_two), RET_OK)
-        self.assertEqual(ftk_sources_manager_remove(manager, src_one), RET_OK)
-        self.assertEqual(ftk_sources_manager_remove(manager, src_two), RET_OK)
+        ftk_sources_manager_add(manager, src_two)
+        ftk_sources_manager_remove(manager, src_one)
+        ftk_sources_manager_remove(manager, src_two)
         self.assertEqual(ftk_sources_manager_get_count(manager), 0)
         ftk_sources_manager_destroy(manager)
 
@@ -51,7 +53,7 @@ class TestSourcesManager(unittest.TestCase):
         capacity = 1
         manager = ftk_sources_manager_create(capacity)
         src = FtkSource()
-        self.assertEqual(ftk_sources_manager_add(manager, src), RET_OK)
+        ftk_sources_manager_add(manager, src)
         new_src = ftk_sources_manager_get(manager, 0)
         self.assertEqual(ctypes.addressof(new_src), ctypes.addressof(src))
         ftk_sources_manager_destroy(manager)
@@ -60,7 +62,7 @@ class TestSourcesManager(unittest.TestCase):
         capacity = 32
         manager = ftk_sources_manager_create(capacity)
         self.assertEqual(ftk_sources_manager_need_refresh(manager), 0)
-        self.assertEqual(ftk_sources_manager_set_need_refresh(manager), RET_OK)
+        ftk_sources_manager_set_need_refresh(manager)
         self.assertEqual(ftk_sources_manager_need_refresh(manager), 1)
         ftk_sources_manager_destroy(manager)
 
