@@ -29,13 +29,15 @@ ftk_params_set_param = ftk_dll.function('ftk_params_set_param',
         '',
         args=['thiz', 'name', 'value'],
         arg_types=[_FtkParamsPtr, ctypes.c_char_p, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_params_set_var = ftk_dll.function('ftk_params_set_var',
         '',
         args=['thiz', 'name', 'value'],
         arg_types=[_FtkParamsPtr, ctypes.c_char_p, ctypes.c_char_p],
-        return_type=ctypes.c_int)
+        return_type=ctypes.c_int,
+        check_return=True)
 
 ftk_params_eval_int = ftk_dll.function('ftk_params_eval_int',
         '',
