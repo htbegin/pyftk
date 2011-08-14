@@ -74,9 +74,13 @@ else:
     FtkColor = _FtkColorBGRA
 
 FtkDestroy = ctypes.CFUNCTYPE(None, ctypes.c_void_p)
+
 FtkIdle = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p)
+
 FtkTimer = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p)
+
 FtkCompare = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p)
+
 FtkListener = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p)
 
 class FtkCommitInfo(ctypes.Structure):
