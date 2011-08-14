@@ -3,11 +3,10 @@
 import unittest
 
 from ftk import ftk_init, ftk_deinit
-from ftk.ftk_constants import RET_OK
 
 class TestFtkInit(unittest.TestCase):
     def test_ftk_init(self):
-        self.assertEqual(ftk_init(['-v', '-d', '/tmp']), RET_OK)
+        ftk_init(['--log-level', 'D'])
         ftk_deinit()
 
 if __name__ == "__main__":
