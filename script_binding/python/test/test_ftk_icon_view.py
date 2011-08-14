@@ -66,30 +66,24 @@ class TestIconView(unittest.TestCase):
         udata_two = {"two" : 2}
         item_two = FtkIconViewItem(text_two, None, udata_two)
 
-        ret = ftk_icon_view_add(self.view, item_one)
-        self.assertEqual(ret, RET_OK)
-        ret = ftk_icon_view_add(self.view, item_two)
-        self.assertEqual(ret, RET_OK)
+        ftk_icon_view_add(self.view, item_one)
+        ftk_icon_view_add(self.view, item_two)
 
         ret = ftk_icon_view_get_count(self.view)
         self.assertEqual(ret, 2)
 
-        (ret, item) = ftk_icon_view_get(self.view, 0)
-        self.assertEqual(ret, RET_OK)
+        item = ftk_icon_view_get(self.view, 0)
         self.assertEqual(item.text, text_one)
         self.assertEqual(item.icon, None)
         self.assertEqual(item.user_data, udata_one)
 
-        (ret, item) = ftk_icon_view_get(self.view, 1)
-        self.assertEqual(ret, RET_OK)
+        item = ftk_icon_view_get(self.view, 1)
         self.assertEqual(item.text, text_two)
         self.assertEqual(item.icon, None)
         self.assertEqual(item.user_data, udata_two)
 
-        ret = ftk_icon_view_remove(self.view, 1)
-        self.assertEqual(ret, RET_OK)
-        ret = ftk_icon_view_remove(self.view, 0)
-        self.assertEqual(ret, RET_OK)
+        ftk_icon_view_remove(self.view, 1)
+        ftk_icon_view_remove(self.view, 0)
 
         item_one.user_data = None
         item_two.user_data = None
