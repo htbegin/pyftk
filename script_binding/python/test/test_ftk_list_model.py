@@ -4,13 +4,12 @@ import unittest
 import ctypes
 
 import common
-from ftk.ftk_error import FtkError
 from ftk.ftk_constants import RET_FAIL, FTK_LIST_ITEM_NORMAL
 from ftk.ftk_typedef import FtkColor
 from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
 from ftk.ftk_list_model import *
 
-class TestListModel(unittest.TestCase):
+class TestListModel(common.FtkTestCase):
     def setUp(self):
         common.setup_allocator()
         self.model = ftk_list_model_default_create(5)
@@ -43,12 +42,8 @@ class TestListModel(unittest.TestCase):
         self.assertEqual(total, 1)
 
         common.disable_warnning_log()
-        try:
-            data = ftk_list_model_get_data(self.model, total)
-        except FtkError, error:
-            self.assertEqual(error.errno, RET_FAIL)
-        else:
-            self.assertTrue(False)
+        self.assertFtkError(RET_FAIL, ftk_list_model_get_data,
+                self.model, total)
         common.disable_verbose_log()
 
         ftk_list_model_reset(self.model)

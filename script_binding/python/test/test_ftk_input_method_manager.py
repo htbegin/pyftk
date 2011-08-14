@@ -3,11 +3,10 @@
 import unittest
 
 import common
-from ftk.ftk_error import FtkError
 from ftk.ftk_constants import RET_FAIL
 from ftk.ftk_input_method_manager import *
 
-class TestInputMethodManager(unittest.TestCase):
+class TestInputMethodManager(common.FtkTestCase):
     def setUp(self):
         common.setup_allocator()
         self.manager = ftk_input_method_manager_create()
@@ -19,12 +18,8 @@ class TestInputMethodManager(unittest.TestCase):
         method = ftk_input_method_manager_get(self.manager, 0)
 
     def test_get_input_method_two(self):
-        try:
-            method = ftk_input_method_manager_get(self.manager, 2)
-        except FtkError, error:
-            self.assertEqual(error.errno, RET_FAIL)
-        else:
-            self.assertTrue(False)
+        self.assertFtkError(RET_FAIL, ftk_input_method_manager_get,
+                self.manager, 2)
 
 if __name__ == "__main__":
     unittest.main()
