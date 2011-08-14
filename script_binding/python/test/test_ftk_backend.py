@@ -4,7 +4,6 @@ import unittest
 
 import common
 from ftk.ftk_backend import ftk_backend_init
-from ftk.ftk_constants import RET_OK
 
 class TestFtkBackend(unittest.TestCase):
     def setUp(self):
@@ -13,10 +12,10 @@ class TestFtkBackend(unittest.TestCase):
         common.setup_wnd()
 
     def test_init_one(self):
-        self.assertEqual(ftk_backend_init(["-v", "--level", "1"]), RET_OK)
+        ftk_backend_init(["-v", "--level", "1"])
 
     def test_init_two(self):
-        self.assertEqual(ftk_backend_init([]), RET_OK)
+        ftk_backend_init(None)
 
 if __name__ == "__main__":
     unittest.main()
