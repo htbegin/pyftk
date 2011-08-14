@@ -131,6 +131,8 @@ class FtkListItemInfo(ctypes.Structure):
     def extra_user_data(self):
         return None
 
+_FtkListItemInfoPtr = ctypes.POINTER(FtkListItemInfo)
+
 def ftk_list_model_enable_notify(thiz):
     if thiz.disable_notify > 0:
         thiz.disable_notify -= 1
@@ -206,7 +208,7 @@ def ftk_list_model_get_data(thiz, index):
         void_ptr = ctypes.c_void_p()
         ret = thiz.get_data(thiz, index, ctypes.byref(void_ptr))
         if ret == ftk_constants.RET_OK:
-            data_ptr = ctypes.cast(void_ptr, ctypes.POINTER(FtkListItemInfo))
+            data_ptr = ctypes.cast(void_ptr, _FtkListItemInfoPtr)
             return data_ptr.contents
         else:
             ftk_util.handle_inline_func_retval(ret)
