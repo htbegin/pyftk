@@ -9,21 +9,20 @@ __version__ = '$Id: $'
 import ctypes
 
 import ftk_typedef
-import ftk_constants
 
 # ftk_event.h
 
 class _FtkIdleEvent(ctypes.Structure):
     _fields_ = [
             ('action', ftk_typedef.FtkIdle),
-            ('user_data', ctypes.c_void_p),
+            ('_user_data', ctypes.c_void_p),
             ]
 
 class _FtkTimerEvent(ctypes.Structure):
     _fields_ = [
             ('action', ftk_typedef.FtkTimer),
             ('interval', ctypes.c_int),
-            ('user_data', ctypes.c_void_p),
+            ('_user_data', ctypes.c_void_p),
             ]
 
 class _FtkKeyEvent(ctypes.Structure):
@@ -46,15 +45,27 @@ class _FtkEventUnion(ctypes.Union):
             ('key', _FtkKeyEvent),
             ('mouse', _FtkMouseEvent),
             ('rect', ftk_typedef.FtkRect),
-            ('extra', ctypes.c_void_p),
+            ('_extra', ctypes.c_void_p),
             ]
 
 class FtkEvent(ctypes.Structure):
     _fields_ = [
             ('type', ctypes.c_int),
-            ('widget', ctypes.c_void_p),
-            ('time', ctypes.c_uint),
+            ('_widget_ptr', ctypes.c_void_p),
+            ('time', ctypes.c_size_t),
             ('u', _FtkEventUnion),
             ]
 
-FtkOnEvent = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.POINTER(FtkEvent))
+    @property
+    def widget(self):
+        if self._widget_ptr:
+            from ftk_widget import FtkWidget
+            widget_ptr = ctypes.cast(self._widget_ptr,
+                    ctypes.POINTER(FtkWidget))
+            return widget_ptr.contents
+        else:
+            return None
+
+_FtkEventPtr = ctypes.POINTER(FtkEvent)
+
+FtkOnEvent = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, _FtkEventPtr)

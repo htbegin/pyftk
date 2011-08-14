@@ -5,8 +5,9 @@ import unittest
 from ftk.ftk_event import *
 
 class TestFtkEvent(unittest.TestCase):
-    def _test(self):
-        pass
+    def test_widget_member(self):
+        event = FtkEvent()
+        self.assertEqual(event.widget, None)
 
 if __name__ == "__main__":
     unittest.main()
