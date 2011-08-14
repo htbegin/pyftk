@@ -4,6 +4,7 @@
 import sys
 import os
 import time
+import re
 
 from ftk import *
 
@@ -17,12 +18,37 @@ _IDC_ICON_VIEW_ITEM = 99
 _IDC_BUTTON_ITEM = 100
 _IDC_TIME_ITEM = 2000
 
+"""
+parse the desktop files
+create the app list
+when create applist_win, set the app as the user_data of icon
+"""
+
+class FtkAppInfoManager():
+    def __init__(self):
+        identity = r"[a-zA-Z0-9_.]+"
+        ptn = r'<application name="(?P<name>%s)" exec="(?P<exec>%s)" init="(?P<init>%s)" />' \
+            % (identity, identity, identity)
+        self.app_info_re = re.compile(ptn)
+        self.app_list = []
+
+    def load_file(self, fpath):
+        with open(fpath, "rb") as fd:
+            content = fd.read()
+            for match in self.app_info_re.finditer(content):
+                name = match.group("name")
+                exec_str = match.group("exec")
+                init_str = match.group("init")
+
+    def app_cnt(self):
+        return len(self.app_list)
+
 class FtkDesktop:
-    def __init__(self, is_horizontal=False, applist_win=None,
-            icon_cache=None):
-        self.is_horizontal = is_horizontal
-        self.applist_win = applist_win
-        self.icon_cache = icon_cache
+    def __init__(self):
+        self.is_horizontal = False
+        self.applist_win = None
+        self.icon_cache = None
+        self.app_info_manager = None
 
 def _desktop_set_orientation(args):
     global g_desktop
@@ -37,6 +63,17 @@ def _desktop_set_icon_cache():
 
     root_dir = ftk_config_get_data_root_dir(ftk_default_config())
     g_desktop.icon_cache = ftk_icon_cache_create([root_dir], "desktop")
+
+def _desktop_load_app_info():
+    global g_desktop
+
+    manager = FtkAppInfoManager()
+
+    root_dir = ftk_config_get_data_root_dir(ftk_default_config())
+    info_fpath = os.path.join(root_dir, "base/apps/demos.desktop")
+    manager.load_file(info_fpath)
+
+    g_desktop.app_info_manager = manager
 
 def _desktop_add_time_item_on_status_bar():
     panel = ftk_default_status_panel()
@@ -157,6 +194,8 @@ def desktop_main():
     _desktop_set_orientation(sys.argv)
 
     _desktop_set_icon_cache()
+
+    _desktop_load_app_info()
 
     _desktop_add_time_item_on_status_bar()
 
