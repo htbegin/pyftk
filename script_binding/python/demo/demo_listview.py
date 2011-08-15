@@ -28,7 +28,7 @@ def on_item_clicked(ctx, vlist):
     model = ftk_list_view_get_model(vlist)
     i = ftk_list_view_get_selected(vlist)
 
-    ret, info = ftk_list_model_get_data(model, i)
+    info = ftk_list_model_get_data(model, i)
     if not info.disable:
         info.state = not info.state
 
@@ -41,8 +41,6 @@ def on_item_clicked(ctx, vlist):
 def ftk_main():
     global left_icon
     global right_icon
-
-    ftk_init(sys.argv)
 
     win = ftk_app_window_create()
     width = ftk_widget_width(win)
@@ -101,9 +99,12 @@ def ftk_main():
 
     ftk_widget_set_text(win, "list view demo")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
 
-    return ftk_run()
+    return win
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_run()
+    sys.exit(0)

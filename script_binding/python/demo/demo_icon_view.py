@@ -39,8 +39,6 @@ def item_clicked(win, item):
 def ftk_main():
     global i
 
-    ftk_init(sys.argv)
-
     win = ftk_app_window_create()
     ftk_window_set_animation_hint(win, "app_main_window")
     width = ftk_widget_width(win)
@@ -73,9 +71,12 @@ def ftk_main():
 
     ftk_widget_set_text(win, "icon view demo")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
 
-    return ftk_run()
+    return win
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_run()
+    sys.exit(0)

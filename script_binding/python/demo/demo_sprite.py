@@ -21,8 +21,6 @@ def move_cursor(sprite, event):
     return RET_OK
 
 def ftk_main():
-    ftk_init(sys.argv)
-
     win = ftk_app_window_create()
     width = ftk_widget_width(win)
     height = ftk_widget_height(win)
@@ -34,18 +32,6 @@ def ftk_main():
 
     ftk_widget_set_text(win, "sprite demo")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
-
-    """
-    # multi sprite still has some problems
-    sprite = ftk_sprite_create()
-    icon=ftk_theme_load_image(ftk_default_theme(), "flag-32"FTK_STOCK_IMG_SUFFIX)
-    ftk_sprite_set_icon(sprite, icon)
-    ftk_sprite_move(sprite, width / 2, 0)
-    ftk_sprite_set_move_listener(sprite, on_move, NULL)
-    ftk_sprite_show(sprite, 1)
-    ftk_main_loop_add_source(ftk_default_main_loop(), ftk_source_timer_create(200, timer, sprite))
-	"""
 
     sprite = ftk_sprite_create()
     icon = ftk_theme_load_image(ftk_default_theme(), "cursor.png")
@@ -53,7 +39,11 @@ def ftk_main():
     ftk_sprite_show(sprite, 1)
     ftk_wnd_manager_add_global_listener(ftk_default_wnd_manager(), move_cursor, sprite)
 
-    return ftk_run()
+    return win
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_run()
+    sys.exit(0)

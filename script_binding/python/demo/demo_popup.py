@@ -83,8 +83,6 @@ def init_item_infos():
     g_infos[3].text = "Select All"
 
 def ftk_main():
-    ftk_init(sys.argv)
-
     init_item_infos()
 
     win = ftk_app_window_create()
@@ -109,9 +107,12 @@ def ftk_main():
 
     ftk_widget_set_text(win, "pupup")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
 
-    return ftk_run()
+    return win
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_run()
+    sys.exit(0)

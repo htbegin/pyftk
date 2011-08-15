@@ -21,9 +21,7 @@ def timeout_fn(info):
         ftk_quit()
         return RET_REMOVE
 
-if __name__ == "__main__":
-    ftk_init(sys.argv)
-
+def ftk_main():
     win = ftk_app_window_create()
     ftk_window_set_animation_hint(win, "app_main_window")
 
@@ -63,7 +61,13 @@ if __name__ == "__main__":
 
     ftk_widget_set_text(win, "label demo")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_IGNORE_CLOSE)
     ftk_main_loop_add_source(ftk_default_main_loop(), timer)
 
-    sys.exit(ftk_run())
+    return win
+
+if __name__ == "__main__":
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_IGNORE_CLOSE)
+    ftk_run()
+    sys.exit(0)

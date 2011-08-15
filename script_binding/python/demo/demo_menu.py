@@ -64,9 +64,10 @@ def create_app_window():
     g_index += 1
 
 def ftk_main():
-    ftk_init(sys.argv)
     create_app_window()
-    return ftk_run()
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    ftk_main()
+    ftk_run()
+    sys.exit(0)

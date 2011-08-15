@@ -77,12 +77,15 @@ def create_app_window():
 
     ftk_widget_set_text(win, "transparent")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+
+    return win
 
 def ftk_main():
-    ftk_init(sys.argv)
-    create_app_window()
-    return ftk_run()
+    return create_app_window()
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_run()
+    sys.exit(0)

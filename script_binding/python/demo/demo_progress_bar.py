@@ -20,8 +20,6 @@ def update_progress(pbar):
     return RET_OK
 
 def ftk_main():
-    ftk_init(sys.argv)
-
     win = ftk_app_window_create()
     width = ftk_widget_width(win)
     height = ftk_widget_height(win)
@@ -58,9 +56,12 @@ def ftk_main():
     # the width of title panel is limited
     ftk_widget_set_text(win, "pbar demo")
     ftk_widget_show_all(win, 1)
-    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
 
-    return ftk_run()
+    return win
 
 if __name__ == "__main__":
-    sys.exit(ftk_main())
+    ftk_init(sys.argv)
+    win = ftk_main()
+    ftk_widget_set_attr(win, FTK_ATTR_QUIT_WHEN_CLOSE)
+    ftk_run()
+    sys.exit(0)
