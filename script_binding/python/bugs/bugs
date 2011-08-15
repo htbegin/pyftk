@@ -21,3 +21,10 @@ ftk_window_idle_invalidate [win]
 							check updated_disabled [win] ==> 2 ==> return RET_FAIL
 		ftk_window_enable_update
 	ftk_window_enable_update
+
+* ./runner.py demo/demo_calc.py
+
+ftk_text_layout_init:93 thiz != NULL && text != NULL && font != NULL && width > 0 failed.
+
+there is no text for entry.
+ftk_widget_set_text(entry, "") == ftk_widget_set_text(entry, None)
