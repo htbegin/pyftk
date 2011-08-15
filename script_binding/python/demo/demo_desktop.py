@@ -5,6 +5,7 @@ import sys
 import os
 import time
 import re
+import fnmatch
 
 from common import FtkApp
 
@@ -28,7 +29,7 @@ when create applist_win, set the app as the user_data of icon
 
 class FtkAppInfoManager():
     def __init__(self):
-        identity = r"[a-zA-Z0-9_.]+"
+        identity = r"[a-zA-Z0-9_.-]+"
         ptn = r'<application name="(?P<name>%s)" exec="(?P<exec>%s)" init="(?P<init>%s)" />' \
             % (identity, identity, identity)
         self.app_info_re = re.compile(ptn)
@@ -65,6 +66,12 @@ class FtkAppInfoManager():
                 app_create_str = match.group("init")
                 self._update_app_list(name, module_str, app_create_str)
 
+    def load_dir(self, bdir):
+        for entry in os.listdir(bdir):
+            fpath = os.path.join(bdir, entry)
+            if os.path.isfile(fpath) and fnmatch.fnmatch(entry, "*.desktop"):
+                self.load_file(fpath)
+
     def app_cnt(self):
         return len(self.app_list)
 
@@ -98,8 +105,8 @@ def _desktop_load_app_info():
     manager = FtkAppInfoManager()
 
     root_dir = ftk_config_get_data_root_dir(ftk_default_config())
-    info_fpath = os.path.join(root_dir, "base/apps/demos.desktop")
-    manager.load_file(info_fpath)
+    info_dir = os.path.join(root_dir, "base/apps")
+    manager.load_dir(info_dir)
 
     g_desktop.app_info_manager = manager
 
