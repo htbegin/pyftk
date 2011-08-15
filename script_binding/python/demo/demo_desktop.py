@@ -38,7 +38,7 @@ class FtkAppInfoManager():
         try:
             module_obj = __import__(module_str, globals(), locals(), [], -1)
         except ImportError, error:
-            sys.stderr.write("import module %s fail, error-%s\n" %
+            ftk_loge("import module %s fail, error-%s" %
                     (module_str, str(error)))
         else:
             if hasattr(module_obj, app_create_str) and \
@@ -47,13 +47,13 @@ class FtkAppInfoManager():
                 try:
                     app = app_create_obj()
                 except Exception, error:
-                    sys.stderr.write("use %s.%s to create app %s fail, " \
-                            "error-%s\n" % (module_str, app_create_str,
+                    ftk_loge("use %s.%s to create app %s fail, " \
+                            "error-%s" % (module_str, app_create_str,
                                 name, str(error)))
                 else:
                     self.app_list.append(app)
             else:
-                sys.stderr.write("no/invalid symbol %s in module %s\n" %
+                ftk_loge("no/invalid symbol %s in module %s" %
                         (app_create_str, module_str))
 
     def load_file(self, fpath):
