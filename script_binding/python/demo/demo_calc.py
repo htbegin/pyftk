@@ -46,6 +46,9 @@ def ftk_calc_on_button_clicked(win, button):
             ftk_loge("invalid expression '%s', error-%s" %
                     (entry_text, str(error)))
             ftk_entry_set_text(entry, "")
+        except Exception, error:
+            ftk_loge("unexpected error-%s" % str(error))
+            ftk_entry_set_text(entry, "")
         else:
             ftk_entry_set_text(entry, str(val))
     elif button_text[0] == '<':
