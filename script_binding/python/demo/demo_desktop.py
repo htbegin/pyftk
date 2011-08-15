@@ -6,6 +6,8 @@ import os
 import time
 import re
 
+from common import FtkApp
+
 from ftk import *
 
 _IDC_LEFT_HOUR_ITEM = 1
@@ -32,16 +34,42 @@ class FtkAppInfoManager():
         self.app_info_re = re.compile(ptn)
         self.app_list = []
 
+    def _update_app_list(self, name, module_str, app_create_str):
+        try:
+            module_obj = __import__(module_str, globals(), locals(), [], -1)
+        except ImportError, error:
+            sys.stderr.write("import module %s fail, error-%s\n" %
+                    (module_str, str(error)))
+        else:
+            if hasattr(module_obj, app_create_str) and \
+                    callable(getattr(module_obj, app_create_str)):
+                app_create_obj = getattr(module_obj, app_create_str)
+                try:
+                    app = app_create_obj()
+                except Exception, error:
+                    sys.stderr.write("use %s.%s to create app %s fail, " \
+                            "error-%s\n" % (module_str, app_create_str,
+                                name, str(error)))
+                else:
+                    self.app_list.append(app)
+            else:
+                sys.stderr.write("no/invalid symbol %s in module %s\n" %
+                        (app_create_str, module_str))
+
     def load_file(self, fpath):
         with open(fpath, "rb") as fd:
             content = fd.read()
             for match in self.app_info_re.finditer(content):
                 name = match.group("name")
-                exec_str = match.group("exec")
-                init_str = match.group("init")
+                module_str = match.group("exec")
+                app_create_str = match.group("init")
+                self._update_app_list(name, module_str, app_create_str)
 
     def app_cnt(self):
         return len(self.app_list)
+
+    def iter_apps(self):
+        return self.app_list.__iter__()
 
 class FtkDesktop:
     def __init__(self):
@@ -115,13 +143,8 @@ def _desktop_on_button_close_applist_clicked(win, button):
     return RET_OK
 
 def applist_on_item_clicked(ctx, item):
-    try:
-        run = __import__(item.user_data, globals(), locals(), [], -1)
-    except ImportError:
-        sys.stderr.write("invalid module name %s\n", item.user_data)
-    else:
-        run.ftk_main()
-
+    app = item.user_data
+    app.run()
     return RET_OK
 
 def _desktop_load_applist_win(ctx):
@@ -154,6 +177,14 @@ def _desktop_on_button_open_applist_clicked(ctx, button):
     ftk_icon_view_set_item_size(icon_view, item_size)
     ftk_icon_view_set_clicked_listener(icon_view,
             applist_on_item_clicked, None)
+
+    for app in g_desktop.app_info_manager.iter_apps():
+        item = FtkIconViewItem()
+        item.text = app.name
+        item.icon = app.get_icon()
+        item.user_data = app
+
+        ftk_icon_view_add(icon_view, item)
 
     return RET_OK
 
