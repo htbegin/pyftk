@@ -20,6 +20,12 @@ def move_cursor(sprite, event):
         ftk_sprite_move(sprite, event.u.mouse.x, event.u.mouse.y)
     return RET_OK
 
+def remove_sprite(sprite):
+    ftk_wnd_manager_remove_global_listener(ftk_default_wnd_manager(),
+            move_cursor, sprite)
+    ftk_sprite_show(sprite, 0)
+    ftk_sprite_destroy(sprite)
+
 def ftk_main():
     win = ftk_app_window_create()
     width = ftk_widget_width(win)
@@ -38,6 +44,8 @@ def ftk_main():
     ftk_sprite_set_icon(sprite, icon)
     ftk_sprite_show(sprite, 1)
     ftk_wnd_manager_add_global_listener(ftk_default_wnd_manager(), move_cursor, sprite)
+
+    ftk_widget_set_user_data(win, remove_sprite, sprite)
 
     return win
 
