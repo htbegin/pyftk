@@ -3,6 +3,8 @@
 '''
 '''
 
+__version__ = "0.6"
+
 from ftk.ftk_constants import *
 from ftk.ftk_error import *
 from ftk.ftk_backend import *

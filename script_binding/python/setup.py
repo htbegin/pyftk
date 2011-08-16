@@ -3,8 +3,10 @@
 
 from distutils.core import setup
 
+from ftk.__init__ import __version__
+
 setup(name="pyftk",
-      version="0.6",
+      version=__version__,
       author="hotforest",
       author_email="hotforest@gmail.com",
       url="https://github.com/htbegin/pyftk",
