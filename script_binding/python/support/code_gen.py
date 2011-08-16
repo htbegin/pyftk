@@ -84,6 +84,7 @@ class C2PythonConverter(object):
                 "char *" : "ctypes.c_char_p",
                 "unsigned char *" : "ctypes.c_char_p",
                 "void *" : "ctypes.c_void_p",
+                "size_t" : "ctypes.c_size_t",
                 }
 
         self.ext_type_dict = {}
