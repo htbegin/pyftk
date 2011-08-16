@@ -3,9 +3,6 @@
 '''Event handling.
 '''
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 
 import ftk_dll

@@ -3,9 +3,6 @@
 '''Constants and enums for all ftk submodules.
 '''
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 #BEGIN GENERATED CONSTANTS; see support/make_constants.py
 
 # enum from ftk_list_model_default.h

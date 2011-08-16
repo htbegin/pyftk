@@ -3,9 +3,6 @@
 '''
 '''
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import ctypes
 from ctypes.util import find_library
 import sys

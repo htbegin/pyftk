@@ -3,9 +3,6 @@
 '''
 '''
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 import logging
 import ctypes
 

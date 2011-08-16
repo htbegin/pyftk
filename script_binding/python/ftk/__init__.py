@@ -3,9 +3,6 @@
 '''
 '''
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 from ftk.ftk_constants import *
 from ftk.ftk_error import *
 from ftk.ftk_backend import *

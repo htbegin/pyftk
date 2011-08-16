@@ -3,9 +3,6 @@
 '''
 '''
 
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: $'
-
 # macro definitions
 
 class _FtkMacroDef(object):
