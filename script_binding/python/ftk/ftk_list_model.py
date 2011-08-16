@@ -152,7 +152,8 @@ def ftk_list_model_set_changed_listener(thiz, listener, ctx):
 def ftk_list_model_notify(thiz):
     if thiz.disable_notify <= 0:
         if thiz.listener:
-            ret = thiz.listener(None, None)
+            void_ptr = ctypes.cast(ctypes.pointer(thiz), ctypes.c_void_p)
+            ret = thiz.listener(thiz.listener_ctx, void_ptr)
         else:
             ret = ftk_constants.RET_OK
     else:
