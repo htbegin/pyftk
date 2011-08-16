@@ -3,7 +3,7 @@
 
 from distutils.core import setup
 
-setup(name="pyftk-ctypes",
+setup(name="pyftk",
       version="0.6",
       author="hotforest",
       author_email="hotforest@gmail.com",
