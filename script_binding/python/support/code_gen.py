@@ -504,6 +504,8 @@ class C2PythonConverter(object):
             self._add_imported_module("ftk_dll")
 
     def _to_python_struct_type_dec(self, name):
+        self._update_exported_symbols(name)
+
         dec_list = []
 
         struct_dec_line = "class %s(ctypes.Structure):\n    pass" % name
@@ -558,6 +560,9 @@ class C2PythonConverter(object):
                 sys.stderr.write("inconsistent struct definition style "
                     "for %s\n" % token.name)
                 name = token.name.lstrip("_")
+
+        if not only_check_type:
+            self._update_exported_symbols(name)
 
         if self._need_create_ptr_type_alias(name):
             struct_ptr_line = "_%sPtr = ctypes.POINTER(%s)" % (name, name)
@@ -652,6 +657,7 @@ class C2PythonConverter(object):
             if func is not None and func != token.name:
                 continue
             decs.append(self._to_python_func_dec(token))
+            self._update_exported_symbols(token.name)
 
         if func is not None and len(decs) == 0:
             sys.stderr.write("declaration for function '%s' doesn't exist\n" % func)
@@ -672,11 +678,27 @@ class C2PythonConverter(object):
 
         return "\n".join(import_lines)
 
+    def _update_exported_symbols(self, name):
+        if name not in self.exported_symbol_list:
+            self.exported_symbol_list.append(name)
+
+    def _generate_exported_symbols(self):
+        symbols_fmt = ", ".join(("\"%s\"",) * len(self.exported_symbol_list))
+        line_fmt = "__all__ = [%s]" % symbols_fmt
+        line = line_fmt % tuple(self.exported_symbol_list)
+        if len(line) > self.line_width:
+            self.text_wrapper.initial_indent = ""
+            self.text_wrapper.subsequent_indent = " " * 8
+            line = self.text_wrapper.fill(line)
+        return line
+
     def _generate_header(self):
         header = []
         if "%s." % self.fname[:-2] == self.mpath:
             header.append(self._generate_import_statements())
         header.append("# %s" % self.fname)
+        if "%s." % self.fname[:-2] == self.mpath:
+            header.append(self._generate_exported_symbols())
 
         return header
 
@@ -706,6 +728,7 @@ class C2PythonConverter(object):
         self.priv_struct_ptr_type_list = []
         self.ptr_type_ref_cnt_dict = {}
         self.imported_module_list = []
+        self.exported_symbol_list = []
 
         results = []
         with open(finput, "rb") as fd:
