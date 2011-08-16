@@ -5,7 +5,7 @@ import unittest
 
 import test_common
 
-from ftk import ftk_init, ftk_run
+from ftk.ftk_main import ftk_init, ftk_run
 from ftk.ftk_icon_cache import *
 from ftk.ftk_widget import ftk_widget_show_all
 from ftk.ftk_xul import *

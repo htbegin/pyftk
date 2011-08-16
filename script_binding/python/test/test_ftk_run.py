@@ -4,7 +4,7 @@ import unittest
 import sys
 
 import test_common
-from ftk import ftk_init, ftk_run, ftk_quit
+from ftk.ftk_main import ftk_init, ftk_run, ftk_quit
 from ftk.ftk_constants import RET_REMOVE
 from ftk.ftk_source import ftk_source_timer_create
 from ftk.ftk_globals import ftk_default_main_loop

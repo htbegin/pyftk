@@ -2,7 +2,7 @@
 
 import unittest
 
-from ftk import ftk_init, ftk_deinit
+from ftk.ftk_main import ftk_init, ftk_deinit
 
 class TestFtkInit(unittest.TestCase):
     def test_ftk_init(self):
