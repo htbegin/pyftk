@@ -1,0 +1,8 @@
+
+* release the objects used for store the callback and c_void_p-typed user-data
+
+* make pyftk more pythonic
+	* oo-style interface
+
+* bug fixes
+
