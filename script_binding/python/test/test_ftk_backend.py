@@ -2,14 +2,14 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_backend import ftk_backend_init
 
 class TestFtkBackend(unittest.TestCase):
     def setUp(self):
-        common.disable_debug_log()
-        common.setup_allocator()
-        common.setup_wnd()
+        test_common.disable_debug_log()
+        test_common.setup_allocator()
+        test_common.setup_wnd()
 
     def test_init_one(self):
         ftk_backend_init(["-v", "--level", "1"])

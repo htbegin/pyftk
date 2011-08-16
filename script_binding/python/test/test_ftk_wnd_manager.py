@@ -2,7 +2,7 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_globals import ftk_set_sources_manager
 from ftk.ftk_sources_manager import *
 from ftk.ftk_main_loop import *
@@ -10,7 +10,7 @@ from ftk.ftk_wnd_manager import *
 
 class TestWndManager(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
         self.src_manager = ftk_sources_manager_create(32)
         ftk_set_sources_manager(self.src_manager)

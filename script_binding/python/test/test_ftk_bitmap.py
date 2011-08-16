@@ -2,14 +2,14 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import RET_OK
 from ftk.ftk_typedef import FtkColor
 from ftk.ftk_bitmap import *
 
 class TestBitmap(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
         self.w = 4
         self.h = 2
         self.color = FtkColor(r=255, g=0, b=0, a=0)

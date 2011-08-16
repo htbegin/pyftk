@@ -2,14 +2,14 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_animation_trigger import *
 
 class TestAnimationTrigger(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
-        common.setup_config()
-        common.disable_debug_log()
+        test_common.setup_allocator()
+        test_common.setup_config()
+        test_common.disable_debug_log()
 
     def test_default_create(self):
         trigger = ftk_animation_trigger_default_create("default", "animations.xml")

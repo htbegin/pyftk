@@ -3,15 +3,15 @@
 import unittest
 import ctypes
 
-import common
+import test_common
 from ftk.ftk_constants import RET_FAIL, FTK_LIST_ITEM_NORMAL
 from ftk.ftk_typedef import FtkColor
 from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
 from ftk.ftk_list_model import *
 
-class TestListModel(common.FtkTestCase):
+class TestListModel(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
         self.model = ftk_list_model_default_create(5)
 
     def tearDown(self):
@@ -41,10 +41,10 @@ class TestListModel(common.FtkTestCase):
         total = ftk_list_model_get_total(self.model)
         self.assertEqual(total, 1)
 
-        common.disable_warnning_log()
+        test_common.disable_warnning_log()
         self.assertFtkError(RET_FAIL, ftk_list_model_get_data,
                 self.model, total)
-        common.disable_verbose_log()
+        test_common.disable_verbose_log()
 
         ftk_list_model_reset(self.model)
         total = ftk_list_model_get_total(self.model)
@@ -79,7 +79,7 @@ class TestListModel(common.FtkTestCase):
 
 class TestListItem(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_dft_value(self):
         item = FtkListItemInfo()

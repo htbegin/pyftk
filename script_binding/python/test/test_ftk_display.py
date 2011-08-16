@@ -2,14 +2,14 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import RET_OK, FTK_PIXEL_BGR24
 from ftk.ftk_display_mem import ftk_display_mem_create
 from ftk.ftk_display import *
 
 class TestDisplay(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
         bits = "\xff" * 12
         self.display = ftk_display_mem_create(FTK_PIXEL_BGR24,

@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import unittest
+import os
 
 from ftk.ftk_constants import RET_OK, FTK_LOG_D, FTK_LOG_I, FTK_LOG_E
 from ftk.ftk_error import FtkError
 from ftk.ftk_macros import ftk_macros
-from ftk.ftk_config import ftk_config_create, ftk_config_get_rotate
+from ftk.ftk_config import ftk_config_create, ftk_config_get_rotate, \
+    ftk_config_get_data_dir
 from ftk.ftk_theme import ftk_theme_create
 from ftk.ftk_font_manager import ftk_font_manager_create
 from ftk.ftk_bitmap_factory import ftk_bitmap_factory_create
@@ -65,3 +67,11 @@ class FtkTestCase(unittest.TestCase):
                 self.assertTrue(False)
         else:
             func(*args, **kwargs)
+
+def get_ftk_data_path(fname):
+    bdir = ftk_config_get_data_dir(ftk_default_config())
+    return os.path.join(bdir, fname)
+
+def get_local_data_path(script_fpath, fname):
+    script_bdir = os.path.dirname(os.path.abspath(script_fpath))
+    return os.path.join(script_bdir, "../data", fname)

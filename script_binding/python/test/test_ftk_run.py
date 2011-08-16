@@ -3,7 +3,7 @@
 import unittest
 import sys
 
-import common
+import test_common
 from ftk import ftk_init, ftk_run, ftk_quit
 from ftk.ftk_constants import RET_REMOVE
 from ftk.ftk_source import ftk_source_timer_create
@@ -17,7 +17,7 @@ def quit_timer_action(ctx):
 class TestFtkRun(unittest.TestCase):
     def test_ftk_run(self):
         ftk_init(sys.argv)
-        common.disable_debug_log()
+        test_common.disable_debug_log()
 
         RUN_MSECS = 1000
         timer = ftk_source_timer_create(RUN_MSECS, quit_timer_action, None)

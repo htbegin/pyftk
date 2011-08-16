@@ -2,13 +2,13 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import RET_FAIL
 from ftk.ftk_params import *
 
-class TestFtkParams(common.FtkTestCase):
+class TestFtkParams(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_create_destroy(self):
         params = ftk_params_create(5, 5)
@@ -53,7 +53,7 @@ class TestFtkParams(common.FtkTestCase):
         ftk_params_destroy(params)
 
     def test_dump(self):
-        common.disable_debug_log()
+        test_common.disable_debug_log()
         params = ftk_params_create(2, 2)
         ftk_params_dump(params)
         ftk_params_destroy(params)

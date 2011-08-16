@@ -2,7 +2,7 @@
 
 import unittest
 
-import common
+import test_common
 
 from ftk.ftk_interpolator import *
 

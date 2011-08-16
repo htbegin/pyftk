@@ -2,16 +2,16 @@
 
 import unittest
 
-import common
+import test_common
 
 from ftk.ftk_font_desc import ftk_font_desc_create, ftk_font_desc_unref
 from ftk.ftk_font_manager import *
 
 class TestFontManager(unittest.TestCase):
     def setUp(self):
-        common.disable_debug_log()
-        common.setup_allocator()
-        common.setup_config()
+        test_common.disable_debug_log()
+        test_common.setup_allocator()
+        test_common.setup_config()
         self.manager = ftk_font_manager_create(10)
 
     def test_load(self):

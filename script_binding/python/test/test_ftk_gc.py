@@ -2,8 +2,8 @@
 
 import unittest
 
-import common
-from ftk.ftk_constants import RET_OK, FTK_GC_BG, FTK_GC_FONT, FTK_GC_BITMAP
+import test_common
+from ftk.ftk_constants import FTK_GC_BG, FTK_GC_FONT, FTK_GC_BITMAP
 from ftk.ftk_typedef import FtkColor
 from ftk.ftk_font_desc import ftk_font_desc_create
 from ftk.ftk_font import ftk_font_create, ftk_font_unref
@@ -12,8 +12,9 @@ from ftk.ftk_gc import *
 
 class TestGcInit(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
-        common.disable_debug_log()
+        test_common.setup_allocator()
+        test_common.disable_debug_log()
+        test_common.setup_config()
 
     def test_init_one(self):
         gc = FtkGc()
@@ -37,8 +38,9 @@ class TestGcInit(unittest.TestCase):
         self.assertEqual(gc.line_mask, 0)
 
     def test_init_two(self):
+        font_fpath = test_common.get_ftk_data_path("data/font.ttf")
         desc = ftk_font_desc_create("size:24 bold:0 italic:0")
-        font = ftk_font_create("font.ttf", desc)
+        font = ftk_font_create(font_fpath, desc)
         bitmap = ftk_bitmap_create(2, 2, FtkColor())
 
         gc = FtkGc(ref=1, mask=FTK_GC_BG, bg=FtkColor())

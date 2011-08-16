@@ -2,11 +2,11 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import RET_FAIL, RET_NOT_FOUND
 from ftk.ftk_error import *
 
-class TestError(common.FtkTestCase):
+class TestError(test_common.FtkTestCase):
     def test_one(self):
         error = FtkError(RET_FAIL)
         def _f():

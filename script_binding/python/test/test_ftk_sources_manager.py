@@ -3,14 +3,14 @@
 import unittest
 import ctypes
 
-import common
+import test_common
 from ftk.ftk_constants import RET_FAIL, FTK_MIN_SOURCE_NR
 from ftk.ftk_source import FtkSource
 from ftk.ftk_sources_manager import *
 
-class TestSourcesManager(common.FtkTestCase):
+class TestSourcesManager(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_create_destroy(self):
         manager = ftk_sources_manager_create(5)
@@ -28,9 +28,9 @@ class TestSourcesManager(common.FtkTestCase):
 
         src = FtkSource()
         # the capacity is full
-        common.disable_warnning_log()
+        test_common.disable_warnning_log()
         self.assertFtkError(RET_FAIL, ftk_sources_manager_add, manager, src)
-        common.disable_verbose_log()
+        test_common.disable_verbose_log()
 
         self.assertEqual(ftk_sources_manager_get_count(manager), capacity)
         ftk_sources_manager_destroy(manager)

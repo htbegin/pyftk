@@ -2,13 +2,13 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import RET_FAIL
 from ftk.ftk_input_method_manager import *
 
-class TestInputMethodManager(common.FtkTestCase):
+class TestInputMethodManager(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
         self.manager = ftk_input_method_manager_create()
 
     def tearDown(self):

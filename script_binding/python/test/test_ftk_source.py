@@ -2,7 +2,7 @@
 
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import FTK_EVT_IDLE, RET_OK, ZERO_LEN_ARRAY
 from ftk.ftk_event import FtkEvent
 from ftk.ftk_source import *
@@ -29,7 +29,7 @@ def _dispatch(thiz):
 def _destroy(thiz):
     pass
 
-class TestFtkSourceInlineFuncs(common.FtkTestCase):
+class TestFtkSourceInlineFuncs(test_common.FtkTestCase):
     def test_ftk_source_disable(self):
         src = FtkSource(disable=0)
         ftk_source_disable(src)
@@ -74,9 +74,9 @@ class TestFtkSourceInlineFuncs(common.FtkTestCase):
         ftk_source_unref(src)
         self.assertEqual(src.ref, 0)
 
-class TestFtkIdleSource(common.FtkTestCase):
+class TestFtkIdleSource(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_create(self):
         user_data = {"cnt" : 1}
@@ -89,9 +89,9 @@ class TestFtkIdleSource(common.FtkTestCase):
         self.assertFtkError(IDLE_ACTION_RVAL, ftk_source_dispatch, idle_src)
         ftk_source_destroy(idle_src)
 
-class TestFtkTimerSource(common.FtkTestCase):
+class TestFtkTimerSource(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_create(self):
         user_data = (1, 2, 3)
@@ -122,9 +122,9 @@ class TestFtkTimerSource(common.FtkTestCase):
         ftk_source_timer_modify(timer_src, 200)
         ftk_source_destroy(timer_src)
 
-class TestFtkPrimarySource(common.FtkTestCase):
+class TestFtkPrimarySource(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_create(self):
         def on_event_fn(user_data, event):

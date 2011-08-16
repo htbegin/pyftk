@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import unittest
-import common
+import test_common
 from ftk.ftk_font_desc import *
 
 class TestFontDesc(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_create(self):
         desc = ftk_font_desc_create("size:16 bold:0 italic:0")

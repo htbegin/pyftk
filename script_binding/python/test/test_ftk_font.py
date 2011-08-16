@@ -3,17 +3,18 @@
 
 import unittest
 
-import common
-from ftk.ftk_constants import RET_OK, RET_FAIL
+import test_common
 from ftk.ftk_font_desc import ftk_font_desc_create, ftk_font_desc_unref
 from ftk.ftk_font import *
 
 class TestFont(unittest.TestCase):
     def setUp(self):
-        common.disable_debug_log()
-        common.setup_allocator()
+        test_common.disable_debug_log()
+        test_common.setup_allocator()
+        test_common.setup_config()
+        font_fpath = test_common.get_ftk_data_path("data/font.ttf")
         self.desc = ftk_font_desc_create("size:24 bold:0 italic:0")
-        self.font = ftk_font_create("font.ttf", self.desc)
+        self.font = ftk_font_create(font_fpath, self.desc)
 
     def test_create_font(self):
         self.assertEqual(ftk_font_height(self.font), 24)

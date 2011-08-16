@@ -1,23 +1,25 @@
 #!/usr/bin/env python
 
+import sys
 import unittest
 
-import common
+import test_common
 from ftk.ftk_constants import RET_FAIL
 from ftk.ftk_bitmap import ftk_bitmap_unref
 from ftk.ftk_image_decoder import *
 
-class TestImageDecoder(common.FtkTestCase):
+class TestImageDecoder(test_common.FtkTestCase):
     def test_customized_decoder(self):
+        png_fpath = test_common.get_local_data_path(sys.argv[0], "test.png")
         decoder = FtkImageDecoder()
         self.assertFtkError(RET_FAIL, ftk_image_decoder_match,
-                decoder, "test.png")
-        ret = ftk_image_decoder_decode(decoder, "test.png")
+                decoder, png_fpath)
+        ret = ftk_image_decoder_decode(decoder, png_fpath)
         self.assertEqual(ret, None)
 
-class TestPngImageDecoder(common.FtkTestCase):
+class TestPngImageDecoder(test_common.FtkTestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
         self.png = ftk_image_png_decoder_create()
 
     def tearDown(self):
@@ -27,23 +29,29 @@ class TestPngImageDecoder(common.FtkTestCase):
         self.assertTrue(self.png is not None)
 
     def test_png_decoder_match(self):
-        ftk_image_decoder_match(self.png, "test.png")
+        png_fpath = test_common.get_local_data_path(sys.argv[0], "test.png")
+        ftk_image_decoder_match(self.png, png_fpath)
 
+        jpeg_fpath = test_common.get_local_data_path(sys.argv[0], "test.jpeg")
         self.assertFtkError(RET_FAIL, ftk_image_decoder_match,
-                self.png, "test.jpeg")
+                self.png, jpeg_fpath)
 
+        bmp_fpath = test_common.get_local_data_path(sys.argv[0], "test.bmp")
         self.assertFtkError(RET_FAIL, ftk_image_decoder_match,
-                self.png, "test.bmp")
+                self.png, bmp_fpath)
 
     def test_png_decoder_decode(self):
-        bitmap = ftk_image_decoder_decode(self.png, "test.png")
+        png_fpath = test_common.get_local_data_path(sys.argv[0], "test.png")
+        bitmap = ftk_image_decoder_decode(self.png, png_fpath)
         self.assertTrue(bitmap is not None)
         ftk_bitmap_unref(bitmap)
 
         # open file will fail
-        common.disable_debug_log()
-        bitmap = ftk_image_decoder_decode(self.png, "no_exist.png")
-        common.disable_verbose_log()
+        png_fpath = test_common.get_local_data_path(sys.argv[0],
+                "no_exist.png")
+        test_common.disable_debug_log()
+        bitmap = ftk_image_decoder_decode(self.png, png_fpath)
+        test_common.disable_verbose_log()
         self.assertTrue(bitmap is None)
 
 if __name__ == "__main__":

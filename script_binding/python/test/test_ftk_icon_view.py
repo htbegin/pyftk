@@ -3,7 +3,7 @@
 import unittest
 import ctypes
 
-import common
+import test_common
 from ftk.ftk_constants import RET_OK
 from ftk.ftk_typedef import FtkColor
 from ftk.ftk_bitmap import ftk_bitmap_create, ftk_bitmap_unref
@@ -12,7 +12,7 @@ from ftk.ftk_icon_view import *
 
 class TestIconViewItem(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
+        test_common.setup_allocator()
 
     def test_dft_value(self):
         item = FtkIconViewItem()
@@ -45,17 +45,17 @@ class TestIconViewItem(unittest.TestCase):
 
 class TestIconView(unittest.TestCase):
     def setUp(self):
-        common.setup_allocator()
-        common.disable_debug_log()
-        common.setup_config()
-        common.setup_theme()
-        common.setup_theme()
-        common.setup_bitmap()
-        common.setup_font()
+        test_common.setup_allocator()
+        test_common.disable_debug_log()
+        test_common.setup_config()
+        test_common.setup_theme()
+        test_common.setup_theme()
+        test_common.setup_bitmap()
+        test_common.setup_font()
         # parent is None
-        common.disable_warnning_log()
+        test_common.disable_warnning_log()
         self.view = ftk_icon_view_create(None, 0, 0, 40, 40)
-        common.disable_verbose_log()
+        test_common.disable_verbose_log()
 
     def test_item_operation(self):
         text_one = "one"
