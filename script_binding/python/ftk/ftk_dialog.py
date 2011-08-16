@@ -65,3 +65,9 @@ ftk_dialog_quit_after = ftk_dll.function('ftk_dialog_quit_after',
         arg_types=[_FtkWidgetPtr, ctypes.c_int],
         return_type=ctypes.c_int,
         check_return=True)
+
+ftk_dialog_get_title_height = ftk_dll.function('ftk_dialog_get_title_height',
+        '',
+        args=[],
+        arg_types=[],
+        return_type=ctypes.c_int)

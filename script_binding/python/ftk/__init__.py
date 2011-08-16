@@ -13,6 +13,7 @@ from ftk.ftk_typedef import *
 from ftk.ftk_log import *
 from ftk.ftk_config import *
 from ftk.ftk_params import *
+from ftk.ftk_input_pattern import *
 from ftk.ftk_event import *
 from ftk.ftk_allocator import *
 from ftk.ftk_source import *
@@ -75,5 +76,6 @@ from ftk.ftk_sprite import *
 from ftk.ftk_status_item import *
 from ftk.ftk_status_panel import *
 from ftk.ftk_tab import *
+from ftk.ftk_key_board import *
 
 from ftk.ftk_main import *

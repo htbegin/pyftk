@@ -54,7 +54,7 @@ ftk_widget_init = ftk_dll.function('ftk_widget_init',
         '',
         args=['thiz', 'type', 'id', 'x', 'y', 'width', 'height', 'attr'],
         arg_types=[_FtkWidgetPtr, ctypes.c_int, ctypes.c_int, ctypes.c_int,
-            ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int],
+            ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_uint],
         return_type=None)
 
 ftk_widget_type = ftk_dll.function('ftk_widget_type',
@@ -308,7 +308,7 @@ ftk_widget_remove_child = ftk_dll.function('ftk_widget_remove_child',
 ftk_widget_set_attr = ftk_dll.function('ftk_widget_set_attr',
         '',
         args=['thiz', 'attr'],
-        arg_types=[_FtkWidgetPtr, ctypes.c_int],
+        arg_types=[_FtkWidgetPtr, ctypes.c_uint],
         return_type=None)
 
 ftk_widget_unset_attr = ftk_dll.function('ftk_widget_unset_attr',

@@ -34,7 +34,7 @@ ftk_params.h
 
 *ftk_dlfcn.h*
 
-*ftk_key.h*
+ftk_key.h
 
 ftk_event.h
 

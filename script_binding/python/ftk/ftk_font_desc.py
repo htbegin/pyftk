@@ -80,10 +80,16 @@ _ftk_font_desc_get_string = ftk_dll.private_function(
         check_return=True)
 
 def ftk_font_desc_get_string(thiz):
-    FONT_DESC_LEN = 64
+    FONT_DESC_LEN = 128
     desc = ctypes.create_string_buffer(FONT_DESC_LEN)
     _ftk_font_desc_get_string(thiz, desc, ctypes.sizeof(desc))
     return desc.value
+
+ftk_font_desc_get_fontname = ftk_dll.function('ftk_font_desc_get_fontname',
+        '',
+        args=['thiz'],
+        arg_types=[_FtkFontDescPtr],
+        return_type=ctypes.c_char_p)
 
 ftk_font_desc_ref = ftk_dll.function('ftk_font_desc_ref',
         '',

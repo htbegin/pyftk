@@ -112,3 +112,7 @@ def ftk_app_demo_wait_box_create():
 def ftk_app_demo_tab_create():
     from demo_tab import ftk_main
     return FtkApp("tab", _get_demo_icon, ftk_main)
+
+def ftk_app_demo_keyboard_create():
+    from demo_keyboard import ftk_main
+    return FtkApp("keyboard", _get_demo_icon, ftk_main)

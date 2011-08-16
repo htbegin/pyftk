@@ -24,6 +24,21 @@ def button_more_clicked(model, button):
 
     return RET_OK
 
+def button_remove_clicked(model, button):
+    total = ftk_list_model_get_total(model)
+    if total > 0:
+        ftk_list_model_remove(model, 0)
+
+    total = ftk_list_model_get_total(model)
+    if total > 0:
+        ftk_list_model_remove(model, total - 1)
+
+    total = ftk_list_model_get_total(model)
+    if total > 0:
+        ftk_list_model_remove(model, 0)
+
+    return RET_OK
+
 def on_item_clicked(ctx, vlist):
     model = ftk_list_view_get_model(vlist)
     i = ftk_list_view_get_selected(vlist)
@@ -87,13 +102,19 @@ def ftk_main():
     ftk_list_view_init(vlist, model, render, 40)
     ftk_list_model_unref(model)
 
-    button = ftk_button_create(win, width/4, 3 * height/4 + 5, width/4, 60)
+    button = ftk_button_create(win, 0, 3 * height / 4 + 5, width / 4, 60)
     ftk_widget_set_text(button, "more")
     ftk_widget_set_font_size(button, 20)
     ftk_button_set_clicked_listener(button, button_more_clicked, model)
 
-    button = ftk_button_create(win, width/2, 3 * height/4 + 5, width/4, 60)
+    button = ftk_button_create(win, width / 4, 3 * height / 4 + 5, width / 4, 60)
+    ftk_widget_set_text(button, "remove")
+    ftk_widget_set_font_size(button, 20)
+    ftk_button_set_clicked_listener(button, button_remove_clicked, model)
+
+    button = ftk_button_create(win, width / 2, 3 * height / 4 + 5, width / 4, 60)
     ftk_widget_set_text(button, "quit")
+    ftk_widget_set_font_size(button, 16)
     ftk_button_set_clicked_listener(button, button_quit_clicked, win)
     ftk_window_set_focus(win, button)
 

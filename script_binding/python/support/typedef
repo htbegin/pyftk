@@ -1,5 +1,4 @@
 Ret = ctypes.c_int
-size_t = ctypes.c_size_t
 
 # ftk_constants
 FtkWidgetAttr = ctypes.c_int
@@ -15,6 +14,7 @@ FtkMarqueeAttr = ctypes.c_int
 FtkBgStyle = ctypes.c_int
 FtkFileBrowserType = ctypes.c_int
 FtkTextAttr = ctypes.c_int
+FtkKey = ctypes.c_int
 
 # ftk_app_window
 FtkPrepareOptionsMenu = ftk_app_window.FtkPrepareOptionsMenu

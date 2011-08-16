@@ -43,3 +43,10 @@ ftk_combo_box_append = ftk_dll.function('ftk_combo_box_append',
         arg_types=[_FtkWidgetPtr, _FtkBitmapPtr, ctypes.c_char_p],
         return_type=ctypes.c_int,
         check_return=True)
+
+ftk_combo_box_get_entry = ftk_dll.function('ftk_combo_box_get_entry',
+        '',
+        args=['thiz'],
+        arg_types=[_FtkWidgetPtr],
+        return_type=_FtkWidgetPtr,
+        dereference_return=True)
