@@ -37,9 +37,9 @@
 
 static Ret message_box_on_button_clicked(void* ctx, void* obj)
 {
-	*(int*)ctx = ftk_widget_id(obj);
+	*(int*)ctx = ftk_widget_id((FtkWidget*)obj);
 
-	ftk_logd("%s: the %dth button is clicked.\n", __func__, ftk_widget_id(obj));
+	ftk_logd("%s: the %dth button is clicked.\n", __func__, ftk_widget_id((FtkWidget*)obj));
 
 	return RET_QUIT;
 }
@@ -62,7 +62,7 @@ static Ret ftk_message_box_size(int has_title, int has_button, const char* text,
 	width  = rect.width - 2 * (FTK_DIALOG_MARGIN + FTK_LABEL_LEFT_MARGIN + FTK_DIALOG_BORDER);
 
 	height = 4 * FTK_V_MARGIN + FTK_DIALOG_BORDER;
-	height += has_title ? FTK_DIALOG_TITLE_HEIGHT : 0;
+	height += has_title ? ftk_dialog_get_title_height() : 0;
 	height += has_button ? FTK_BUTTON_DEFAULT_HEIGHT : 0;
 
 	while(*end != '\0')
@@ -75,8 +75,8 @@ static Ret ftk_message_box_size(int has_title, int has_button, const char* text,
 	height = height < FTK_MESSAGE_BOX_MIN_HEIGHT ? FTK_MESSAGE_BOX_MIN_HEIGHT : height;
 	height = height < rect.height ? height : rect.height;
 
-	*h = height;
-	*w = rect.width;
+	*h = (height + 1) & 0xfffffffe;
+	*w = (rect.width + 1)  & 0xfffffffe;
 
 	return RET_OK;
 }
@@ -140,7 +140,7 @@ int ftk_message_box(FtkBitmap* icon, const char* title, const char* text, const 
 	yoffset = FTK_V_MARGIN;
 	w = width - 2 * (FTK_DIALOG_BORDER + FTK_H_MARGIN);
 	h = height - FTK_DIALOG_BORDER - 4 * FTK_V_MARGIN;
-	h -= has_title ? FTK_DIALOG_TITLE_HEIGHT : 0;
+	h -= has_title ? ftk_dialog_get_title_height() : 0;
 	h -= buttons_nr > 0 ? FTK_BUTTON_DEFAULT_HEIGHT : 0;
 
 	label = ftk_label_create(dialog, xoffset, yoffset, w, h);
@@ -154,7 +154,7 @@ int ftk_message_box(FtkBitmap* icon, const char* title, const char* text, const 
 		w = FTK_BUTTON_DEFAULT_WIDTH;
 		h = FTK_BUTTON_DEFAULT_HEIGHT;
 		w = ((buttons_nr + 1) * w) < width ? w : (width / (buttons_nr + 1));
-		yoffset = height - h - FTK_V_MARGIN - (has_title ? FTK_DIALOG_TITLE_HEIGHT : 0);
+		yoffset = height - h - FTK_V_MARGIN - (has_title ? ftk_dialog_get_title_height() : 0);
 		h_margin = (width - buttons_nr * w) / (buttons_nr + 1);
 
 		for(i = 0; i < buttons_nr; i++)

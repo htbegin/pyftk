@@ -326,9 +326,9 @@ static Ret ftk_window_on_event(FtkWidget* thiz, FtkEvent* event)
 		}
 		case FTK_EVT_SHOW:
 		{
-			FtkEvent event = {0};
+			FtkEvent event;
+			ftk_event_init(&event, FTK_EVT_SHOW);
 			event.widget = thiz;
-			event.type = FTK_EVT_SHOW;
 			ftk_window_realize(thiz);
 			if(priv->focus_widget == NULL)
 			{
@@ -341,9 +341,9 @@ static Ret ftk_window_on_event(FtkWidget* thiz, FtkEvent* event)
 		}
 		case FTK_EVT_HIDE:
 		{
-			FtkEvent event = {0};
+			FtkEvent event;
+			ftk_event_init(&event, FTK_EVT_HIDE);
 			event.widget = thiz;
-			event.type = FTK_EVT_HIDE;
 			ftk_wnd_manager_dispatch_event(ftk_default_wnd_manager(), &event);
 
 			break;
@@ -386,7 +386,7 @@ static Ret ftk_window_on_event(FtkWidget* thiz, FtkEvent* event)
 		}
 		default:
 		{
-			ftk_logd("%s: type=%d\n", __func__, event->type);
+			//ftk_logd("%s: type=%d\n", __func__, event->type);
 			break;
 		}
 	}
@@ -406,7 +406,7 @@ static Ret ftk_window_realize(FtkWidget* thiz)
 
 static Ret ftk_window_on_paint(FtkWidget* thiz)
 {
-	ftk_logd("%s: %s\n", __func__, ftk_widget_get_text(thiz));
+//	ftk_logd("%s: %s\n", __func__, ftk_widget_get_text(thiz));
 	return RET_OK;
 }
 
@@ -414,10 +414,10 @@ static void ftk_window_destroy(FtkWidget* thiz)
 {
 	if(thiz != NULL)
 	{
-		FtkEvent event = {0};
+		FtkEvent event;
 		DECL_PRIV0(thiz, priv);
 
-		event.type = FTK_EVT_WND_DESTROY;
+		ftk_event_init(&event, FTK_EVT_WND_DESTROY);
 		event.widget = thiz;
 
 		ftk_wnd_manager_dispatch_event(ftk_default_wnd_manager(), &event);
@@ -485,10 +485,10 @@ Ret ftk_window_set_fullscreen(FtkWidget* thiz, int fullscreen)
 
 	if(priv->fullscreen != fullscreen)
 	{
-		FtkEvent event = {0};
+		FtkEvent event;
 		priv->fullscreen = fullscreen;
 
-		event.type = FTK_EVT_RELAYOUT_WND;
+		ftk_event_init(&event, FTK_EVT_RELAYOUT_WND);
 		ftk_wnd_manager_dispatch_event(ftk_default_wnd_manager(), &event);
 	}
 
@@ -597,7 +597,7 @@ Ret ftk_window_invalidate(FtkWidget* thiz, FtkRect* rect)
 		if(r->x == rect->x && r->y == rect->y 
 			&& r->width == rect->width && r->height == rect->height)
 		{
-			ftk_logd("%s: remove repeated rect\n", __func__);
+			//ftk_logd("%s: remove repeated rect\n", __func__);
 			return RET_OK;
 		}
 	}
@@ -628,7 +628,7 @@ FtkWidget* ftk_window_create(int type, unsigned int attr, int x, int y, int widt
 	return_val_if_fail(thiz != NULL, NULL);
 
 	PROFILE_TIME("window create begin");
-	thiz->priv_subclass[0] = FTK_ZALLOC(sizeof(PrivInfo));
+	thiz->priv_subclass[0] = (PrivInfo*)FTK_ZALLOC(sizeof(PrivInfo));
 	if(thiz->priv_subclass[0] != NULL)
 	{
 		FtkGc gc = {0};

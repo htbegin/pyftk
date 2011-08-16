@@ -74,15 +74,15 @@ static void ftk_combo_box_destroy(FtkWidget* thiz)
 static Ret ftk_popup_on_item_clicked(void* ctx, void* list)
 {
 	FtkListItemInfo* info = NULL;
-	int i = ftk_list_view_get_selected(list);
-	FtkListModel* model = ftk_list_view_get_model(list);
+	int i = ftk_list_view_get_selected((FtkWidget*)list);
+	FtkListModel* model = ftk_list_view_get_model((FtkWidget*)list);
 	
 	ftk_list_model_get_data(model, i, (void**)&info);
 	if(info != NULL)
 	{
-		ftk_entry_set_text(info->user_data, info->text);
+		ftk_entry_set_text((FtkWidget*)info->user_data, info->text);
 	}
-	ftk_widget_unref(ctx);
+	ftk_widget_unref((FtkWidget*)ctx);
 
 	return RET_OK;
 }
@@ -137,7 +137,7 @@ static Ret button_drop_down_clicked(void* ctx, void* obj)
 	int y = 0;
 	int w = 200;
 	int h = 100;
-	FtkWidget* thiz  = ctx;
+	FtkWidget* thiz  = (FtkWidget*)ctx;
 	DECL_PRIV0(thiz, priv);
 	FtkWidget* popup = NULL;
 	FtkWidget* list  = NULL;
@@ -243,6 +243,14 @@ Ret ftk_combo_box_set_text(FtkWidget* thiz, const char* text)
 	return_val_if_fail(thiz != NULL && text != NULL, RET_FAIL);
 
 	return ftk_entry_set_text(priv->entry, text);	
+}
+
+FtkWidget* ftk_combo_box_get_entry(FtkWidget* thiz)
+{
+	DECL_PRIV0(thiz, priv);
+	return_val_if_fail(thiz != NULL, NULL);
+
+	return priv->entry;
 }
 
 Ret ftk_combo_box_append(FtkWidget* thiz, FtkBitmap* icon, const char* text)

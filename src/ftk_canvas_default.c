@@ -120,12 +120,13 @@ static Ret ftk_canvas_default_set_clip(FtkCanvas* thiz, FtkRegion* clip)
 		priv->clip_regions[0].next = NULL;
 	}
 
+#if 0
 	for(iter = priv->clip_regions; iter != NULL; iter = iter->next)
 	{
 		ftk_logd("%s:%d clip(%d %d %d %d)\n", __func__, __LINE__, 
 			iter->rect.x, iter->rect.y, iter->rect.width, iter->rect.height);
 	}
-
+#endif
 	return RET_OK;
 }
 
@@ -177,7 +178,7 @@ static Ret ftk_canvas_default_draw_vline(FtkCanvas* thiz, size_t x, size_t y, si
 	pdst = bits + width * y + x;
 	color = &(thiz->gc.fg);
 	
-	for(i = h; i >= 0; i--, pdst+=width)
+	for(i = h; i > 0; i--, pdst+=width)
 	{
 		PUT_PIXEL(pdst, color, alpha);
 	}
@@ -208,7 +209,7 @@ static Ret ftk_canvas_default_draw_hline(FtkCanvas* thiz, size_t x, size_t y, si
 	color = &(thiz->gc.fg);
 	pdst = bits + y * width + x;
 	
-	for(i = w; i >= 0; i--, pdst++)
+	for(i = w; i > 0; i--, pdst++)
 	{
 		PUT_PIXEL(pdst, color, alpha);
 	}
@@ -225,7 +226,7 @@ static Ret ftk_canvas_default_draw_normal_line(FtkCanvas* thiz, int x1, int y1, 
 	int y = 0;
 	int dx = abs(x2 - x1);  
 	int dy = abs(y2 - y1);  
-	FtkBool direction = 0;  
+	int direction = 0;  
 	int inc_x = 0;  
 	int inc_y = 0;  
 	int cur_x = x1;  
@@ -389,7 +390,6 @@ static Ret ftk_canvas_default_clear_rect(FtkCanvas* thiz, size_t x, size_t y, si
 	w = rect.width;
 	h = rect.height;
 
-	ftk_logd("%s: %d %d %d %d\n", __func__, x, y, w, h);
 	iter_w = w;
 	iter_h = h;
 	bits += y * width;
@@ -675,7 +675,7 @@ static Ret ftk_canvas_default_draw_bitmap(FtkCanvas* thiz, FtkBitmap* bitmap,
 	if(rect.width <= 0 || rect.height <= 0)
 	{
 //		ftk_logd("%s: skip.\n", __func__);
-		return 0;
+		return RET_OK;
 	}
 
 	if(alpha == 0)
@@ -929,7 +929,7 @@ FtkCanvas* ftk_canvas_create(size_t w, size_t h, FtkColor* clear_color)
 	FtkCanvas* thiz = NULL;
 	return_val_if_fail(w > 0 && h > 0 && clear_color != NULL, NULL);
 
-	if((thiz = FTK_ZALLOC(sizeof(FtkCanvas) + sizeof(PrivInfo))) != NULL)
+	if((thiz = FTK_NEW_PRIV(FtkCanvas)) != NULL)
 	{
 		DECL_PRIV(thiz, priv);
 

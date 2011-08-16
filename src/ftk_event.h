@@ -78,7 +78,9 @@ typedef enum _FtkEventType
 	FTK_EVT_LOCALE_CHANGED,
 	FTK_EVT_DISPLAY_CHANGED, 
 	FTK_EVT_TOP_WND_CHANGED,
-	FTK_EVT_WND_CONFIG_CHANGED
+	FTK_EVT_WND_CONFIG_CHANGED,
+	FTK_EVT_TAB_PAGE_ACTIVATE,
+	FTK_EVT_TAB_PAGE_DEACTIVATE
 }FtkEventType;
 
 typedef struct _FtkEvent
@@ -117,6 +119,17 @@ typedef struct _FtkEvent
 }FtkEvent;
 
 typedef Ret (*FtkOnEvent)(void* user_data, FtkEvent* event);
+
+static inline Ret ftk_event_init(FtkEvent* event, FtkEventType type)
+{
+	if(event != NULL)
+	{
+		memset(event, 0x00, sizeof(FtkEvent));
+		event->type = type;
+	}
+
+	return RET_OK;
+}
 
 FTK_END_DECLS
 

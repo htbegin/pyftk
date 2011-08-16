@@ -33,6 +33,7 @@
 #include "ftk_log.h"
 #include "ftk_entry.h"
 #include "ftk_globals.h"
+#include "ftk_window.h"
 #include "ftk_text_buffer.h"
 #include "ftk_source_timer.h"
 #include "ftk_input_method_preeditor.h"
@@ -63,6 +64,7 @@ typedef struct _PrivInfo
 static Ret ftk_entry_on_paint_caret(FtkWidget* thiz);
 static Ret ftk_entry_update_caret_pos(FtkWidget* thiz);
 static Ret ftk_entry_compute_visible_range(FtkWidget* thiz);
+static Ret ftk_entry_set_text_internal(FtkWidget* thiz, const char* text);
 
 static Ret ftk_entry_move_caret(FtkWidget* thiz, int offset)
 {
@@ -245,7 +247,6 @@ static Ret ftk_entry_on_event(FtkWidget* thiz, FtkEvent* event)
 {
 	Ret ret = RET_OK;
 	DECL_PRIV0(thiz, priv);
-	FtkInputMethod* im = NULL;
 	return_val_if_fail(thiz != NULL && event != NULL, RET_FAIL);
 
 	switch(event->type)
@@ -253,7 +254,7 @@ static Ret ftk_entry_on_event(FtkWidget* thiz, FtkEvent* event)
 		case FTK_EVT_FOCUS_IN:
 		{
 			ftk_input_method_manager_focus_in(ftk_default_input_method_manager(), thiz);
-			ftk_input_method_manager_set_current_type(ftk_default_input_method_manager(), priv->input_type);
+			ftk_input_method_manager_set_current_type(ftk_default_input_method_manager(), (FtkInputType)priv->input_type);
 			ftk_source_ref(priv->caret_timer);
 			ftk_source_timer_reset(priv->caret_timer);
 			ftk_main_loop_add_source(ftk_default_main_loop(), priv->caret_timer);
@@ -286,12 +287,12 @@ static Ret ftk_entry_on_event(FtkWidget* thiz, FtkEvent* event)
 		}
 		case FTK_EVT_IM_PREEDIT:
 		{
-			ftk_im_show_preeditor(thiz, &(priv->caret_pos), event->u.extra);
+			ftk_im_show_preeditor(thiz, &(priv->caret_pos), (FtkCommitInfo*)event->u.extra);
 			break;
 		}
 		case FTK_EVT_IM_COMMIT:
 		{
-			ftk_entry_input_str(thiz, event->u.extra);
+			ftk_entry_input_str(thiz, (const char*)event->u.extra);
 			ftk_input_method_manager_focus_ack_commit(ftk_default_input_method_manager());
 			break;
 		}
@@ -305,7 +306,7 @@ static Ret ftk_entry_on_event(FtkWidget* thiz, FtkEvent* event)
 		}
 		case FTK_EVT_SET_TEXT:
 		{
-			ftk_entry_set_text(thiz, event->u.extra);
+			ftk_entry_set_text_internal(thiz, (const char*)event->u.extra);
 			ret = RET_REMOVE;
 
 			break;
@@ -350,7 +351,7 @@ static Ret ftk_entry_update_caret_pos(FtkWidget* thiz)
 			extent = ftk_canvas_get_extent(canvas, TB_TEXT+priv->visible_start, 
 				priv->caret - priv->visible_start);
 
-			ftk_logd("%s: %d len=%d\n", __func__, extent, priv->caret - priv->visible_start);
+			//ftk_logd("%s: %d len=%d\n", __func__, extent, priv->caret - priv->visible_start);
 		}
 
 		ftk_canvas_reset_gc(canvas, &gc);
@@ -385,15 +386,13 @@ static Ret ftk_entry_on_paint_caret(FtkWidget* thiz)
 	gc.mask = FTK_GC_FG;
 	if(ftk_widget_is_focused(thiz))
 	{
-		int extent = 0;
-
 		priv->caret_visible = !priv->caret_visible;
 		gc.fg = priv->caret_visible ? ftk_widget_get_gc(thiz)->fg : ftk_widget_get_gc(thiz)->bg;
 		
 		x = priv->caret_pos.x;
 		y = priv->caret_pos.y;
 		ftk_canvas_reset_gc(canvas, &gc);
-		ftk_canvas_draw_vline(canvas, x, y, height - 2 * FTK_ENTRY_V_MARGIN);
+		ftk_canvas_draw_vline(canvas, x, y, height - (3 * FTK_ENTRY_V_MARGIN)/2 );
 		FTK_END_PAINT();
 	}
 
@@ -428,7 +427,7 @@ static Ret ftk_entry_on_paint(FtkWidget* thiz)
 	ftk_canvas_draw_hline(canvas, x + 2, y + height - 2, width-4);
 
 	ftk_canvas_set_gc(canvas, ftk_widget_get_gc(thiz)); 
-	if(priv->text_buffer != NULL || priv->tips != NULL)
+	if(HAS_TEXT(priv) || priv->tips != NULL)
 	{
 		FtkTextLine line = {0};
 		FtkTextLayout* text_layout = ftk_default_text_layout();
@@ -546,7 +545,7 @@ static Ret ftk_entry_compute_visible_range(FtkWidget* thiz)
 	return RET_OK;
 }
 
-Ret ftk_entry_set_text(FtkWidget* thiz, const char* text)
+static Ret ftk_entry_set_text_internal(FtkWidget* thiz, const char* text)
 {
 	DECL_PRIV0(thiz, priv);
 	return_val_if_fail(thiz != NULL && text != NULL, RET_FAIL);
@@ -604,5 +603,12 @@ const char* ftk_entry_get_text(FtkWidget* thiz)
 	return_val_if_fail(thiz != NULL, NULL);
 
 	return TB_TEXT;
+}
+
+Ret ftk_entry_set_text(FtkWidget* thiz, const char* text)
+{
+	ftk_widget_set_text(thiz, text);
+
+	return RET_OK;
 }
 

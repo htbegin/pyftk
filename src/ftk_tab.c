@@ -285,7 +285,7 @@ static void ftk_tab_destroy(FtkWidget* thiz)
 			FTK_FREE(iter->text);
 			FTK_BITMAP_UNREF(iter->icon);
 		}
-
+		FTK_FREE(priv->pages);
 		FTK_ZFREE(priv, sizeof(PrivInfo));
 	}
 
@@ -379,7 +379,7 @@ FtkWidget* ftk_tab_add_page(FtkWidget* thiz, const char* text, FtkBitmap* icon)
 	if((priv->page_use_nr + 1) > priv->page_total_nr)
 	{
 		size_t page_total_nr = priv->page_total_nr + 3;
-		TabPage* pages = FTK_REALLOC(priv->pages, page_total_nr * sizeof(TabPage));
+		TabPage* pages = (TabPage*)FTK_REALLOC(priv->pages, page_total_nr * sizeof(TabPage));
 		if(pages != NULL)
 		{
 			priv->pages = pages;
@@ -421,11 +421,25 @@ Ret ftk_tab_set_active_page(FtkWidget* thiz, size_t index)
 
 	if(priv->active_page != index)
 	{
+		FtkEvent event;
+		size_t old = priv->active_page;
+
 		priv->active_page = index;
+		memset(&event, 0x00, sizeof(event));
+
+		ftk_event_init(&event, FTK_EVT_TAB_PAGE_DEACTIVATE);
+		event.widget = priv->pages[old].page;
+		ftk_widget_event(thiz, &event);
+		
+		ftk_event_init(&event, FTK_EVT_TAB_PAGE_ACTIVATE);
+		event.widget = priv->pages[index].page;
+		ftk_widget_event(thiz, &event);
+		
 		for(i = 0; i < priv->page_use_nr; i++)
 		{
 			ftk_widget_show_all(priv->pages[i].page, i == priv->active_page);
 		}
+
 		ftk_widget_invalidate(thiz);
 	}
 

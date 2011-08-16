@@ -151,6 +151,7 @@ typedef enum _FtkWidgetType
 	FTK_COMBO_BOX,
 	FTK_TAB,
 	FTK_TAB_PAGE,
+	FTK_KEY_BOARD,
 	FTK_WIDGET_TYPE_NR
 }FtkWidgetType;
 
@@ -263,7 +264,6 @@ typedef struct _FtkCommitInfo
 #define FTK_STATUS_PANEL_HEIGHT 36
 #define FTK_DIALOG_MARGIN       (ftk_display_width(ftk_default_display()) >> 5)
 #define FTK_DIALOG_BORDER       2
-#define FTK_DIALOG_TITLE_HEIGHT 32
 #define FTK_SCROLL_BAR_WIDTH    10
 #define FTK_MENU_MAX_ITEM       16
 #define FTK_MENU_ITEM_HEIGHT    48
@@ -323,6 +323,9 @@ typedef struct _FtkCommitInfo
 #define FTK_ZFREE(p, size) ftk_allocator_zfree(ftk_default_allocator(), p, size); p = NULL
 #define FTK_STRDUP(p)      p != NULL ? ftk_strdup(p) : NULL
 #endif
+
+#define FTK_NEW(Type)      (Type*)FTK_ZALLOC(sizeof(Type))
+#define FTK_NEW_PRIV(Type) (Type*)FTK_ZALLOC(sizeof(Type) + sizeof(PrivInfo))
 
 #ifdef HAVE_CONFIG_FTK_H
 #include "config_ftk.h"

@@ -1,4 +1,3 @@
-
 /*
  * File: ftk_sylixos.h
  * Author:  Han.hui <sylixos@gmail.com>
@@ -71,6 +70,10 @@
 #define ftk_pipe_recv(fd, buf, length)  read(fd, buf, length)
 #define ftk_pipe_send(fd, buf, length)  write(fd, buf, length)
 
+void ftk_assert(int cond, const char* func, const char* file, int line);
+#undef assert
+#define assert(cond)                    ftk_assert(cond, __func__, __FILE__, __LINE__)
+
 #include "./config_ftk.h"
 
 #define FTK_PATH_DELIM                  '/'
@@ -80,4 +83,3 @@
 #define FTK_HAS_LUA                     1
 
 #endif  /* FTK_SYLIXOS_H */
-

@@ -50,7 +50,7 @@ struct _FtkFontManager
 
 FtkFontManager* ftk_font_manager_create(int max_font_nr)
 {
-	FtkFontManager* thiz = FTK_ZALLOC(sizeof(FtkFontManager) 
+	FtkFontManager* thiz = (FtkFontManager*)FTK_ZALLOC(sizeof(FtkFontManager) 
 		+ sizeof(FtkFontEntry) * max_font_nr);
 
 	if(thiz != NULL)
@@ -98,10 +98,10 @@ FtkFont* ftk_font_manager_load(FtkFontManager* thiz, FtkFontDesc* font_desc)
 	return_val_if_fail((thiz->used_nr+1) < thiz->nr, NULL);
 
 #if defined(USE_FREETYPE) && defined(ANDROID) && defined(ANDROID_NDK)
-	ftk_strcpy(filename, FTK_FONT);
+	ftk_strcpy(filename, ftk_font_desc_get_fontname(font_desc));
 #else
 	ftk_strs_cat(filename, FTK_MAX_PATH, 
-		ftk_config_get_data_dir(ftk_default_config()), "/data/", FTK_FONT, NULL);
+		ftk_config_get_data_dir(ftk_default_config()), "/data/", ftk_font_desc_get_fontname(font_desc), NULL);
 	ftk_normalize_path(filename);
 #endif
 	font = ftk_font_create(filename, font_desc);
@@ -132,7 +132,7 @@ void ftk_font_manager_destroy(FtkFontManager* thiz)
 	{
 		for(i = 0; i < thiz->used_nr; i++)
 		{
-			ftk_font_unref(thiz->fonts[i].font);
+			ftk_font_destroy(thiz->fonts[i].font);
 			ftk_font_desc_unref(thiz->fonts[i].font_desc);
 		}
 

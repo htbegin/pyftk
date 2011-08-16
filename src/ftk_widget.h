@@ -67,7 +67,7 @@ struct _FtkWidget
 };
 
 void ftk_widget_init(FtkWidget* thiz, int type, int id, int x, int y, 
-	int width, int height, FtkWidgetAttr attr);
+	int width, int height, unsigned int attr);
 int ftk_widget_type(FtkWidget* thiz);
 int ftk_widget_top(FtkWidget* thiz);
 int ftk_widget_left(FtkWidget* thiz);
@@ -101,6 +101,7 @@ void ftk_widget_resize(FtkWidget* thiz, int width, int height);
 void ftk_widget_move_resize(FtkWidget* thiz, int x, int y, int width, int height);
 void ftk_widget_set_type(FtkWidget* thiz, int type);
 void ftk_widget_set_insensitive(FtkWidget* thiz, int insensitive);
+/*ftk_widget_set_focused is internal used. user should call ftk_window_set_focus*/
 void ftk_widget_set_focused(FtkWidget* thiz, int focused);
 void ftk_widget_set_active(FtkWidget* thiz, int active);
 void ftk_widget_set_id(FtkWidget* thiz, int id);
@@ -109,7 +110,7 @@ void ftk_widget_set_parent(FtkWidget* thiz, FtkWidget* parent);
 void ftk_widget_append_child(FtkWidget* thiz, FtkWidget* child);
 void ftk_widget_append_sibling(FtkWidget* thiz, FtkWidget* next);
 void ftk_widget_remove_child(FtkWidget* thiz, FtkWidget* child);
-void ftk_widget_set_attr(FtkWidget* thiz, FtkWidgetAttr attr);
+void ftk_widget_set_attr(FtkWidget* thiz, unsigned int attr);
 void ftk_widget_unset_attr(FtkWidget* thiz, FtkWidgetAttr attr);
 void ftk_widget_set_user_data(FtkWidget* thiz, FtkDestroy destroy, void* data);
 void ftk_widget_set_gc(FtkWidget* thiz, FtkWidgetState state, FtkGc* gc);

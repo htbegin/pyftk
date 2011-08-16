@@ -61,10 +61,10 @@ static void ftk_popup_menu_destroy(FtkWidget* thiz)
 }
 static Ret ftk_popup_menu_on_item_clicked(void* ctx, void* list)
 {
-	FtkWidget* thiz = ctx;
+	FtkWidget* thiz = (FtkWidget*)ctx;
 	FtkListItemInfo* info = NULL;
-	int i = ftk_list_view_get_selected(list);
-	FtkListModel* model = ftk_list_view_get_model(list);
+	int i = ftk_list_view_get_selected((FtkWidget*)list);
+	FtkListModel* model = ftk_list_view_get_model((FtkWidget*)list);
 	ftk_list_model_get_data(model, i, (void**)&info);
 	
 	if(info != NULL)
@@ -91,8 +91,8 @@ FtkWidget* ftk_popup_menu_create(int x, int y, int w, int h, FtkBitmap* icon, co
 	
 	return_val_if_fail(thiz != NULL, NULL);
 
-	thiz->priv_subclass[2] = FTK_ZALLOC(sizeof(PrivInfo));
-	priv = thiz->priv_subclass[2];
+	thiz->priv_subclass[2] = (PrivInfo*)FTK_ZALLOC(sizeof(PrivInfo));
+	priv = (PrivInfo*)thiz->priv_subclass[2];
 	if(has_title)
 	{
 		ftk_dialog_set_icon(thiz, icon);
@@ -123,7 +123,7 @@ static Ret ftk_popup_menu_init(FtkWidget* thiz)
 	return_val_if_fail(thiz != NULL, RET_FAIL);
 
 	w = ftk_widget_width(thiz)  - 2 * FTK_DIALOG_BORDER;
-	h = ftk_widget_height(thiz) - FTK_DIALOG_BORDER - FTK_DIALOG_TITLE_HEIGHT;
+	h = ftk_widget_height(thiz) - FTK_DIALOG_BORDER - ftk_dialog_get_title_height();
 
 	list = ftk_list_view_create(thiz, 0, 0, w, h);
 	ftk_list_view_set_clicked_listener(list, ftk_popup_menu_on_item_clicked, thiz);
@@ -175,7 +175,7 @@ int ftk_popup_menu_calc_height(int has_title, int visible_items)
 	height += 2 * FTK_DIALOG_BORDER;
 	if(has_title)
 	{
-		height += FTK_DIALOG_TITLE_HEIGHT;
+		height += ftk_dialog_get_title_height();
 	}
 
 	return height;

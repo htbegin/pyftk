@@ -34,10 +34,18 @@
 #include "ftk_event.h"
 #include "ftk_source.h"
 
-#ifndef FTK_TS_NAME
-#define FTK_TS_NAME     "/dev/input/touch0"
+#ifndef FTK_DEFAULT_TOUCH
+#define FTK_DEFAULT_TOUCH       "/dev/input/touch0"
 #endif
 
-void ftk_source_sylixos_input_create(void);
+#ifndef FTK_DEFAULT_KEYBOARD
+#define FTK_DEFAULT_KEYBOARD    "/dev/input/keyboard0"
+#endif
+
+#ifndef FTK_DEFAULT_MOUSE
+#define FTK_DEFAULT_MOUSE       "/dev/input/mouse0"
+#endif
+
+FtkSource* ftk_source_sylixos_input_create(void);
 
 #endif  /*FTK_SOURCE_SYLIXOS_H*/

@@ -58,7 +58,7 @@ struct _FtkWidgetInfo
 
 	int painting;
 	FtkCanvas* canvas;
-	FtkWidgetAttr attr;
+	unsigned int attr;
 	FtkWidgetState state;
 	FtkGc gc[FTK_WIDGET_STATE_NR];
 	void* user_data;
@@ -88,7 +88,7 @@ static void ftk_widget_validate_position_size(FtkWidget* thiz);
  *
  */
 void ftk_widget_init(FtkWidget* thiz, int type, int id, int x, int y, 
-	int width, int height, FtkWidgetAttr attr)
+	int width, int height, unsigned int attr)
 {
 	return_if_fail(thiz != NULL && thiz->priv == NULL);
 
@@ -98,7 +98,7 @@ void ftk_widget_init(FtkWidget* thiz, int type, int id, int x, int y,
 	if(thiz->priv != NULL)
 	{
 		FtkWidgetInfo* priv =  thiz->priv;
-		FtkWidgetState state = FTK_WIDGET_NORMAL;
+		int state = FTK_WIDGET_NORMAL;
 
 		priv->id     = id;
 		priv->type   = type;
@@ -111,10 +111,10 @@ void ftk_widget_init(FtkWidget* thiz, int type, int id, int x, int y,
 		for(; state < FTK_WIDGET_STATE_NR; state++)
 		{
 			priv->gc[state].mask   = FTK_GC_BG | FTK_GC_FG | FTK_GC_FONT;
-			priv->gc[state].font   = ftk_theme_get_font(ftk_default_theme(), type);
-			priv->gc[state].fg     = ftk_theme_get_fg_color(ftk_default_theme(), type, state);
-			priv->gc[state].bg     = ftk_theme_get_bg_color(ftk_default_theme(), type, state);
-			priv->gc[state].bitmap = ftk_theme_get_bg(ftk_default_theme(), type, state);
+			priv->gc[state].font   = ftk_theme_get_font(ftk_default_theme(), (FtkWidgetType)type);
+			priv->gc[state].fg     = ftk_theme_get_fg_color(ftk_default_theme(), (FtkWidgetType)type, (FtkWidgetState)state);
+			priv->gc[state].bg     = ftk_theme_get_bg_color(ftk_default_theme(), (FtkWidgetType)type, (FtkWidgetState)state);
+			priv->gc[state].bitmap = ftk_theme_get_bg(ftk_default_theme(), (FtkWidgetType)type, (FtkWidgetState)state);
 
 			if(priv->gc[state].bitmap != NULL) priv->gc[state].mask |= FTK_GC_BITMAP;
 		}
@@ -315,7 +315,7 @@ Ret ftk_widget_update(FtkWidget* thiz)
 
 Ret ftk_widget_update_rect(FtkWidget* thiz, FtkRect* rect)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	FtkWidget* window = NULL;
 	FtkWidgetInfo* priv = NULL;
 	return_val_if_fail(thiz != NULL, RET_FAIL);
@@ -323,7 +323,7 @@ Ret ftk_widget_update_rect(FtkWidget* thiz, FtkRect* rect)
 	return_val_if_fail(window != NULL, RET_FAIL);
 
 	priv =  thiz->priv;
-	event.type = FTK_EVT_UPDATE;
+	ftk_event_init(&event, FTK_EVT_UPDATE);
 	if(rect == NULL)
 	{
 		event.u.rect.x = ftk_widget_left_abs(thiz);
@@ -359,7 +359,7 @@ int ftk_widget_has_attr(FtkWidget* thiz, FtkWidgetAttr attr)
 
 FtkWidgetState ftk_widget_state(FtkWidget* thiz)
 {
-	return_val_if_fail(thiz != NULL && thiz->priv != NULL, 0);
+	return_val_if_fail(thiz != NULL && thiz->priv != NULL, FTK_WIDGET_NORMAL);
 
 	return thiz->priv->state;
 }
@@ -373,19 +373,19 @@ void* ftk_widget_user_data(FtkWidget* thiz)
 
 const char* ftk_widget_get_text(FtkWidget* thiz)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	return_val_if_fail(thiz != NULL && thiz->priv != NULL, NULL);
 	
-	event.type = FTK_EVT_GET_TEXT;
+	ftk_event_init(&event, FTK_EVT_GET_TEXT);
 	if(ftk_widget_event(thiz, &event) == RET_REMOVE)
 	{
-		return event.u.extra;
+		return (char*)event.u.extra;
 	}
 
 	return thiz->priv->text != NULL ? thiz->priv->text : "";
 }
 
-void ftk_widget_set_attr(FtkWidget* thiz, FtkWidgetAttr attr)
+void ftk_widget_set_attr(FtkWidget* thiz, unsigned int attr)
 {
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 
@@ -432,7 +432,7 @@ void ftk_widget_set_user_data(FtkWidget* thiz, FtkDestroy destroy, void* data)
 
 void ftk_widget_move(FtkWidget* thiz, int x, int y)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 
 	if(thiz->priv->left == x && thiz->priv->top  == y)
@@ -446,8 +446,8 @@ void ftk_widget_move(FtkWidget* thiz, int x, int y)
 
 	if(thiz->on_event != NULL)
 	{
+		ftk_event_init(&event, FTK_EVT_MOVE);
 		event.widget = thiz;
-		event.type = FTK_EVT_MOVE;
 		ftk_widget_event(thiz, &event);
 	}
 
@@ -456,7 +456,7 @@ void ftk_widget_move(FtkWidget* thiz, int x, int y)
 
 void ftk_widget_resize(FtkWidget* thiz, int width, int height)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 
 	if(thiz->priv->width == width && thiz->priv->height == height)
@@ -470,8 +470,8 @@ void ftk_widget_resize(FtkWidget* thiz, int width, int height)
 
 	if(thiz->on_event != NULL)
 	{
+		ftk_event_init(&event, FTK_EVT_RESIZE);
 		event.widget = thiz;
-		event.type = FTK_EVT_RESIZE;
 		ftk_widget_event(thiz, &event);
 	}
 
@@ -480,7 +480,7 @@ void ftk_widget_resize(FtkWidget* thiz, int width, int height)
 
 void ftk_widget_move_resize(FtkWidget* thiz, int x, int y, int width, int height)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 	
 	if(thiz->priv->left == x && thiz->priv->top  == y
@@ -497,8 +497,8 @@ void ftk_widget_move_resize(FtkWidget* thiz, int x, int y, int width, int height
 	
 	if(thiz->on_event != NULL)
 	{
+		ftk_event_init(&event, FTK_EVT_MOVE_RESIZE);
 		event.widget = thiz;
-		event.type = FTK_EVT_MOVE_RESIZE;
 		ftk_widget_event(thiz, &event);
 	}
 
@@ -540,13 +540,13 @@ static int  ftk_widget_is_parent_visible(FtkWidget* thiz)
 
 void ftk_widget_show(FtkWidget* thiz, int visible)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 	if(thiz->priv->visible == visible) return;
 	
 	thiz->priv->visible = visible;
-	event.type = visible ? FTK_EVT_SHOW : FTK_EVT_HIDE;
+	ftk_event_init(&event, visible ? FTK_EVT_SHOW : FTK_EVT_HIDE);
 
 	ftk_widget_event(thiz, &event);
 
@@ -594,7 +594,7 @@ void ftk_widget_set_visible(FtkWidget* thiz, int visible)
 
 void ftk_widget_set_focused(FtkWidget* thiz, int focused)
 {	
-	FtkEvent event = {0};
+	FtkEvent event;
 	FtkWidgetState state = FTK_WIDGET_ACTIVE;
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 
@@ -611,7 +611,7 @@ void ftk_widget_set_focused(FtkWidget* thiz, int focused)
 	}
 
 	thiz->priv->state = state;
-	event.type = focused ? FTK_EVT_FOCUS_IN : FTK_EVT_FOCUS_OUT;
+	ftk_event_init(&event, focused ? FTK_EVT_FOCUS_IN : FTK_EVT_FOCUS_OUT);
 	event.widget = thiz;
 	ftk_widget_event(thiz, &event);
 
@@ -672,19 +672,20 @@ void ftk_widget_set_canvas(FtkWidget* thiz, FtkCanvas* canvas)
 
 void ftk_widget_set_parent(FtkWidget* thiz, FtkWidget* parent)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 
-	event.u.extra = thiz;
 	if(thiz->parent != NULL && parent == NULL)
 	{
-		event.type = FTK_EVT_REMOVE_CHILD;
+		ftk_event_init(&event, FTK_EVT_REMOVE_CHILD);
+		event.u.extra = thiz;
 		ftk_widget_event(thiz->parent, &event);
 	}
 	thiz->parent = parent;
 	if(parent != NULL)
 	{
-		event.type = FTK_EVT_ADD_CHILD;
+		ftk_event_init(&event, FTK_EVT_ADD_CHILD);
+		event.u.extra = thiz;
 		ftk_widget_event(parent, &event);
 	}
 
@@ -702,11 +703,17 @@ static void ftk_widget_validate_position_size(FtkWidget* thiz)
 	{
 		int parent_w = ftk_widget_width(parent);
 		int parent_h = ftk_widget_height(parent);
+		
+		priv->width = (priv->width + 1) & 0xfffffffe;
+		priv->height = (priv->height + 1) & 0xfffffffe;
 
 		priv->left = (priv->left >= parent_w) ? (parent_w - 1) : priv->left;
 		priv->top = (priv->top >= parent_h) ? (parent_h - 1) : priv->top;
 		priv->width = (priv->left + priv->width) > parent_w ? (parent_w - priv->left) : priv->width;
 		priv->height = (priv->height + priv->top) > parent_h ? (parent_h - priv->top) : priv->height;
+
+		priv->width = priv->width & 0xfffffffe;
+		priv->height = priv->height & 0xfffffffe;
 	}
 
 	return;
@@ -887,7 +894,7 @@ void ftk_widget_paint(FtkWidget* thiz)
 void ftk_widget_set_font_size(FtkWidget* thiz, int font_size)
 {
 	char font_desc[64] = {0};
-	ftk_snprintf(font_desc, sizeof(font_desc)-1, FONT_DESC_FMT, font_size, 0, 0);
+	ftk_snprintf(font_desc, sizeof(font_desc)-1, FONT_DESC_FMT, font_size, 0, 0, FTK_FONT);
 
 	ftk_widget_set_font(thiz, font_desc);
 
@@ -908,7 +915,7 @@ void ftk_widget_set_font(FtkWidget* thiz, const char* font_desc_str)
 		int i = 0;
 		for(i = 0; i < FTK_WIDGET_STATE_NR; i++)
 		{
-			ftk_widget_set_gc(thiz, i, &gc);
+			ftk_widget_set_gc(thiz, (FtkWidgetState)i, &gc);
 		}
 	}
 	ftk_gc_reset(&gc);
@@ -937,10 +944,10 @@ void    ftk_widget_reset_gc(FtkWidget* thiz, FtkWidgetState state, FtkGc* gc)
 
 void ftk_widget_set_text(FtkWidget* thiz, const char* text)
 {
-	FtkEvent event = {0};
+	FtkEvent event;
 	return_if_fail(thiz != NULL && thiz->priv != NULL);
 	
-	event.type = FTK_EVT_SET_TEXT;
+	ftk_event_init(&event, FTK_EVT_SET_TEXT);
 	event.u.extra = (void*)text;
 
 	if(ftk_widget_event(thiz, &event) == RET_REMOVE)
