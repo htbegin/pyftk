@@ -1,0 +1,36 @@
+pyftk
+=====
+
+python binding for ftk (http://code.google.com/p/ftk/).
+
+features
+========
+
+* use python ctypes, not c
+* provides c-style interface, not oo-style
+
+dependencies
+============
+
+python2.6
+ftk 0.6
+
+install
+=======
+
+$ git clone git://github.com/htbegin/pyftk.git
+$ cd pyftk/script_binding/python
+$ python setup.py install
+
+test
+====
+
+$ git clone git://github.com/htbegin/pyftk.git
+$ cd pyftk/script_binding/python
+$ ./runner.py test/
+
+demo
+====
+$ git clone git://github.com/htbegin/pyftk.git
+$ cd pyftk/script_binding/python/demo
+$ ./runner.py demo/

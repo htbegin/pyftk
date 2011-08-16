@@ -1,0 +1,7 @@
+include runner.py
+include demo/*.py
+graft data/
+graft support/
+
+exclude ftk/template.py
+exclude demo/template.py
