@@ -721,7 +721,7 @@ class C2PythonConverter(object):
                 lines.append(line)
         return lines
 
-    def run(self, finput, mpath, struct_enabled, func_enabled):
+    def run(self, finput, mpath, struct_enabled, func_enabled, func_name):
         self.fname = os.path.basename(os.path.abspath(finput))
         self.mpath = mpath
         self.ptr_type_alias_dict = {}
@@ -749,7 +749,7 @@ class C2PythonConverter(object):
             else:
                 defs = []
             if func_enabled:
-                decs = self._convert_func_dec(content)
+                decs = self._convert_func_dec(content, func_name)
             else:
                 decs = []
 
@@ -777,11 +777,17 @@ if __name__ == "__main__":
     opt_parser.add_option("-f", "--function", dest="disable_func",
             action="store_true", default=False,
             help="disable the generation of function definitions")
+    opt_parser.add_option("-o", "--only", dest="func_name",
+            help="only execute code generation for this function",
+            metavar="FUNC_NAME")
     (options, args) = opt_parser.parse_args()
 
     if options.file is None or not os.path.isfile(options.file) or \
             not fnmatch.fnmatch(options.file, "*.h") or \
-            (options.m_name is not None and not isinstance(options.m_name, str)):
+            (options.m_name is not None and \
+            not isinstance(options.m_name, str)) or \
+            (options.func_name is not None and \
+            not isinstance(options.func_name, str)):
         opt_parser.print_help()
         sys.exit(1)
 
@@ -794,9 +800,14 @@ if __name__ == "__main__":
     else:
         module_name = options.m_name
 
+    if options.func_name is not None:
+        options.disable_struct = True
+        options.disable_func = False
+
     module_path = "".join((module_name, "."))
     content = converter.run(options.file, module_path,
-            not options.disable_struct, not options.disable_func)
+            not options.disable_struct, not options.disable_func,
+            options.func_name)
 
     if content:
         print content
