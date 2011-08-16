@@ -15,6 +15,10 @@ def check_missed_import(fname):
             if m not in import_modules:
                 sys.stdout.write("missed import module %s in %s\n" % (m, fname))
 
+        for m in import_modules:
+            if m not in used_modules:
+                sys.stdout.write("extraneous import module %s in %s\n" % (m, fname))
+
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         sys.stdout.write("Usage: %s py_script...\n" % sys.argv[0])
