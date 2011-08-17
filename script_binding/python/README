@@ -19,22 +19,25 @@ install
 =======
 
 $ git clone git://github.com/htbegin/pyftk.git
-$ git co pyftk
-$ cd pyftk/script_binding/python
-$ python setup.py install
+$ cd pyftk
+$ git checkout pyftk
+$ cd script_binding/python
+$ sudo python setup.py install
 
 test
 ====
 
 $ git clone git://github.com/htbegin/pyftk.git
-$ git co pyftk
-$ cd pyftk/script_binding/python
+$ cd pyftk
+$ git checkout pyftk
+$ cd script_binding/python
 $ ./runner.py test/
 
 demo
 ====
 
 $ git clone git://github.com/htbegin/pyftk.git
-$ git co pyftk
-$ cd pyftk/script_binding/python/demo
+$ cd pyftk
+$ git checkout pyftk
+$ cd script_binding/python
 $ ./runner.py demo/
