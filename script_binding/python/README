@@ -15,8 +15,31 @@ dependencies
 python2.6
 ftk 0.6
 
-install
-=======
+install ftk
+===========
+
+$ git clone git://github.com/htbegin/pyftk.git
+$ cd pyftk
+$ git checkout pyftk
+$ ./autogen.sh
+$ ./configure --with-backend=linux-x11:640x480 --with-fontengine=freetype \
+			  --with-inputmethod=gpinyin --enable-gtk-doc-html=no --enable-opengles=no
+$ make
+$ make install
+
+because the default install prefix is /usr/local, so in order to let
+pyftk to find the ftk shared library, you should run one of the following
+two commands before install or test pyftk:
+
+a) export LD_LIBRARY_PATH=/usr/local/lib
+
+or
+
+b) sudo bash -c 'echo /usr/local/lib > /etc/ld.so.conf.d/ftk.conf' && sudo ldconfig \
+		&& ldconfig -p | grep ftk
+
+install pyftk
+=============
 
 $ git clone git://github.com/htbegin/pyftk.git
 $ cd pyftk
