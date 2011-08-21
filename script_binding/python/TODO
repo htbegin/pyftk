@@ -4,5 +4,9 @@
 * make pyftk more pythonic
 	* oo-style interface
 
+* cairo support
+
+* gettext support
+
 * bug fixes
 
