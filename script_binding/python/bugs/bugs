@@ -3,6 +3,10 @@
 ftk/dll.py:164: RuntimeWarning: memory leak in callback function.
 	result = func(*args, **kwargs)
 
+the bug is caused by ftk_xul_translate_text, it returns a new string object to
+the ftk library, but the ftk library could not free the string object, so
+the ctypes report a RuntimeWarning.
+
 * ./runner.py demo/demo_draw.py
 
 FtkError exception from ftk_widget_update in callback on_paint
