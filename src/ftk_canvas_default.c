@@ -735,7 +735,112 @@ static Ret ftk_canvas_default_draw_bitmap(FtkCanvas* thiz, FtkBitmap* bitmap,
 	return ret;
 }
 
-static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y, 
+static Ret ftk_canvas_default_draw_boxed_string(FtkCanvas* thiz, size_t x, size_t y,
+	const FtkRect* box, const char* str, int len, int vcenter)
+{
+	int i = 0;
+	int j = 0;
+	size_t ox = x;
+	size_t oy = y;
+	size_t right = 0;
+	size_t bottom = 0;
+	unsigned char data = 0;
+	int vcenter_offset = 0;
+	FtkGlyph glyph = {0};
+	FtkColor color = {0};
+	FtkColor fg = {0};
+	FtkColor bg = {0};
+	FtkColor* bits = NULL;
+	unsigned short code = 0;
+	const char* iter = str;
+	DECL_PRIV(thiz, priv);
+	FtkRect clip = ftk_rect_and(box, &priv->clip->rect);
+
+	if(clip.width <= 0 || clip.height <= 0)
+	{
+		return RET_OK;
+	}
+
+	ftk_logi("%d,%d@%dx%d AND %d,%d@%dx%d = %d,%d@%dx%d\n",
+			box->x, box->y, box->width, box->height,
+			priv->clip->rect.x, priv->clip->rect.y, priv->clip->rect.width, priv->clip->rect.height,
+			clip.x, clip.y, clip.width, clip.height);
+
+	bits   = priv->bits;
+	right = clip.x + clip.width;
+	bottom = clip.y + clip.height;
+
+	color.a = 0xff;
+	fg = thiz->gc.fg;
+
+	/*FIXME: vcenter_offset maybe not correct.*/
+	vcenter_offset = ftk_font_height(thiz->gc.font)/3;
+	while(*iter && (iter - str) < len)
+	{
+		size_t offset = 0;
+		code = utf8_get_char(iter, &iter);
+
+		if(code == ' ' )
+		{
+			x += FTK_SPACE_WIDTH;
+			ox = x;
+			continue;
+		}
+		else if(code == '\t')
+		{
+			x += FTK_TAB_WIDTH * FTK_SPACE_WIDTH;
+			ox = x;
+			continue;
+		}
+
+		if(code == 0xffff || code == 0) break;
+		if(code == '\r' || code == '\n' || ftk_font_lookup(thiz->gc.font, code, &glyph) != RET_OK) 
+			continue;
+		glyph.y = vcenter ? glyph.y - vcenter_offset : glyph.y;
+		if((x + glyph.x + glyph.w) >= right) {
+			ftk_logi("%d too right\n", code);
+			break;
+		}
+		if((y - glyph.y + glyph.h) >= bottom) {
+			ftk_logi("%d too bottom\n", code);
+			ftk_logi("glyph.x %d, glyph.y %d, glyph.w %d, glyph.h %d\n",
+					glyph.x, glyph.y, glyph.w, glyph.h);
+			break;
+		}
+
+		x = x + glyph.x;
+		y = y - glyph.y;
+		for(i = 0; i < glyph.h; i++,y++)
+		{
+			for(j = 0, x= ox; j < glyph.w; j++,x++)
+			{
+				if(!FTK_POINT_IN_RECT(x, y, clip))
+				{
+					ftk_logi("(%d, %d) of %d out of clip\n", x, y, code);
+					break;
+				}
+				data = glyph.data[i * glyph.w + j];
+				offset = y * priv->w + x;
+				bg = bits[offset];
+				if(data)
+				{
+					color.r = FTK_ALPHA_1(fg.r, bg.r, data);
+					color.g = FTK_ALPHA_1(fg.g, bg.g, data);
+					color.b = FTK_ALPHA_1(fg.b, bg.b, data);
+					*(unsigned int*)(bits+offset) = *(unsigned int*)&color;
+				}
+			}
+		}
+
+		y = oy;
+		x = ox + glyph.x + glyph.w + 1;
+		ox = x;
+	}
+
+	return RET_OK;
+}
+
+static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y,
 	const char* str, int len, int vcenter)
 {
 	int i = 0;
@@ -758,6 +863,7 @@ static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y,
 
 	ftk_logi("string clip: %d,%d@%dx%d\n",
 			clip.x, clip.y, clip.width, clip.height);
+
 	bits   = priv->bits;
 	right = clip.x + clip.width;
 	bottom = clip.y + clip.height;
@@ -926,7 +1032,23 @@ static Ret ftk_canvas_default_draw_bitmap_clip(FtkCanvas* thiz, FtkBitmap* bitma
 
 }
 
-static Ret ftk_canvas_default_draw_string_clip(FtkCanvas* thiz, size_t x, size_t y, 
+static Ret ftk_canvas_default_draw_boxed_string_clip(FtkCanvas* thiz, size_t x, size_t y,
+	const FtkRect* box, const char* str, int len, int vcenter)
+{
+	DECL_PRIV(thiz, priv);
+	return_val_if_fail(str != NULL, RET_FAIL);
+	len = len >= 0 ? len : (int)strlen(str);
+
+	FOR_EACH_CLIP(priv)
+	{
+		ftk_canvas_default_draw_boxed_string(thiz, x, y, box, str, len, vcenter);
+		if(priv->clip == NULL) break;
+	}
+
+	return RET_OK;
+}
+
+static Ret ftk_canvas_default_draw_string_clip(FtkCanvas* thiz, size_t x, size_t y,
 	const char* str, int len, int vcenter)
 {
 	DECL_PRIV(thiz, priv);
@@ -959,6 +1081,7 @@ FtkCanvas* ftk_canvas_create(size_t w, size_t h, FtkColor* clear_color)
 		thiz->clear_rect = ftk_canvas_default_clear_rect_clip;
 		thiz->draw_bitmap = ftk_canvas_default_draw_bitmap_clip;
 		thiz->draw_string = ftk_canvas_default_draw_string_clip;
+		thiz->draw_boxed_string = ftk_canvas_default_draw_boxed_string_clip;
 		thiz->lock_buffer = fk_canvas_default_lock_buffer;
 		thiz->unlock_buffer = ftk_canvas_default_unlock_buffer;
 		thiz->destroy = ftk_canvas_default_destroy;

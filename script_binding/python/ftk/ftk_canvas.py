@@ -58,6 +58,10 @@ FtkCanvasDrawString = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr,
         ctypes.c_size_t, ctypes.c_size_t, ctypes.c_char_p, ctypes.c_int,
         ctypes.c_int)
 
+FtkCanvasDrawBoxedString = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr,
+        ctypes.c_size_t, ctypes.c_size_t, _FtkRectPtr,
+        ctypes.c_char_p, ctypes.c_int, ctypes.c_int)
+
 FtkCanvasLockBuffer = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr,
         ctypes.POINTER(_FtkBitmapPtr))
 
@@ -77,6 +81,7 @@ FtkCanvas._fields_ = [
         ('draw_rect', FtkCanvasDrawRect),
         ('draw_bitmap', FtkCanvasDrawBitmap),
         ('draw_string', FtkCanvasDrawString),
+        ('draw_boxed_string', FtkCanvasDrawBoxedString),
         ('lock_buffer', FtkCanvasLockBuffer),
         ('unlock_buffer', FtkCanvasUnlockBuffer),
         ('destroy', FtkCanvasDestroy),
