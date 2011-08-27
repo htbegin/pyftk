@@ -43,12 +43,10 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 	int rows = 0;
 	FtkRect box = {0};
 	FtkAlignment alignment = (FtkAlignment)(int)(thiz->priv_subclass[0]);
-	FTK_BEGIN_PAINT(x, y, width, height, canvas);
 
-	box.x = x;
-	box.y = y;
-	box.width = width;
-	box.height = height;
+	FTK_GET_PAINT_RECT(thiz, box);
+
+	FTK_BEGIN_PAINT(x, y, width, height, canvas);
 
 	ftk_logi("%s: label box %d,%d@%dx%d\n", __func__, x, y, width, height);
 	if(ftk_widget_get_text(thiz) != NULL)

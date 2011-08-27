@@ -100,12 +100,9 @@ static Ret ftk_button_on_paint(FtkWidget* thiz)
 {
 	FtkRect box = {0};
 
-	FTK_BEGIN_PAINT(x, y, width, height, canvas);
+	FTK_GET_PAINT_RECT(thiz, box);
 
-	box.x = x;
-	box.y = y;
-	box.width = width;
-	box.height = height;
+	FTK_BEGIN_PAINT(x, y, width, height, canvas);
 
 	ftk_canvas_reset_gc(canvas, ftk_widget_get_gc(thiz)); 
 	if(ftk_widget_get_text(thiz) != NULL)
