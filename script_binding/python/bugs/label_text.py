@@ -36,7 +36,7 @@ def ftk_main():
     #print width, height
 
     # if update height from 20 to 21, the dynamic text update is OK
-    label = ftk_label_create(win, 50, height / 2 - 30, width, 20)
+    label = ftk_label_create(win, 320, 30, 200, 20)
     ftk_widget_set_text(label, "quit after 100 seconds")
     #print ftk_widget_has_attr(label, FTK_ATTR_TRANSPARENT)
     #print ftk_widget_left_abs(label), ftk_widget_top_abs(label)

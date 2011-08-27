@@ -377,8 +377,13 @@ static Ret ftk_canvas_default_clear_rect(FtkCanvas* thiz, size_t x, size_t y, si
 	rect.y = y;
 	rect.width = w;
 	rect.height = h;
+	ftk_logi("input rect: %d,%d@%dx%d\n", rect.x, rect.y, rect.width, rect.height);
+	ftk_logi("clip rect: %d,%d@%dx%d\n",
+			priv->clip->rect.x, priv->clip->rect.y,
+			priv->clip->rect.width, priv->clip->rect.height);
 	rect = ftk_rect_and(&rect, &priv->clip->rect);
 
+	ftk_logi("clear rect: %d,%d@%dx%d\n", rect.x, rect.y, rect.width, rect.height);
 	if(rect.width <= 0 || rect.height <= 0)
 	{
 //		ftk_logd("%s: skip.\n", __func__);
@@ -803,7 +808,7 @@ static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y,
 			{
 				if(!FTK_POINT_IN_RECT(x, y, clip))
 				{
-					ftk_logi("%d out of clip\n", code);
+					ftk_logi("(%d, %d) of %d out of clip\n", x, y, code);
 					break;
 				}
 				data = glyph.data[i * glyph.w + j];
