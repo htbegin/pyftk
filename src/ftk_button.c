@@ -98,7 +98,14 @@ static Ret ftk_button_on_event(FtkWidget* thiz, FtkEvent* event)
 
 static Ret ftk_button_on_paint(FtkWidget* thiz)
 {
+	FtkRect box = {0};
+
 	FTK_BEGIN_PAINT(x, y, width, height, canvas);
+
+	box.x = x;
+	box.y = y;
+	box.width = width;
+	box.height = height;
 
 	ftk_canvas_reset_gc(canvas, ftk_widget_get_gc(thiz)); 
 	if(ftk_widget_get_text(thiz) != NULL)
@@ -113,7 +120,8 @@ static Ret ftk_button_on_paint(FtkWidget* thiz)
 		if(ftk_text_layout_get_visual_line(text_layout, &line) == RET_OK)
 		{
 			xoffset = FTK_HALF(width - line.extent); 
-			ftk_canvas_draw_string(canvas, x + xoffset, y + yoffset, line.text, line.len, 1);
+			ftk_canvas_draw_boxed_string(canvas, x + xoffset, y + yoffset, &box,
+					line.text, line.len, 1);
 		}
 	}
 
