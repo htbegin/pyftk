@@ -228,7 +228,10 @@ static Ret ftk_tab_paint_one_tab(FtkWidget* thiz, int index)
 
 	if(page->text != NULL)
 	{
+		FtkRect box = {0};
 		const char* text = page->text;
+
+		FTK_GET_PAINT_RECT(thiz, box);
 		ftk_text_layout_init(text_layout, text, -1, 
 			ftk_widget_get_gc(thiz)->font, w);
 
@@ -236,7 +239,7 @@ static Ret ftk_tab_paint_one_tab(FtkWidget* thiz, int index)
 		if(ftk_text_layout_get_visual_line(text_layout, &line) == RET_OK)
 		{
 			ox = ox + FTK_HALF(w - line.extent); 
-			ftk_canvas_draw_string(canvas, ox, oy, text, -1, 1);
+			ftk_canvas_draw_boxed_string(canvas, ox, oy, &box, text, -1, 1);
 		}
 	}
 
