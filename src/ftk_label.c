@@ -43,7 +43,8 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 	int rows = 0;
 	FtkAlignment alignment = (FtkAlignment)(int)(thiz->priv_subclass[0]);
 	FTK_BEGIN_PAINT(x, y, width, height, canvas);
-	
+
+	ftk_logi("%d,%d@%dx%d\n", x, y, width, height);
 	if(ftk_widget_get_text(thiz) != NULL)
 	{
 		FtkTextLine line = {0};
@@ -54,14 +55,13 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 		width -= FTK_LABEL_LEFT_MARGIN * 2;
 		ftk_canvas_reset_gc(canvas, ftk_widget_get_gc(thiz)); 
 		rows = height / (ftk_canvas_font_height(canvas) + FTK_LABEL_TOP_MARGIN);
-		
 		ftk_text_layout_init(text_layout, text, -1, ftk_widget_get_gc(thiz)->font, width); 
 		ftk_text_layout_set_wrap_mode(text_layout, ftk_widget_get_wrap_mode(thiz));
 		for(i = 0; i < rows; i++)
 		{
 			int xoffset = x;
 			if(ftk_text_layout_get_visual_line(text_layout, &line) != RET_OK) break;
-			y += ftk_canvas_font_height(canvas) + FTK_LABEL_TOP_MARGIN;
+			y += FTK_HALF(height / rows) + FTK_LABEL_TOP_MARGIN;
 			
 			if(alignment == FTK_ALIGN_CENTER)
 			{
@@ -75,7 +75,8 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 			{
 				xoffset = x + line.xoffset;
 			}
-
+			ftk_logi("line.xoffset %d, xoffset %d, y %d, line.len %d\n",
+					line.xoffset, xoffset, y, line.len);
 			ftk_canvas_draw_string(canvas, xoffset, y, line.text, line.len, 0);
 		}
 	}

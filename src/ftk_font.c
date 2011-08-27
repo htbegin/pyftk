@@ -448,3 +448,44 @@ FtkFont* ftk_font_cache_create (FtkFont* font, size_t max_glyph_nr)
 	return thiz;
 }
 
+size_t ftk_font_calc_baseline_offset(FtkFont* font, const char* str, size_t len)
+{
+	size_t offset = 0;
+	const char* iter = str;
+	unsigned short code = 0;
+	FtkGlyph glyph = {0};
+
+	while (*iter != '\0' && iter - str < len)
+	{
+		code = utf8_get_char(iter, &iter);
+
+		if (code == ' ' || code == '\t')
+		{
+			continue;
+		}
+
+		if (code == 0xffff || code == 0)
+		{
+			break;
+		}
+
+		if (code == '\r' || code == '\n' ||
+			ftk_font_lookup(font, code, &glyph) != RET_OK)
+		{
+			continue;
+		}
+
+		if (glyph.y > offset)
+		{
+			offset = glyph.y;
+		}
+	}
+
+	if (offset == 0)
+	{
+		offset = ftk_font_height(font);
+	}
+
+	return offset;
+}
+

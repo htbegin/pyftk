@@ -554,6 +554,15 @@ static Ret ftk_window_idle_invalidate(FtkWidget* thiz)
 	PROFILE_START();
 	if(priv->dirty_rect_nr < 3)
 	{
+		ftk_logi("update rect cnt %d\n", priv->dirty_rect_nr);
+		if (priv->dirty_rect_nr > 0) {
+			ftk_logi("first rect: %d,%d@%dx%d\n",
+					priv->dirty_rect[0].x,
+					priv->dirty_rect[0].y,
+					priv->dirty_rect[0].width,
+					priv->dirty_rect[0].height);
+		}
+
 		for(i = 0; i < priv->dirty_rect_nr; i++)
 		{
 			ftk_window_update(thiz, priv->dirty_rect+i);
@@ -586,6 +595,9 @@ Ret ftk_window_invalidate(FtkWidget* thiz, FtkRect* rect)
 		return RET_OK;
 	}
 
+	ftk_logi("dirty rect: %d\n", priv->dirty_rect_nr);
+	ftk_logi("cur rect: %d,%d@%dx%d\n", rect->x, rect->y,
+			rect->width, rect->height);
 	if((priv->dirty_rect_nr + 1) >= FTK_MAX_DIRTY_RECT)
 	{
 		ftk_window_idle_invalidate(thiz);
@@ -607,6 +619,7 @@ Ret ftk_window_invalidate(FtkWidget* thiz, FtkRect* rect)
 		
 	if(priv->dirty_rect_nr == 1)
 	{
+		ftk_logi("priv: 0x%08x, update_idle: 0x%08x\n", priv, priv->update_idle);
 		if(priv->update_idle == NULL)
 		{
 			priv->update_idle = ftk_source_idle_create((FtkIdle)ftk_window_idle_invalidate, thiz);
@@ -674,7 +687,7 @@ Ret ftk_window_disable_update(FtkWidget* thiz)
 
 	priv->update_disabled++;
 	ftk_window_realize(thiz);
-//	ftk_logd("%s: %d\n", __func__, priv->update_disabled);
+	ftk_logi("%s: %d\n", __func__, priv->update_disabled);
 
 	return RET_OK;
 }
@@ -688,7 +701,7 @@ Ret ftk_window_enable_update(FtkWidget* thiz)
 	priv->update_disabled--;
 	ftk_window_realize(thiz);
 
-//	ftk_logd("%s: %d\n", __func__, priv->update_disabled);
+	ftk_logi("%s: %d\n", __func__, priv->update_disabled);
 	assert(priv->update_disabled >= 0);
 
 	return RET_OK;

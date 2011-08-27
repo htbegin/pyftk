@@ -99,6 +99,9 @@ static Ret ftk_canvas_default_set_clip(FtkCanvas* thiz, FtkRegion* clip)
 			FtkRect* r = &(priv->clip_regions[i].rect);
 			priv->clip_regions[i] = *iter;
 
+			ftk_logi("canvas width: %d, clip width: %d\n", priv->w, r->width);
+			ftk_logi("canvas height: %d, clip height: %d\n", priv->h, r->height);
+
 			r->x = r->x < 0 ? 0 : r->x;
 			r->y = r->y < 0 ? 0 : r->y;
 			r->width = r->width < priv->w ? r->width : priv->w;
@@ -747,7 +750,9 @@ static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y,
 	const char* iter = str;
 	DECL_PRIV(thiz, priv);
 	FtkRect clip = priv->clip->rect;
-	
+
+	ftk_logi("string clip: %d,%d@%dx%d\n",
+			clip.x, clip.y, clip.width, clip.height);
 	bits   = priv->bits;
 	right = clip.x + clip.width;
 	bottom = clip.y + clip.height;
@@ -778,10 +783,17 @@ static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y,
 		if(code == 0xffff || code == 0) break;
 		if(code == '\r' || code == '\n' || ftk_font_lookup(thiz->gc.font, code, &glyph) != RET_OK) 
 			continue;
-
 		glyph.y = vcenter ? glyph.y - vcenter_offset : glyph.y;
-		if((x + glyph.x + glyph.w) >= right) break;
-		if((y - glyph.y + glyph.h) >= bottom) break;
+		if((x + glyph.x + glyph.w) >= right) {
+			ftk_logi("%d too right\n", code);
+			break;
+		}
+		if((y - glyph.y + glyph.h) >= bottom) {
+			ftk_logi("%d too bottom\n", code);
+			ftk_logi("glyph.x %d, glyph.y %d, glyph.w %d, glyph.h %d\n",
+					glyph.x, glyph.y, glyph.w, glyph.h);
+			break;
+		}
 
 		x = x + glyph.x;
 		y = y - glyph.y;
@@ -791,6 +803,7 @@ static Ret ftk_canvas_default_draw_string(FtkCanvas* thiz, size_t x, size_t y,
 			{
 				if(!FTK_POINT_IN_RECT(x, y, clip))
 				{
+					ftk_logi("%d out of clip\n", code);
 					break;
 				}
 				data = glyph.data[i * glyph.w + j];

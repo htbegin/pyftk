@@ -24,17 +24,22 @@ def timeout_fn(info):
 def ftk_main():
     ftk_init(sys.argv)
 
-    ftk_set_log_level(FTK_LOG_D)
+    ftk_set_log_level(FTK_LOG_I)
 
     win = ftk_app_window_create()
     ftk_window_set_animation_hint(win, "app_main_window")
+    #print ftk_widget_left_abs(win), ftk_widget_top_abs(win)
+    #print ftk_widget_has_attr(label, FTK_ATTR_TRANSPARENT)
 
     width = ftk_widget_width(win)
     height = ftk_widget_height(win)
+    #print width, height
 
-    # if update height from 20 to 30, the dynamic text update is OK
+    # if update height from 20 to 21, the dynamic text update is OK
     label = ftk_label_create(win, 50, height / 2 - 30, width, 20)
     ftk_widget_set_text(label, "quit after 100 seconds")
+    #print ftk_widget_has_attr(label, FTK_ATTR_TRANSPARENT)
+    #print ftk_widget_left_abs(label), ftk_widget_top_abs(label)
 
     info = TimerInfo(times=10, label=label)
     timer = ftk_source_timer_create(1000, timeout_fn, info)
