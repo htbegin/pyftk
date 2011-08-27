@@ -98,10 +98,6 @@ static Ret ftk_button_on_event(FtkWidget* thiz, FtkEvent* event)
 
 static Ret ftk_button_on_paint(FtkWidget* thiz)
 {
-	FtkRect box = {0};
-
-	FTK_GET_PAINT_RECT(thiz, box);
-
 	FTK_BEGIN_PAINT(x, y, width, height, canvas);
 
 	ftk_canvas_reset_gc(canvas, ftk_widget_get_gc(thiz)); 
@@ -109,10 +105,13 @@ static Ret ftk_button_on_paint(FtkWidget* thiz)
 	{
 		int xoffset = 0;
 		int yoffset = FTK_HALF(height);
+		FtkRect box = {0};
 		FtkTextLine line = {0};
 		const char* text = ftk_widget_get_text(thiz);
 		FtkTextLayout* text_layout = ftk_default_text_layout();
-	
+
+		FTK_GET_PAINT_RECT(thiz, box);
+
 		ftk_text_layout_init(text_layout, text, -1, ftk_widget_get_gc(thiz)->font, width); 
 		if(ftk_text_layout_get_visual_line(text_layout, &line) == RET_OK)
 		{

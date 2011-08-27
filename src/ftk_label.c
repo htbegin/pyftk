@@ -39,21 +39,20 @@ static Ret ftk_label_on_event(FtkWidget* thiz, FtkEvent* event)
 
 static Ret ftk_label_on_paint(FtkWidget* thiz)
 {
-	int i = 0;
-	int rows = 0;
-	FtkRect box = {0};
-	FtkAlignment alignment = (FtkAlignment)(int)(thiz->priv_subclass[0]);
-
-	FTK_GET_PAINT_RECT(thiz, box);
-
 	FTK_BEGIN_PAINT(x, y, width, height, canvas);
 
 	ftk_logi("%s: label box %d,%d@%dx%d\n", __func__, x, y, width, height);
 	if(ftk_widget_get_text(thiz) != NULL)
 	{
+		int i = 0;
+		int rows = 0;
+		FtkAlignment alignment = (FtkAlignment)(int)(thiz->priv_subclass[0]);
+		FtkRect box = {0};
 		FtkTextLine line = {0};
 		const char* text = ftk_widget_get_text(thiz);
 		FtkTextLayout* text_layout = ftk_default_text_layout();
+
+		FTK_GET_PAINT_RECT(thiz, box);
 
 		x += FTK_LABEL_LEFT_MARGIN;
 		width -= FTK_LABEL_LEFT_MARGIN * 2;
