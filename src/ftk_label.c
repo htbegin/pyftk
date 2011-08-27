@@ -50,7 +50,7 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 	box.width = width;
 	box.height = height;
 
-	ftk_logi("%d,%d@%dx%d\n", x, y, width, height);
+	ftk_logi("%s: label box %d,%d@%dx%d\n", __func__, x, y, width, height);
 	if(ftk_widget_get_text(thiz) != NULL)
 	{
 		FtkTextLine line = {0};
@@ -81,8 +81,8 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 			{
 				xoffset = x + line.xoffset;
 			}
-			ftk_logi("line.xoffset %d, xoffset %d, y %d, line.len %d\n",
-					line.xoffset, xoffset, y, line.len);
+			ftk_logi("%s: line.xoffset %d, xoffset %d, y %d, line.len %d\n",
+					__func__, line.xoffset, xoffset, y, line.len);
 			ftk_canvas_draw_boxed_string(canvas, xoffset, y, &box, line.text, line.len, 0);
 		}
 	}

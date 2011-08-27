@@ -99,13 +99,12 @@ static Ret ftk_canvas_default_set_clip(FtkCanvas* thiz, FtkRegion* clip)
 			FtkRect* r = &(priv->clip_regions[i].rect);
 			priv->clip_regions[i] = *iter;
 
-			ftk_logi("canvas width: %d, clip width: %d\n", priv->w, r->width);
-			ftk_logi("canvas height: %d, clip height: %d\n", priv->h, r->height);
-
 			r->x = r->x < 0 ? 0 : r->x;
 			r->y = r->y < 0 ? 0 : r->y;
 			r->width = r->width < priv->w ? r->width : priv->w;
 			r->height = r->height < priv->h ? r->height : priv->h;
+
+			ftk_logi("%s: add clip %d,%d@%dx%d\n", __func__, r->x, r->y, r->width, r->height);
 
 			priv->clip_regions[i].next = NULL;
 			if(i > 0)
@@ -377,13 +376,14 @@ static Ret ftk_canvas_default_clear_rect(FtkCanvas* thiz, size_t x, size_t y, si
 	rect.y = y;
 	rect.width = w;
 	rect.height = h;
-	ftk_logi("input rect: %d,%d@%dx%d\n", rect.x, rect.y, rect.width, rect.height);
-	ftk_logi("clip rect: %d,%d@%dx%d\n",
+	ftk_logi("%s: clear rect %d,%d@%dx%d\n", __func__, rect.x, rect.y, rect.width, rect.height);
+	ftk_logi("%s: clip rect %d,%d@%dx%d\n", __func__,
 			priv->clip->rect.x, priv->clip->rect.y,
 			priv->clip->rect.width, priv->clip->rect.height);
 	rect = ftk_rect_and(&rect, &priv->clip->rect);
 
-	ftk_logi("clear rect: %d,%d@%dx%d\n", rect.x, rect.y, rect.width, rect.height);
+	ftk_logi("%s: ANDed-clear rect %d,%d@%dx%d\n", __func__, rect.x, rect.y, rect.width, rect.height);
+
 	if(rect.width <= 0 || rect.height <= 0)
 	{
 //		ftk_logd("%s: skip.\n", __func__);
@@ -758,10 +758,15 @@ static Ret ftk_canvas_default_draw_boxed_string(FtkCanvas* thiz, size_t x, size_
 
 	if(clip.width <= 0 || clip.height <= 0)
 	{
+		ftk_logi("%s: no intersection between %d,%d@%dx%d and %d,%d@%dx%d\n",
+			__func__,
+			box->x, box->y, box->width, box->height,
+			priv->clip->rect.x, priv->clip->rect.y, priv->clip->rect.width, priv->clip->rect.height);
 		return RET_OK;
 	}
 
-	ftk_logi("%d,%d@%dx%d AND %d,%d@%dx%d = %d,%d@%dx%d\n",
+	ftk_logi("%s: %d,%d@%dx%d AND %d,%d@%dx%d = %d,%d@%dx%d\n",
+			__func__,
 			box->x, box->y, box->width, box->height,
 			priv->clip->rect.x, priv->clip->rect.y, priv->clip->rect.width, priv->clip->rect.height,
 			clip.x, clip.y, clip.width, clip.height);
