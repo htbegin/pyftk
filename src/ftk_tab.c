@@ -188,6 +188,7 @@ static Ret ftk_tab_on_event(FtkWidget* thiz, FtkEvent* event)
 
 static Ret ftk_tab_paint_one_tab(FtkWidget* thiz, int index)
 {
+	FtkRect box = {0};
 	int w = 0;
 	int ox = 0;
 	int oy = 0;
@@ -226,12 +227,15 @@ static Ret ftk_tab_paint_one_tab(FtkWidget* thiz, int index)
 		ox += ftk_bitmap_width(page->icon);
 	}
 
+	box.x = ox;
+	box.y = y;
+	box.width = w;
+	box.height = FTK_TAB_HANDLE_HEIGHT;
+
 	if(page->text != NULL)
 	{
-		FtkRect box = {0};
 		const char* text = page->text;
 
-		FTK_GET_PAINT_RECT(thiz, box);
 		ftk_text_layout_init(text_layout, text, -1, 
 			ftk_widget_get_gc(thiz)->font, w);
 
