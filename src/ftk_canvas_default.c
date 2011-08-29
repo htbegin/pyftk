@@ -1047,8 +1047,10 @@ static Ret ftk_canvas_default_draw_bitmap_clip(FtkCanvas* thiz, FtkBitmap* bitma
 static Ret ftk_canvas_default_draw_boxed_string_clip(FtkCanvas* thiz, size_t x, size_t y,
 	const FtkRect* box, const char* str, int len, int vcenter)
 {
-	DECL_PRIV(thiz, priv);
+	return_val_if_fail(box != NULL, RET_FAIL);
 	return_val_if_fail(str != NULL, RET_FAIL);
+
+	DECL_PRIV(thiz, priv);
 	len = len >= 0 ? len : (int)strlen(str);
 
 	FOR_EACH_CLIP(priv)
