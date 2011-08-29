@@ -310,7 +310,8 @@ static Ret ftk_icon_view_on_paint(FtkWidget* thiz)
 	item = priv->visible_start;
 	ftk_canvas_reset_gc(canvas, ftk_widget_get_gc(thiz)); 
 
-	FTK_GET_PAINT_RECT(thiz, box);
+	box.width = priv->item_width;
+	box.height = priv->item_height;
 
 	for(i = 0; i < priv->rows; i++)
 	{
@@ -348,6 +349,9 @@ static Ret ftk_icon_view_on_paint(FtkWidget* thiz)
 					ftk_canvas_draw_bg_image(canvas, item_info->icon, 
 						FTK_BG_CENTER, dx, dy, priv->item_width, icon_height);
 				}
+
+				box.x = dx;
+				box.y = dy;
 
 				x1 = dx +  ((priv->item_width > fw) ? FTK_HALF(priv->item_width - fw) : 0);
 				ftk_canvas_draw_boxed_string(canvas, x1,
