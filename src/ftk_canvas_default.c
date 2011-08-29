@@ -64,21 +64,30 @@ typedef struct _PrivInfo
 #define FTK_POINT_IN_RECT(xx, yy, r) ((xx >= r.x && xx < (r.x + r.width)) \
 	&& (yy >= r.y && yy < (r.y + r.height)))
 
-static FtkRect ftk_rect_and(FtkRect* r1, FtkRect* r2)
+static Ret ftk_rect_and(const FtkRect *r1, const FtkRect *r2, FtkRect *r)
 {
-	FtkRect r;
-	size_t right1 = r1->x + r1->width;
-	size_t bottom1 = r1->y + r1->height;
-	size_t right2 = r2->x + r2->width;
-	size_t bottom2 = r2->y + r2->height;
+	return_val_if_fail(r1 != NULL, RET_FAIL);
+	return_val_if_fail(r2 != NULL, RET_FAIL);
+	return_val_if_fail(r != NULL, RET_FAIL);
 
-	r.x = FTK_MAX(r1->x, r2->x);
-	r.y = FTK_MAX(r1->y, r2->y);
+	Ret ret = RET_FAIL;
+	int x = FTK_MAX(r1->x, r2->x);
+	int y = FTK_MAX(r1->y, r2->y);
+	int width = FTK_MIN(r1->x + r1->width, r2->x + r2->width) - x;
+	int height = FTK_MIN(r1->y + r1->height, r2->y + r2->height) - y;
 
-	r.width = FTK_MIN(right1, right2) - r.x;
-	r.height = FTK_MIN(bottom1, bottom2) - r.y;
+	// the horizontal range is [x, x + width), so width == 0 is still invalid
+	// the vertical range is [y, y + height), so height == 0 is still invalid
+	if(width > 0 && height > 0)
+	{
+		r->x = x;
+		r->y = y;
+		r->width = width;
+		r->height = height;
+		ret = RET_OK;
+	}
 
-	return r;
+	return ret;
 }
 
 static Ret ftk_canvas_default_sync_gc(FtkCanvas* thiz)
@@ -376,19 +385,19 @@ static Ret ftk_canvas_default_clear_rect(FtkCanvas* thiz, size_t x, size_t y, si
 	rect.y = y;
 	rect.width = w;
 	rect.height = h;
+
 	ftk_logi("%s: clear rect %d,%d@%dx%d\n", __func__, rect.x, rect.y, rect.width, rect.height);
 	ftk_logi("%s: clip rect %d,%d@%dx%d\n", __func__,
 			priv->clip->rect.x, priv->clip->rect.y,
 			priv->clip->rect.width, priv->clip->rect.height);
-	rect = ftk_rect_and(&rect, &priv->clip->rect);
 
-	ftk_logi("%s: ANDed-clear rect %d,%d@%dx%d\n", __func__, rect.x, rect.y, rect.width, rect.height);
-
-	if(rect.width <= 0 || rect.height <= 0)
+	if (ftk_rect_and(&rect, &priv->clip->rect, &rect) != RET_OK)
 	{
 //		ftk_logd("%s: skip.\n", __func__);
 		return RET_OK;
 	}
+
+	ftk_logi("%s: ANDed-clear rect %d,%d@%dx%d\n", __func__, rect.x, rect.y, rect.width, rect.height);
 
 	width = priv->w;
 	bits = priv->bits;
@@ -488,9 +497,8 @@ static Ret ftk_canvas_default_draw_rect(FtkCanvas* thiz, size_t x, size_t y, siz
 	rect.y = y;
 	rect.width = w;
 	rect.height = h;
-	rect = ftk_rect_and(&rect, &priv->clip->rect);
 
-	if(rect.width <= 0 || rect.height <= 0)
+	if(ftk_rect_and(&rect, &priv->clip->rect, &rect) != RET_OK)
 	{
 //		ftk_logd("%s: skip.\n", __func__);
 		return RET_OK;
@@ -679,8 +687,7 @@ static Ret ftk_canvas_default_draw_bitmap(FtkCanvas* thiz, FtkBitmap* bitmap,
 	DECL_PRIV(thiz, priv);
 	return_val_if_fail(thiz != NULL && bitmap != NULL && dst_r != NULL && src_r != NULL, RET_FAIL);
 
-	rect = ftk_rect_and(&rect, &priv->clip->rect);
-	if(rect.width <= 0 || rect.height <= 0)
+	if(ftk_rect_and(&rect, &priv->clip->rect, &rect) != RET_OK)
 	{
 //		ftk_logd("%s: skip.\n", __func__);
 		return RET_OK;
@@ -754,9 +761,9 @@ static Ret ftk_canvas_default_draw_boxed_string(FtkCanvas* thiz, size_t x, size_
 	unsigned short code = 0;
 	const char* iter = str;
 	DECL_PRIV(thiz, priv);
-	FtkRect clip = ftk_rect_and(box, &priv->clip->rect);
+	FtkRect clip = {0};
 
-	if(clip.width <= 0 || clip.height <= 0)
+	if(ftk_rect_and(box, &priv->clip->rect, &clip) != RET_OK)
 	{
 		ftk_logi("%s: no intersection between %d,%d@%dx%d and %d,%d@%dx%d\n",
 			__func__,
