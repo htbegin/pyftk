@@ -48,7 +48,7 @@ def ftk_main():
     gc.bg.g = 0xF0
     gc.bg.b = 0x80
 
-    text = "中英文混合多行文本显示:the linux mobile development.带有背景颜色。"
+    text = "中英文混合多行文本显示:the linux mobile\ndevelopment.带有背景颜色。"
     label = ftk_label_create(win, 10, height / 2, width - 20, 120)
     ftk_widget_set_gc(label, FTK_WIDGET_INSENSITIVE, gc)
     ftk_widget_unset_attr(label, FTK_ATTR_TRANSPARENT)
