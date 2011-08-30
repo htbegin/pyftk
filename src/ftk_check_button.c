@@ -191,7 +191,7 @@ static Ret ftk_check_button_on_paint(FtkWidget* thiz)
 		dx = priv->icon_at_right ? 2 : icon_w;
 		
 		ftk_canvas_set_gc(canvas, ftk_widget_get_gc(thiz)); 
-		ftk_canvas_draw_boxed_string(canvas, x + dx, y + dy, &box,
+		ftk_canvas_draw_string(canvas, x + dx, y + dy, &box,
 			ftk_widget_get_text(thiz), -1, 1);
 	}
 

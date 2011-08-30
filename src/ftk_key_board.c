@@ -923,7 +923,7 @@ static Ret ftk_key_board_on_paint(FtkWidget* thiz)
 							xoffset + x_c, yoffset, bg_width, height);
 					}
 
-					ftk_canvas_draw_boxed_string(canvas, xoffset + x_c, yoffset + FTK_HALF(height),
+					ftk_canvas_draw_string(canvas, xoffset + x_c, yoffset + FTK_HALF(height),
 						&box, candidate->text, strlen(candidate->text), 1);
 
 					x_c += candidate->extent + 1;
@@ -951,7 +951,7 @@ static Ret ftk_key_board_on_paint(FtkWidget* thiz)
 
 					if(extent <= width)
 					{
-						ftk_canvas_draw_boxed_string(canvas,
+						ftk_canvas_draw_string(canvas,
 							xoffset + FTK_HALF(width - extent),
 							yoffset + FTK_HALF(height),
 							&box, cell->text, len, 1);

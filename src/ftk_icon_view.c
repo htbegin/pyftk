@@ -354,7 +354,7 @@ static Ret ftk_icon_view_on_paint(FtkWidget* thiz)
 				box.y = dy;
 
 				x1 = dx +  ((priv->item_width > fw) ? FTK_HALF(priv->item_width - fw) : 0);
-				ftk_canvas_draw_boxed_string(canvas, x1,
+				ftk_canvas_draw_string(canvas, x1,
 					dy + icon_height + FTK_HALF(priv->item_height - icon_height),
 					&box, text, -1, 1);
 			}

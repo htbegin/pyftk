@@ -80,7 +80,7 @@ static Ret ftk_label_on_paint(FtkWidget* thiz)
 			}
 			ftk_logi("%s: line.xoffset %d, xoffset %d, y %d, line.len %d\n",
 					__func__, line.xoffset, xoffset, y, line.len);
-			ftk_canvas_draw_boxed_string(canvas, xoffset, y, &box, line.text, line.len, 0);
+			ftk_canvas_draw_string(canvas, xoffset, y, &box, line.text, line.len, 0);
 		}
 	}
 

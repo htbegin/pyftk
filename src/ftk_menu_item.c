@@ -102,7 +102,7 @@ static Ret ftk_menu_item_on_paint(FtkWidget* thiz)
 		FTK_GET_PAINT_RECT(thiz, box);
 
 		assert(fh < height && fw < width);
-		ftk_canvas_draw_boxed_string(canvas, x + dx, y + dy, &box, text, -1, 1);
+		ftk_canvas_draw_string(canvas, x + dx, y + dy, &box, text, -1, 1);
 	}
 	
 	FTK_END_PAINT();

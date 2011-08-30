@@ -287,7 +287,7 @@ static Ret ftk_list_render_default_paint(FtkListRender* thiz, FtkCanvas* canvas,
 
 		if(ftk_text_layout_get_visual_line(text_layout, &line) == RET_OK)
 		{
-			ftk_canvas_draw_boxed_string(canvas, dx + line.xoffset, dy, &box,
+			ftk_canvas_draw_string(canvas, dx + line.xoffset, dy, &box,
 					line.text, line.len, 1);
 		}
 	}

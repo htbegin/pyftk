@@ -55,10 +55,6 @@ FtkCanvasDrawBitmap = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr,
         _FtkBitmapPtr, _FtkRectPtr, _FtkRectPtr, ctypes.c_int)
 
 FtkCanvasDrawString = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr,
-        ctypes.c_size_t, ctypes.c_size_t, ctypes.c_char_p, ctypes.c_int,
-        ctypes.c_int)
-
-FtkCanvasDrawBoxedString = ctypes.CFUNCTYPE(ctypes.c_int, _FtkCanvasPtr,
         ctypes.c_size_t, ctypes.c_size_t, _FtkRectPtr,
         ctypes.c_char_p, ctypes.c_int, ctypes.c_int)
 
@@ -81,7 +77,6 @@ FtkCanvas._fields_ = [
         ('draw_rect', FtkCanvasDrawRect),
         ('draw_bitmap', FtkCanvasDrawBitmap),
         ('draw_string', FtkCanvasDrawString),
-        ('draw_boxed_string', FtkCanvasDrawBoxedString),
         ('lock_buffer', FtkCanvasLockBuffer),
         ('unlock_buffer', FtkCanvasUnlockBuffer),
         ('destroy', FtkCanvasDestroy),
@@ -141,9 +136,9 @@ def ftk_canvas_draw_bitmap(thiz, bmp, s, d, alpha):
         ret = ftk_constants.RET_FAIL
     ftk_util.handle_inline_func_retval(ret)
 
-def ftk_canvas_draw_string(thiz, x, y, text, vcenter):
+def ftk_canvas_draw_string(thiz, x, y, box, text, vcenter):
     if thiz.draw_string:
-        ret = thiz.draw_string(thiz, x, y, text, len(text), vcenter)
+        ret = thiz.draw_string(thiz, x, y, box, text, len(text), vcenter)
     else:
         ret = ftk_constants.RET_FAIL
     ftk_util.handle_inline_func_retval(ret)

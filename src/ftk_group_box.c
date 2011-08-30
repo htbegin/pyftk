@@ -79,7 +79,7 @@ static Ret ftk_group_box_on_paint(FtkWidget* thiz)
 			ftk_canvas_draw_rect(canvas, x + xoffset, y + yoffset, line.extent, font_height, 0, 1);
 
 			ftk_canvas_reset_gc(canvas, ftk_widget_get_gc(thiz)); 
-			ftk_canvas_draw_boxed_string(canvas, x + xoffset, y + yoffset + font_height, &box,
+			ftk_canvas_draw_string(canvas, x + xoffset, y + yoffset + font_height, &box,
 					line.text, line.len, 0);
 		}
 	}
